@@ -1,0 +1,9 @@
+#!name=MUBI CriterionChannel
+#!desc=MUBI字幕
+
+[Script]
+DualSubs.SUB.WebVTT = type=http-response,pattern=https:\/\/.+vimeocdn.com\/.+\.webvtt, requires-body=1,max-size=0,script-path=https://raw.githubusercontent.com/DualSubs/DualSubs/main/js/DualSubs.SUB.WebVTT.js
+DualSubs.SUB.WebVTT = type=http-response,pattern=https:\/\/.+mubicdn.net\/.+\.webvtt, requires-body=1,max-size=0,script-path=https://raw.githubusercontent.com/DualSubs/DualSubs/main/js/DualSubs.SUB.WebVTT.js
+
+[MITM]
+hostname=*.mubicdn.net,*.vimeocdn.com
