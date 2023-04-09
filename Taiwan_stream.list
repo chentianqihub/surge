@@ -3,6 +3,7 @@ USER-AGENT,friDay*
 DOMAIN-SUFFIX,friday.tw
 DOMAIN-SUFFIX,fridaylogger.com
 DOMAIN,aka01p.akamaized.net
+DOMAIN,friday-video-prod.(null)
 # > CATCHPLAY+
 PROCESS-NAME,com.catchplay.asiaplay
 PROCESS-NAME,com.catchplay.asiaplay.tv
