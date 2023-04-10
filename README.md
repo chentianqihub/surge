@@ -1,6 +1,6 @@
 # surge
 
-[rule]
+## Rule
 
 JP
 Hulu.jp, AbemaTV 的分流
