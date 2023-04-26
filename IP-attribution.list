@@ -9,7 +9,6 @@ DOMAIN,app.bilibili.com
 DOMAIN-SUFFIX,biliapi.com
 DOMAIN,api.live.bilibili.com
 DOMAIN,api.vc.bilibili.com
-DOMAIN,passport.bilibili.com
 DOMAIN,live-trace.bilibili.com
 DOMAIN,message.bilibili.com
 DOMAIN,cm.bilibili.com
