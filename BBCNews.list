@@ -1,0 +1,8 @@
+# 内容：BBCnews
+# 数量：6
+DOMAIN-KEYWORD,uk-live
+DOMAIN-SUFFIX,bbc.co
+DOMAIN-SUFFIX,bbc.com
+DOMAIN-SUFFIX,bbci.co.uk
+DOMAIN-SUFFIX,bbc.co.uk
+DOMAIN,vod-dash-ww-live.akamaized.net
