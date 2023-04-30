@@ -1,0 +1,41 @@
+# 内容：Bilibili 哔哩哔哩
+# 数量：21条
+#https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/Bilibili.list
+USER-AGENT,Bilibili*
+USER-AGENT,bili*
+USER-AGENT,bili-inter*
+DOMAIN,apiintl.biliapi.net
+DOMAIN,upos-hz-mirrorakam.akamaized.net
+DOMAIN-SUFFIX,acg.tv
+DOMAIN-SUFFIX,acgvideo.com
+DOMAIN-SUFFIX,b23.tv
+DOMAIN-SUFFIX,bigfun.cn
+DOMAIN-SUFFIX,bigfunapp.cn
+DOMAIN-SUFFIX,biliapi.com
+DOMAIN-SUFFIX,biliapi.net
+DOMAIN-SUFFIX,bilibili.com
+DOMAIN-SUFFIX,bilibili.tv
+DOMAIN-SUFFIX,biligame.com
+DOMAIN-SUFFIX,biligame.net
+DOMAIN-SUFFIX,bilivideo.cn
+DOMAIN-SUFFIX,bilivideo.com
+DOMAIN-SUFFIX,hdslb.com
+DOMAIN-SUFFIX,im9.com
+DOMAIN-SUFFIX,smtcdns.net
+
+# NAME: Zhihu
+# AUTHOR: blackmatrix7
+# REPO: https://github.com/blackmatrix7/ios_rule_script
+#https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/Zhihu/Zhihu.list
+# UPDATED: 2023-04-07 14:52:14
+# DOMAIN-SUFFIX: 2
+# IP-CIDR: 4
+# IP-CIDR6: 1
+# TOTAL: 7
+DOMAIN-SUFFIX,zhihu.com
+DOMAIN-SUFFIX,zhimg.com
+IP-CIDR,103.41.167.226/32,no-resolve
+IP-CIDR,103.41.167.234/31,no-resolve
+IP-CIDR,103.41.167.236/32,no-resolve
+IP-CIDR,118.89.204.198/32,no-resolve
+IP-CIDR6,2402:4e00:1200:ed00:0:9089:6dac:96b6/128,no-resolve
