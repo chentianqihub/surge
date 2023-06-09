@@ -71,7 +71,7 @@ bili-skin = type=http-response,pattern=^https:\/\/app\.bilibili\.com\/x\/resourc
 biliBili-json = type=http-response,pattern=^https?:\/\/app\.bilibili\.com\/x\/resource\/top\/activity,requires-body=1,max-size=0,script-path=https://github.com/Keywos/rule/raw/main/JS/bilijson.js
 #bili-json = type=http-response,pattern=^https:\/\/app\.bilibili\.com\/x\/(v2\/(splash\/list|feed\/index|account\/(mine|myinfo\?)|search\/square)|resource\/show\/tab\/v2),requires-body=1,script-path=https://raw.githubusercontent.com/kokoryh/Script/master/js/bilibili_json.js
 # Bili-Proto去广告@app2smile
-bili-proto = type=http-response,pattern=^https:\/\/(grpc\.biliapi\.net|app\.bilibili\.com)\/bilibili\.app\.(view\.v1\.View\/View|playurl\.v1\.PlayURL\/PlayView|dynamic\.v2\.Dynamic\/DynAll)$,requires-body=1,binary-body-mode=1,max-size=0,script-path=https://github.com/Keywos/rule/raw/main/JS/biliproto.js
+bili-proto = type=http-response,pattern=^https:\/\/(grpc\.biliapi\.net|app\.bilibili\.com)\/bilibili\.app\.(view\.v1\.View\/View|playurl\.v1\.PlayURL\/PlayView|dynamic\.v2\.Dynamic\/DynAll)$,requires-body=1,binary-body-mode=1,max-size=0,script-path=https://raw.githubusercontent.com/kokoryh/Script/master/js/bilibili-proto.js
 # Bili-直播去广告@bm7
 bili-live = type=http-response,pattern=^https:\/\/api\.live\.bilibili\.com\/xlive\/app-room\/v1\/index\/getInfoByRoom,requires-body=1,script-path=https://raw.githubusercontent.com/kokoryh/Script/master/js/bilibili_json.js
 # ～ BiliBili_哔哩哔哩_屏蔽直播页顶部轮播图@ddgksf2013
