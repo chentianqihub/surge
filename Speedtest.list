@@ -15,6 +15,7 @@ DOMAIN-SUFFIX,speedtestcustom.com
 DOMAIN-SUFFIX,webtest.net
 DOMAIN-SUFFIX,speed.misaka.one
 DOMAIN-SUFFIX,fdcservers.net
+DOMAIN-SUFFIX,chtm.hinet.net
 #DOMAIN-KEYWORD,speed
 DOMAIN-KEYWORD,speedtest
 USER-AGENT,SpeedTest*
