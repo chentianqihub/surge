@@ -1,0 +1,4 @@
+# https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/NowE/NowE.list
+DOMAIN-SUFFIX,nowe.com
+DOMAIN-SUFFIX,nowestatic.com
+DOMAIN-SUFFIX,now-tv.com
