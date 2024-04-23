@@ -14,9 +14,16 @@ DOMAIN,tra-ww000-cp.akamaized.net
 DOMAIN,ols-ww000-cp.akamaized.net
 DOMAIN,ols-ww100-cp.akamaized.net
 DOMAIN,dkfhw9rzsr80z.cloudfront.net
-# > myVideo
+# > MyVideo
 USER-AGENT,myVideo*
 DOMAIN-SUFFIX,myvideo.net.tw
 DOMAIN-SUFFIX,catch.net.tw
 DOMAIN,applemediaservice.keydelivery.southeastasia.media.azure.net
 DOMAIN,akamaiendpoint-applemediaservice-aase.streaming.media.azure.net
+# > LiTV
+DOMAIN,litvfreemobile-hichannel.cdn.hinet.net
+DOMAIN-SUFFIX,litv.tv
+# > 4gTV
+DOMAIN,4gtvfreepcvod-cds.cdn.hinet.net
+DOMAIN-SUFFIX,4gtv.tv
+DOMAIN-SUFFIX,svc.litv.tv
