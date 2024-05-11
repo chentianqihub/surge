@@ -22,6 +22,8 @@ DOMAIN,applemediaservice.keydelivery.southeastasia.media.azure.net
 DOMAIN,akamaiendpoint-applemediaservice-aase.streaming.media.azure.net
 # > LiTV
 DOMAIN,litvfreemobile-hichannel.cdn.hinet.net
+DOMAIN,litvfreepad.akamaized.net
+DOMAIN,lookme.club.tw
 DOMAIN-SUFFIX,litv.tv
 # > 4gTV
 DOMAIN,4gtvfreepcvod-cds.cdn.hinet.net
