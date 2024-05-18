@@ -3,6 +3,12 @@
 # 提示用户输入NUM值
 read -e -p "请输入NUM值: " num
 
+# 检查是否输入了NUM值
+if [ -z "$num" ]; then
+  echo "错误: 您没有输入NUM值，脚本将退出。"
+  exit 1
+fi
+
 # 获取系统架构
 arch=$(dpkg --print-architecture)
 
