@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # 提示用户输入NUM值
-read -e -p "请输入NUM值: " num
+read -e -p "请输入NUM值（>=2）: " num
 
-# 检查是否输入了NUM值
-if [ -z "$num" ]; then
-  echo "错误: 您没有输入NUM值，脚本将退出。"
+# 检查是否输入了NUM值以及NUM值是否大于等于2
+if [[ -z "$num" || "$num" -lt 2 ]]; then
+  echo "错误: 您没有输入有效的NUM值，脚本将退出。"
   exit 1
 fi
 
