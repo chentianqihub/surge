@@ -31,16 +31,21 @@ if ! sudo mv "$EXTRACT_DIR/dnslookup" "$BIN_FILE"; then
     exit 1
 fi
 
+# 刷新 Shell 缓存
+hash -r
+
 # 删除临时文件
 echo "Cleaning up..."
 rm -f "$TAR_FILE"
 rm -rf "$EXTRACT_DIR"
 
-# 检查安装是否成功
+# 检查安装是否成功并输出第一行内容
 echo "Verifying installation..."
-if ! dnslookup --help > /dev/null 2>&1; then
+FIRST_LINE=$(dnslookup --help 2>&1 | head -n 1)
+if [ -z "$FIRST_LINE" ]; then
     echo "Error: dnslookup installation failed"
     exit 1
+else
+    echo "$FIRST_LINE"
+    echo "dnslookup installed successfully"
 fi
-
-echo "dnslookup installed successfully"
