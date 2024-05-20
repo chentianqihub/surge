@@ -2,6 +2,8 @@
 
 ## Rule
 
+包含
+
 JP
 Hulu.jp, AbemaTV,u-next 的分流
 
