@@ -46,6 +46,9 @@ if [ -z "$FIRST_LINE" ]; then
     echo "Error: dnslookup installation failed"
     exit 1
 else
-    echo "$FIRST_LINE"
+    # 使用 ANSI 转义序列将第一行内容设为红色
+    RED='\033[0;31m'
+    NC='\033[0m' # 没有颜色 (重置颜色)
+    echo -e "${RED}${FIRST_LINE}${NC}"
     echo "dnslookup installed successfully"
 fi
