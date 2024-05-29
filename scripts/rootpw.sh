@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# 检查是否以 root 身份运行
+if [ "$(id -u)" -ne 0 ]; then
+    echo "This script must be run as root. Please switch to root user or use sudo."
+    exit 1
+fi
+
 # 获取用户输入的密码，并进行二次确认
 while true; do
     read -sp "Enter new root password: " root_password
