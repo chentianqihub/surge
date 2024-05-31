@@ -35,6 +35,8 @@ if [ -f /etc/os-release ]; then
     if [ "$ID" == "ubuntu" ]; then
         # 修改 ChallengeResponseAuthentication 为 yes（如果存在）
         sudo sed -i 's/^#\?ChallengeResponseAuthentication.*/ChallengeResponseAuthentication yes/g' /etc/ssh/sshd_config || { echo "Failed to update ChallengeResponseAuthentication"; exit 1; }
+        # 修改 KbdInteractiveAuthentication 为 yes（如果存在）
+        sudo sed -i 's/^#\?KbdInteractiveAuthentication.*/KbdInteractiveAuthentication yes/g' /etc/ssh/sshd_config || { echo "Failed to update KbdInteractiveAuthentication"; exit 1; }
     fi
 fi
 
@@ -43,3 +45,5 @@ sudo service ssh restart || { echo "Failed to restart SSH service"; exit 1; }
 
 echo "Password changed successfully and SSH configuration updated."
 
+# 删除脚本文件
+rm -- "$0"
