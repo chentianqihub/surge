@@ -2,13 +2,6 @@
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
 export PATH
 
-#=================================================
-#	System Required: CentOS/Debian/Ubuntu
-#	Description: Snell Server 管理脚本
-#	Author: 翠花
-#	WebSite: https://about.nange.cn
-#=================================================
-
 sh_ver="1.6.0"
 filepath=$(cd "$(dirname "$0")"; pwd)
 file_1=$(echo -e "${filepath}"|awk -F "$0" '{print $1}')
