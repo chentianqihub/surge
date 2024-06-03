@@ -870,8 +870,8 @@ Update_Shell(){
             start_menu
 		fi
 	else
-		echo -e "当前已是最新版本[ ${sh_new_ver} ] !"
-		sleep 3s
+		echo -e "${Green_font_prefix}当前已是最新版本[v${sh_new_ver}] !${Font_color_suffix}"
+		sleep 2s
         start_menu
 	fi
 	sleep 3s
