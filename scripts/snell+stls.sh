@@ -852,18 +852,18 @@ Set_Shadow_TLS(){
 
 Update_Shell(){
 	echo -e "当前版本为 [ ${sh_ver} ]，开始检测最新版本..."
-	sh_new_ver=$(wget --no-check-certificate -qO- "https://raw.githubusercontent.com/xOS/Snell/master/Snell.sh"|grep 'sh_ver="'|awk -F "=" '{print $NF}'|sed 's/\"//g'|head -1)
+	sh_new_ver=$(wget --no-check-certificate -qO- "https://raw.githubusercontent.com/chentianqihub/surge/main/scripts/snell%2Bstls.sh"|grep 'sh_ver="'|awk -F "=" '{print $NF}'|sed 's/\"//g'|head -1)
 	[[ -z ${sh_new_ver} ]] && echo -e "${Error} 检测最新版本失败 !" && start_menu
 	if [[ ${sh_new_ver} != ${sh_ver} ]]; then
 		echo -e "发现新版本[ ${sh_new_ver} ]，是否更新？[Y/n]"
 		read -p "(默认: y):" yn
 		[[ -z "${yn}" ]] && yn="y"
 		if [[ ${yn} == [Yy] ]]; then
-			wget -O snell.sh --no-check-certificate https://raw.githubusercontent.com/xOS/Snell/master/Snell.sh && chmod +x snell.sh
+			wget -O snell.sh --no-check-certificate https://raw.githubusercontent.com/chentianqihub/surge/main/scripts/snell%2Bstls.sh && chmod +x snell+stls.sh
 			echo -e "脚本已更新为最新版本[ ${sh_new_ver} ] !"
 			echo -e "3s后执行新脚本"
             sleep 3s
-            bash snell.sh
+            bash snell+stls.sh
 		else
 			echo && echo "	已取消..." && echo
             sleep 3s
@@ -875,7 +875,7 @@ Update_Shell(){
         start_menu
 	fi
 	sleep 3s
-    	bash snell.sh
+    	bash snell+stls.sh
 }
 before_start_menu() {
     echo && echo -n -e "${yellow}* 按回车返回主菜单 *${plain}" && read temp
@@ -892,6 +892,8 @@ action=$1
 ==============================
 Snell Server 管理脚本 ${Red_font_prefix}[v${sh_ver}]${Font_color_suffix}
 ==============================
+ ${Green_font_prefix} 0.${Font_color_suffix} 更新脚本
+——————————————————————————————
  ${Green_font_prefix} 1.${Font_color_suffix} 安装 Snell Server
  ${Green_font_prefix} 2.${Font_color_suffix} 卸载 Snell Server
 ——————————————————————————————
