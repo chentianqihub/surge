@@ -965,17 +965,17 @@ Snell Server 管理脚本 ${Red_font_prefix}[v${sh_ver}]${Font_color_suffix}
 		exit 1
 		;;
 		10)
-          Install_Shadow_TLS
-          ;;
-          11)
-          Uninstall_Shadow_TLS
-          ;;
-          12)
-          Status_Shadow_TLS
-          ;;
-          13)
-          Set_Shadow_TLS
-          ;;
+                Install_Shadow_TLS
+                ;;
+                11)
+                Uninstall_Shadow_TLS
+                ;;
+                12)
+                Status_Shadow_TLS
+                ;;
+                13)
+                Set_Shadow_TLS
+                ;;
 		*)
 		echo -e "请输入正确数字${Yellow_font_prefix}[1-13]${Font_color_suffix}"
 		;;
