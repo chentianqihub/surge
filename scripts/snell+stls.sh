@@ -2,6 +2,13 @@
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
 export PATH
 
+#=================================================
+#	System Required: CentOS/Debian/Ubuntu
+#	Description: Snell Server 管理脚本
+#	Author: 翠花
+#	WebSite: https://about.nange.cn
+#=================================================
+
 sh_ver="1.6.0"
 filepath=$(cd "$(dirname "$0")"; pwd)
 file_1=$(echo -e "${filepath}"|awk -F "$0" '{print $1}')
@@ -958,17 +965,17 @@ Snell Server 管理脚本 ${Red_font_prefix}[v${sh_ver}]${Font_color_suffix}
 		exit 1
 		;;
 		10)
-    Install_Shadow_TLS
-    ;;
-    11)
-    Uninstall_Shadow_TLS
-    ;;
-    12)
-    Status_Shadow_TLS
-    ;;
-    13)
-    Set_Shadow_TLS
-    ;;
+          Install_Shadow_TLS
+          ;;
+          11)
+          Uninstall_Shadow_TLS
+          ;;
+          12)
+          Status_Shadow_TLS
+          ;;
+          13)
+          Set_Shadow_TLS
+          ;;
 		*)
 		echo -e "请输入正确数字${Yellow_font_prefix}[1-13]${Font_color_suffix}"
 		;;
