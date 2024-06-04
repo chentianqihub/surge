@@ -10,12 +10,13 @@ FILE="/usr/local/bin/snell-server"
 CONF="/etc/snell/config.conf"
 Now_ver_File="/etc/snell/ver.txt"
 Local="/etc/sysctl.d/local.conf"
-obfs=""  # 全局变量初始化
+obfs=""   # 全局变量初始化
 
 Green_font_prefix="\033[32m" && Red_font_prefix="\033[31m" && Green_background_prefix="\033[42;37m" && Red_background_prefix="\033[41;37m" && Font_color_suffix="\033[0m" && Yellow_font_prefix="\033[0;33m"
 Info="${Green_font_prefix}[信息]${Font_color_suffix}"
 Error="${Red_font_prefix}[错误]${Font_color_suffix}"
 Tip="${Yellow_font_prefix}[注意]${Font_color_suffix}"
+Warn="${Yellow_font_prefix}[Warn]${Font_color_suffix}"
 
 check_root(){
 	[[ $EUID != 0 ]] && echo -e "${Error} 当前非ROOT账号(或没有ROOT权限)，无法继续操作，请更换ROOT账号或使用 ${Green_background_prefix}sudo su${Font_color_suffix} 命令获取临时ROOT权限（执行后可能会提示输入当前账号的密码）。" && exit 1
@@ -100,7 +101,8 @@ check_installed_status(){
 }
 
 check_status(){
-	status=`systemctl status snell-server | grep Active | awk '{print $3}' | cut -d "(" -f2 | cut -d ")" -f1`
+	#status=`systemctl status snell-server | grep Active | awk '{print $3}' | cut -d "(" -f2 | cut -d ")" -f1`
+	status=$(systemctl status shadow-tls.service | grep "Active" | awk -F'[()]' '{print $2}')
 }
 
 # v2 备用源
@@ -543,17 +545,18 @@ Install_v4(){
 	echo -e "${Info} 所有步骤 安装完毕，开始启动..."
 	# print snell server info
      echo -e "—————————————————————————"
-     echo -e "${Green_font_prefix}Copy the following line to the Surge [Proxy] section:${Font_color_suffix}" 
+     echo -e "${Green_font_prefix}Please copy the following line to the Surge [Proxy] section:${Font_color_suffix}" 
      echo "$(curl -s ipinfo.io/city) = snell, $(curl -4s ipinfo.io/ip), ${port}, psk=${psk}, version=${ver}, reuse=true, tfo=${tfo}"
      echo -e "—————————————————————————" 
 	Start
- sleep 3s
- start_menu
+    sleep 3s
+    start_menu
 }
 
 Start(){
 	check_installed_status
-	check_status
+	#check_status
+	status=`systemctl status snell-server | grep Active | awk '{print $3}' | cut -d "(" -f2 | cut -d ")" -f1`
 	[[ "$status" == "running" ]] && echo -e "${Info} Snell Server 已在运行 !" && exit 1
 	systemctl start snell-server
 	check_status
@@ -584,23 +587,47 @@ Update(){
     sleep 3s
     start_menu
 }
+
 Uninstall(){
-	check_installed_status
-	echo "确定要卸载 Snell Server ? (y/N)"
-	echo
-	read -e -p "(默认: n):" unyn
-	[[ -z ${unyn} ]] && unyn="n"
-	if [[ ${unyn} == [Yy] ]]; then
-		systemctl stop snell-server
+    check_installed_status
+    echo "确定要卸载 Snell Server ? (y/N)"
+    echo
+    read -e -p "(默认: n):" unyn
+    [[ -z ${unyn} ]] && unyn="n"
+    if [[ ${unyn} == [Yy] ]]; then
+        echo "正在停止 Snell Server 服务..."
+        systemctl stop snell-server
+        if [[ $? -eq 0 ]]; then
+            echo "Snell Server 服务已停止"
+        else
+            echo "停止服务失败，请手动检查"
+        fi
+
+        echo "正在禁用 Snell Server 服务..."
         systemctl disable snell-server
-		rm -rf "${FILE}"
-		echo && echo "Snell Server 卸载完成 !" && echo
-	else
-		echo && echo "卸载已取消..." && echo
-	fi
+        if [[ $? -eq 0 ]]; then
+            echo "Snell Server 服务已禁用"
+        else
+            echo "禁用服务失败，请手动检查。"
+        fi
+
+        echo "正在删除 Snell Server 主程序和配置文件..."
+        rm -rf "${FILE}"
+        rm -rf /etc/snell
+        if [[ $? -eq 0 ]]; then
+            echo "文件删除完成"
+        else
+            echo "删除文件失败，请手动检查"
+        fi
+
+        echo && echo -e "${Yellow_font_prefix}Snell Server 卸载完成 !${Font_color_suffix}" && echo
+    else
+        echo && echo "卸载已取消..." && echo
+    fi
     sleep 2s
     start_menu
 }
+
 getipv4(){
 	ipv4=$(wget -qO- -4 -t1 -T2 ipinfo.io/ip)
 	if [[ -z "${ipv4}" ]]; then
@@ -644,7 +671,7 @@ View(){
 
 Status(){
 	echo -e "${Info} 获取 Snell Server 活动日志 ……"
-	echo -e "${Tip} 返回主菜单请按 q ！"
+	echo -e "${Tip} ${Yellow_font_prefix}返回主菜单请按 q${Font_color_suffix} "
 	systemctl status snell-server
 	start_menu
 }
@@ -711,11 +738,11 @@ EOF
         # 提取服务状态
         status=$(systemctl status shadow-tls.service | grep "Active" | awk -F'[()]' '{print $2}')
         if [ "$status" == "running" ]; then
-            echo -e "${Yellow_font_prefix}服务已成功启动并且正在运行${Font_color_suffix}"
+            echo -e "${Yellow_font_prefix}Shadow-TLS 服务已成功启动并且正在运行${Font_color_suffix}"
             Read_config
             echo -e "—————————————————————————"
-            echo -e "${Green_font_prefix}Copy the following line to the Surge [Proxy] section:${Font_color_suffix}" 
-            echo "$(curl -s ipinfo.io/city) = snell, ${ipv4}, ${port}, psk=${psk}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=JsJeWtjiUyJ5yeto, shadow-tls-sni=mensura.cdn-apple.com, shadow-tls-version=3"
+            echo -e "${Green_font_prefix}Please copy the following line to the Surge [Proxy] section:${Font_color_suffix}" 
+            echo "$(curl -s ipinfo.io/city) = snell, $(curl -s ip.sb -4), ${port}, psk=${psk}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=JsJeWtjiUyJ5yeto, shadow-tls-sni=mensura.cdn-apple.com, shadow-tls-version=3"
             echo -e "—————————————————————————"
         else
             echo "服务未在运行状态"
@@ -724,54 +751,127 @@ EOF
         echo -e "${Error} 错误: 启动 shadow-tls 服务失败"
         exit 1
     fi
-    sleep 3s
+    sleep 2s
     start_menu
 }
 
 Uninstall_Shadow_TLS(){
-    # 检查服务是否存在
-    if systemctl is-enabled --quiet shadow-tls.service; then
-        echo "正在停止 shadow-tls 服务..."
-        sudo systemctl stop shadow-tls.service
-        echo "正在禁用 shadow-tls 服务..."
-        sudo systemctl disable shadow-tls.service
-    else
-        echo "shadow-tls 服务未安装或已被禁用"
-    fi
+    check_Shadow_TLS_installed_status
+    echo "确定要卸载 Shadow-TLS ? (y/N)"
+    echo
+    read -e -p "(默认: n):" ynun
+    [[ -z "${ynun}" ]] && ynun="n" # 如果用户没有输入，设置默认值为 'n'
+    
+    if [[ "${ynun}" =~ ^[Yy]$ ]]; then
+        # 检查服务是否启动
+        if systemctl is-enabled --quiet shadow-tls.service; then
+            echo "正在停止 shadow-tls 服务..."
+            sudo systemctl stop shadow-tls.service
+            if [[ $? -eq 0 ]]; then
+            echo "shadow-tls 服务已停止"
+            else
+            echo "停止服务失败，请手动检查"
+           fi
+           
+            echo "正在禁用 shadow-tls 服务..."
+            sudo systemctl disable shadow-tls.service
+            if [[ $? -eq 0 ]]; then
+            echo "shadow-tls 服务已禁用"
+            else
+            echo "禁用服务失败，请手动检查"
+            fi
+        else
+            echo -e "${Warn} shadow-tls 服务已被禁用"
+            echo "正在停止 shadow-tls 服务..."
+            sudo systemctl stop shadow-tls.service
+            if [[ $? -eq 0 ]]; then
+            echo "shadow-tls 服务已停止"
+            else
+            echo "停止服务失败，请手动检查"
+           fi
+        fi
 
-    # 检查服务文件是否存在并删除
-    if [ -f /etc/systemd/system/shadow-tls.service ]; then
-        echo "正在删除服务文件..."
-        sudo rm /etc/systemd/system/shadow-tls.service
-        echo "重新加载 systemd 配置..."
-        sudo systemctl daemon-reload
-        echo "重置 systemd 失败状态..."
-        sudo systemctl reset-failed
-    else
-        echo "服务文件不存在，无需删除"
-    fi
+        # 检查服务文件是否存在并删除
+        if [ -f /etc/systemd/system/shadow-tls.service ]; then
+            echo "正在删除服务文件..."
+            sudo rm /etc/systemd/system/shadow-tls.service
+            if [[ $? -eq 0 ]]; then
+            echo "shadow-tls 服务文件已删除"
+            else
+            echo "停止服务失败，请手动检查"
+           fi
+           
+            echo "重新加载 systemd 配置..."
+            sudo systemctl daemon-reload
+            echo "重置 systemd 失败状态..."
+            sudo systemctl reset-failed
+        else
+            echo "服务文件不存在，无需删除"
+        fi
 
-    # 检查可执行文件是否存在并删除
-    if [ -f /usr/local/bin/shadow-tls ]; then
-        echo "删除 shadow-tls 可执行文件..."
-        sudo rm /usr/local/bin/shadow-tls
-    else
-        echo "可执行文件不存在，无需删除"
-    fi
+        # 删除检查可执行文件
+            echo "删除 shadow-tls 可执行文件..."
+            sudo rm -rf /usr/local/bin/shadow-tls
+            if [[ $? -eq 0 ]]; then
+            echo "shadow-tls 可执行文件删除完成"
+            else
+            echo "删除shadow-tls 可执行文件失败，请手动检查"
+            fi
 
-    echo -e "${Yellow_font_prefix}Shadow-TLS 服务已成功卸载${Font_color_suffix}"
+        echo -e "${Yellow_font_prefix}Shadow-TLS 服务已成功卸载 !${Font_color_suffix}"
+    else
+        echo && echo "卸载已取消..." && echo
+    fi
     sleep 3s
     start_menu
 }
 
+Start_Shadow_TLS(){
+     check_Shadow_TLS_installed_status
+	check_Shadow_TLS_status
+	[[ "$shadow_tls_status" == "running" ]] && echo -e "${Info} Shadow-TLS 已在运行 !" && exit 1
+	systemctl start shadow-tls
+	check_status
+	[[ "$shadow_tls_status" == "running" ]] && echo -e "${Info} Shadow-TLS 启动成功 !"
+    sleep 3s
+    start_menu
+}
+
+Stop_Shadow_TLS(){
+     check_Shadow_TLS_installed_status
+	check_Shadow_TLS_status
+	[[ !"$shadow_tls_status" == "running" ]] && echo -e "${Error} Shadow-TLS 未在运行，请检查 !" && exit 1
+	systemctl stop shadow-tls
+	echo -e "${Info} Shadow-TLS 停止成功 !"
+    sleep 3s
+    start_menu
+}
+
+Restart_Shadow_TLS(){
+     check_Shadow_TLS_installed_status
+	systemctl restart shadow-tls
+	echo -e "${Info} Shadow-TLS 重启完毕!"
+	sleep 3s
+     start_menu
+}
+
 Status_Shadow_TLS(){
 	echo -e "${Info} 获取 Shadow_TLS 活动日志 ……"
+	if systemctl is-enabled --quiet shadow-tls.service; then
+	echo -e "${Tip} ${Yellow_font_prefix}返回主菜单请按 q${Font_color_suffix} "
+	else
+            echo -e "${Error} ${Red_font_prefix}shadow-tls 服务未安装${Font_color_suffix}"
+	fi
 	systemctl status shadow-tls
 	start_menu
 }
 
 check_Shadow_TLS_installed_status(){
 	[[ ! -e "/usr/local/bin/shadow-tls" ]] && echo -e "${Error} Shadow-TLS 没有安装，请检查 !" && exit 1
+}
+
+check_Shadow_TLS_status(){
+	shadow_tls_status=`systemctl status shadow-tls.service | grep "Active" | awk -F'[()]' '{print $2}'`
 }
 
 Edit_Shadow_TLS(){
@@ -814,12 +914,12 @@ EOF
     # 重启服务
     if sudo systemctl restart shadow-tls.service; then
         # 提取服务状态
-        status=$(systemctl status shadow-tls.service | grep "Active" | awk -F'[()]' '{print $2}')
-        if [ "$status" == "running" ]; then
+        shadow_tls_status=$(systemctl status shadow-tls.service | grep "Active" | awk -F'[()]' '{print $2}')
+        if [ "$shadow_tls_status" == "running" ]; then
             echo -e "${Yellow_font_prefix}服务已成功启动并且正在运行${Font_color_suffix}"
             Read_config
             echo -e "—————————————————————————"
-            echo -e "${Green_font_prefix}Copy the following line to the Surge [Proxy] section:${Font_color_suffix}" 
+            echo -e "${Green_font_prefix}Please copy the following line to the Surge [Proxy] section:${Font_color_suffix}" 
             echo "$(curl -s ipinfo.io/city) = snell, ${ipv4}, ${port}, psk=${psk}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=JsJeWtjiUyJ5yeto, shadow-tls-sni=mensura.cdn-apple.com, shadow-tls-version=3"
             echo -e "—————————————————————————"
         else
@@ -906,25 +1006,43 @@ Snell Server 管理脚本 ${Red_font_prefix}[v${sh_ver}]${Font_color_suffix}
  ${Green_font_prefix} 8.${Font_color_suffix} 查看 Snell运行状态
 ——————————————————————————————
  ${Green_font_prefix} 9.${Font_color_suffix} 退出脚本
- ——————————————————————————————
+——————————————————————————————
  ${Green_font_prefix} 10.${Font_color_suffix} 安装 Shadow-TLS
  ${Green_font_prefix} 11.${Font_color_suffix} 卸载 Shadow-TLS
- ${Green_font_prefix} 12.${Font_color_suffix} 查看 Shadow-TLS运行状态
- ${Green_font_prefix} 13.${Font_color_suffix} 设置 Shadow-TLS配置信息
+——————————————————————————————
+ ${Green_font_prefix} 12.${Font_color_suffix} 启动 Shadow-TLS
+ ${Green_font_prefix} 13.${Font_color_suffix} 停止 Shadow-TLS
+ ${Green_font_prefix} 14.${Font_color_suffix} 重启 Shadow-TLS
+——————————————————————————————
+ ${Green_font_prefix} 15.${Font_color_suffix} 查看 Shadow-TLS运行状态
+ ${Green_font_prefix} 16.${Font_color_suffix} 设置 Shadow-TLS配置信息
 ==============================" && echo
 	if [[ -e ${FILE} ]]; then
-		check_status
+	     #check_status
+		status=`systemctl status snell-server | grep Active | awk '{print $3}' | cut -d "(" -f2 | cut -d ")" -f1`
 		if [[ "$status" == "running" ]]; then
-			echo -e " 当前状态: ${Green_font_prefix}已安装${Yellow_font_prefix}[v$(cat ${CONF}|grep 'version = '|awk -F 'version = ' '{print $NF}')]${Font_color_suffix}并${Green_font_prefix}已启动${Font_color_suffix}"
+			echo -e " 当前Snell状态: ${Green_font_prefix}已安装${Yellow_font_prefix}[v$(cat ${CONF}|grep 'version = '|awk -F 'version = ' '{print $NF}')]${Font_color_suffix}并${Green_font_prefix}已启动${Font_color_suffix}"
 		else
-			echo -e " 当前状态: ${Green_font_prefix}已安装${Yellow_font_prefix}[v$(cat ${CONF}|grep 'version = '|awk -F 'version = ' '{print $NF}')]${Font_color_suffix}但${Red_font_prefix}未启动${Font_color_suffix}"
+			echo -e " 当前Snell状态: ${Green_font_prefix}已安装${Yellow_font_prefix}[v$(cat ${CONF}|grep 'version = '|awk -F 'version = ' '{print $NF}')]${Font_color_suffix}但${Red_font_prefix}未启动${Font_color_suffix}"
 		fi
 	else
-		echo -e " 当前状态: ${Red_font_prefix}未安装${Font_color_suffix}"
+		echo -e " 当前Snell状态: ${Red_font_prefix}未安装${Font_color_suffix}"
+	fi
+	
+	if [[ -e "/usr/local/bin/shadow-tls" ]]; then
+		check_Shadow_TLS_status
+		SHADOW_TLS_VERSION=$(curl -s "https://api.github.com/repos/ihciah/shadow-tls/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+		if [[ "$shadow_tls_status" == "running" ]]; then
+			echo -e " 当前Shadow-TLS状态: ${Green_font_prefix}已安装${Yellow_font_prefix}[${SHADOW_TLS_VERSION}]${Font_color_suffix}并${Green_font_prefix}已启动${Font_color_suffix}"
+		else
+			echo -e " 当前Shadow-TLS状态: ${Green_font_prefix}已安装${Yellow_font_prefix}[${SHADOW_TLS_VERSION}]${Font_color_suffix}但${Red_font_prefix}未启动${Font_color_suffix}"
+		fi
+	else
+		echo -e " 当前Shadow-TLS状态: ${Red_font_prefix}未安装${Font_color_suffix}"
 	fi
 	echo
-	read -e -p " 请输入数字[1-13]（默认值: 1）:" num
-
+	read -e -p " 请输入数字[0-16]（默认值: 1）:" num
+	
      # 如果用户未输入值，则使用默认值1
      [[ -z "$num" ]] && num=1
 	
@@ -960,19 +1078,28 @@ Snell Server 管理脚本 ${Red_font_prefix}[v${sh_ver}]${Font_color_suffix}
 		exit 1
 		;;
 		10)
-                Install_Shadow_TLS
-                ;;
-                11)
-                Uninstall_Shadow_TLS
-                ;;
-                12)
-                Status_Shadow_TLS
-                ;;
-                13)
-                Set_Shadow_TLS
-                ;;
+          Install_Shadow_TLS
+          ;;
+          11)
+          Uninstall_Shadow_TLS
+          ;;
+          12)
+          Start_Shadow_TLS
+          ;;
+          13)
+          Stop_Shadow_TLS
+          ;;
+          14)
+          Restart_Shadow_TLS
+          ;;
+          15)
+          Status_Shadow_TLS
+          ;;
+          16)
+          Set_Shadow_TLS
+          ;;
 		*)
-		echo -e "请输入正确数字${Yellow_font_prefix}[1-13]${Font_color_suffix}"
+		echo -e "请输入正确数字${Yellow_font_prefix}[0-16]${Font_color_suffix}"
 		;;
 	esac
 }
