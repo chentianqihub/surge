@@ -546,7 +546,11 @@ Install_v4(){
 	# print snell server info
      echo -e "—————————————————————————"
      echo -e "${Green_font_prefix}Please copy the following line to the Surge [Proxy] section:${Font_color_suffix}" 
-     echo "$(curl -s ipinfo.io/city) = snell, $(curl -4s ipinfo.io/ip), ${port}, psk=${psk}, version=${ver}, reuse=true, tfo=${tfo}"
+     if [[ "${obfs}" == "off" ]]; then
+            echo "$(curl -s ipinfo.io/city) = snell, $(curl -4s ipinfo.io/ip), ${port}, psk=${psk}, version=${ver}, reuse=true, tfo=${tfo}"
+     else
+            echo "$(curl -s ipinfo.io/city) = snell, $(curl -4s ipinfo.io/ip), ${port}, psk=${psk}, obfs=${obfs}, obfs-host=${host}, version=${ver}, reuse=true, tfo=${tfo}"
+     fi
      echo -e "—————————————————————————" 
 	Start
     sleep 3s
@@ -742,7 +746,11 @@ EOF
             Read_config
             echo -e "—————————————————————————"
             echo -e "${Green_font_prefix}Please copy the following line to the Surge [Proxy] section:${Font_color_suffix}" 
+            if [[ "${obfs}" == "off" ]]; then
             echo "$(curl -s ipinfo.io/city) = snell, $(curl -s ip.sb -4), ${port}, psk=${psk}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=JsJeWtjiUyJ5yeto, shadow-tls-sni=mensura.cdn-apple.com, shadow-tls-version=3"
+            else
+            echo "$(curl -s ipinfo.io/city) = snell, $(curl -s ip.sb -4), ${port}, psk=${psk}, obfs=${obfs}, obfs-host=${host}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=JsJeWtjiUyJ5yeto, shadow-tls-sni=mensura.cdn-apple.com, shadow-tls-version=3"
+            fi
             echo -e "—————————————————————————"
         else
             echo "服务未在运行状态"
@@ -920,7 +928,11 @@ EOF
             Read_config
             echo -e "—————————————————————————"
             echo -e "${Green_font_prefix}Please copy the following line to the Surge [Proxy] section:${Font_color_suffix}" 
-            echo "$(curl -s ipinfo.io/city) = snell, ${ipv4}, ${port}, psk=${psk}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=JsJeWtjiUyJ5yeto, shadow-tls-sni=mensura.cdn-apple.com, shadow-tls-version=3"
+            if [[ "${obfs}" == "off" ]]; then
+            echo "$(curl -s ipinfo.io/city) = snell, $(curl -s ip.sb -4), ${port}, psk=${psk}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=JsJeWtjiUyJ5yeto, shadow-tls-sni=mensura.cdn-apple.com, shadow-tls-version=3"
+            else
+            echo "$(curl -s ipinfo.io/city) = snell, $(curl -s ip.sb -4), ${port}, psk=${psk}, obfs=${obfs}, obfs-host=${host}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=JsJeWtjiUyJ5yeto, shadow-tls-sni=mensura.cdn-apple.com, shadow-tls-version=3"
+            fi
             echo -e "—————————————————————————"
         else
             echo -e "${Red_font_prefix}服务未在运行状态${Font_color_suffix}"
