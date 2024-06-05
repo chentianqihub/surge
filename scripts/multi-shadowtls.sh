@@ -2,21 +2,21 @@
 
 # 提示用户输入SER值，并确保其大于等于2
 read -e -p "请输入SER值(>=2): " SER
-if [[ -z "$SER" || "$SER" -lt 2 ]]; then
+if ! [[ "$SER" =~ ^[0-9]+$ ]] || [ "$SER" -lt 1 ]; then
   echo "错误: SER值必须大于等于2"
   exit 1
 fi
 
 # 提示用户输入LISTEN值，并确保其是有效的端口号
 read -e -p "请输入LISTEN值: " listen
-if [[ -z "$listen" || "$listen" -lt 1 || "$listen" -gt 65535 ]]; then
+if ! [[ "$listen" =~ ^[0-9]+$ ]] || [ "$listen" -lt 1 ] || [ "$listen" -gt 65535 ]; then
   echo "错误: LISTEN值必须是1到65535之间的数字"
   exit 1
 fi
 
 # 提示用户输入SERVER值，并确保其是有效的端口号
 read -e -p "请输入SERVER值: " server
-if [[ -z "$server" || "$server" -lt 1 || "$server" -gt 65535 ]]; then
+if ! [[ "$server" =~ ^[0-9]+$ ]] || [ "$server" -lt 1 ] || [ "$server" -gt 65535 ]; then
   echo "错误: SERVER值必须是1到65535之间的数字"
   exit 1
 fi
