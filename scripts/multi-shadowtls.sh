@@ -2,7 +2,7 @@
 
 # 提示用户输入SER值，并确保其大于等于2
 read -e -p "请输入SER值(>=2): " SER
-if ! [[ "$SER" =~ ^[0-9]+$ ]] || [ "$SER" -lt 1 ]; then
+if ! [[ "$SER" =~ ^[0-9]+$ ]] || [ "$SER" -lt 2 ]; then
   echo "错误: SER值必须大于等于2"
   exit 1
 fi
