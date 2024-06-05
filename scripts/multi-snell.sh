@@ -5,10 +5,10 @@ read -e -p "请输入NUM值（>=2）: " num
 
 # 检查 num 是否为非负整数并且大于等于 2
 if ! [[ "$num" =~ ^[0-9]+$ ]]; then
-  echo "错误: NUM值必须是一个整数。"
+  echo "错误: NUM值必须是一个整数"
   exit 1
 elif [[ "$num" -lt 2 ]]; then
-  echo "错误: NUM值必须大于等于2。"
+  echo "错误: NUM值必须大于等于2"
   exit 1
 fi
 
