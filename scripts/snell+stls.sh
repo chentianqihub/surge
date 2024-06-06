@@ -10,9 +10,8 @@ FILE="/usr/local/bin/snell-server"
 CONF="/etc/snell/config.conf"
 Now_ver_File="/etc/snell/ver.txt"
 Local="/etc/sysctl.d/local.conf"
-obfs=""  # 全局变量初始化
 
-Green_font_prefix="\033[32m" && Red_font_prefix="\033[31m" && Green_background_prefix="\033[42;37m" && Red_background_prefix="\033[41;37m" && Font_color_suffix="\033[0m" && Yellow_font_prefix="\033[0;33m"
+Green_font_prefix="\033[32m" && Red_font_prefix="\033[31m" && Yellow_font_prefix="\033[0;33m" && Blue_font_prefix="\033[0;36m" && Green_background_prefix="\033[42;37m" && Red_background_prefix="\033[41;37m" && Font_color_suffix="\033[0m"
 Info="${Green_font_prefix}[信息]${Font_color_suffix}"
 Error="${Red_font_prefix}[错误]${Font_color_suffix}"
 Tip="${Yellow_font_prefix}[注意]${Font_color_suffix}"
@@ -602,7 +601,7 @@ Uninstall(){
         echo "正在停止 Snell Server 服务..."
         systemctl stop snell-server
         if [[ $? -eq 0 ]]; then
-            echo "Snell Server 服务已停止"
+            echo -e "${Blue_font_prefix}Snell Server 服务已停止${Font_color_suffix}"
         else
             echo "停止服务失败，请手动检查"
         fi
@@ -610,18 +609,24 @@ Uninstall(){
         echo "正在禁用 Snell Server 服务..."
         systemctl disable snell-server
         if [[ $? -eq 0 ]]; then
-            echo "Snell Server 服务已禁用"
+            echo -e "${Blue_font_prefix}Snell Server 服务已禁用${Font_color_suffix}"
         else
             echo "禁用服务失败，请手动检查。"
         fi
 
         echo "正在删除 Snell Server 主程序和配置文件..."
         rm -rf "${FILE}"
+        if [[ $? -eq 0 ]]; then
+            echo -e "${Blue_font_prefix}Snell Server 主程序删除完成${Font_color_suffix}"
+        else
+            echo "删除Snell Server 主程序失败，请手动检查"
+        fi
+        
         rm -rf /etc/snell
         if [[ $? -eq 0 ]]; then
-            echo "文件删除完成"
+            echo -e "${Blue_font_prefix}Snell Server 配置文件删除完成${Font_color_suffix}"
         else
-            echo "删除文件失败，请手动检查"
+            echo "删除配置文件失败，请手动检查"
         fi
 
         echo && echo -e "${Yellow_font_prefix}Snell Server 卸载完成 !${Font_color_suffix}" && echo
@@ -681,27 +686,45 @@ Status(){
 }
 
 Install_Shadow_TLS(){
+    # 循环直到用户输入有效的 SHADOW_TLS_PORT 值
+while true; do
     # 提示用户输入 SHADOW_TLS_PORT 值
-read -e -p "请输入SHADOW_TLS_PORT值(1-65535,默认8443): " SHADOW_TLS_PORT
+    read -e -p "请输入SHADOW_TLS_PORT值(1-65535,默认8443): " SHADOW_TLS_PORT
 
-# 如果用户未输入值，则使用默认值 8443
-[[ -z "${SHADOW_TLS_PORT}" ]] && SHADOW_TLS_PORT="8443"
+    # 如果用户未输入值，则使用默认值 8443
+    [[ -z "${SHADOW_TLS_PORT}" ]] && SHADOW_TLS_PORT="8443"
 
-# 检查用户输入的值是否有效
-if ! [[ "$SHADOW_TLS_PORT" =~ ^[0-9]+$ ]] || [ "$SHADOW_TLS_PORT" -lt 1 ] || [ "$SHADOW_TLS_PORT" -gt 65535 ]; then
-    echo -e "${Error} SHADOW_TLS_PORT值必须是1到65535之间的数字"
-    exit 1
-fi
+    # 检查用户输入的值是否有效
+    if ! [[ "$SHADOW_TLS_PORT" =~ ^[0-9]+$ ]] || [ "$SHADOW_TLS_PORT" -lt 1 ] || [ "$SHADOW_TLS_PORT" -gt 65535 ]; then
+        echo -e "${Error} SHADOW_TLS_PORT值必须是1到65535之间的数字"
+        echo
+    else
+        break
+    fi
+done
 
+# 输出最终的 SHADOW_TLS_PORT 值
+echo -e "\033[33mSHADOW_TLS_PORT: ${SHADOW_TLS_PORT}\033[0m" && echo
 
     # 提示用户输入 SHADOW_SNI 值
 read -e -p "请输入SHADOW_SNI值(默认: mensura.cdn-apple.com): " SHADOW_TLS_SNI
 
-# 如果用户未输入值，则使用默认值 8443
+    # 如果用户未输入值，则使用默认值 mensura.cdn-apple.com
 [[ -z "${SHADOW_TLS_SNI}" ]] && SHADOW_TLS_SNI="mensura.cdn-apple.com"
 
-    echo -e "\033[33mSHADOW_TLS_PORT: ${SHADOW_TLS_PORT}\033[0m"
-    echo -e "${Yellow_font_prefix}SHADOW_TLS_SNI: ${SHADOW_TLS_SNI}${Font_color_suffix}"
+# 输出最终的 SHADOW_TLS_SNI 值
+echo -e "${Yellow_font_prefix}SHADOW_TLS_SNI: ${SHADOW_TLS_SNI}${Font_color_suffix}" && echo
+
+
+    # 提示用户输入 SHADOW_PWD 值
+read -e -p "请输入SHADOW_PWD值(默认: JsJeWtjiUyJ5yeto): " SHADOW_TLS_PWD
+
+    # 如果用户未输入值，则使用默认值 JsJeWtjiUyJ5yeto
+[[ -z "${SHADOW_TLS_PWD}" ]] && SHADOW_TLS_PWD="JsJeWtjiUyJ5yeto"
+
+# 输出最终的 SHADOW_TLS_PWD 值
+echo -e "${Yellow_font_prefix}SHADOW_TLS_PWD: ${SHADOW_TLS_PWD}${Font_color_suffix}" && echo
+
 
     # 获取最新的 SHADOW_TLS_VERSION
     SHADOW_TLS_VERSION=$(curl -s "https://api.github.com/repos/ihciah/shadow-tls/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
@@ -721,8 +744,8 @@ read -e -p "请输入SHADOW_SNI值(默认: mensura.cdn-apple.com): " SHADOW_TLS_
     # 设置可执行权限
     chmod +x "$destination"
 
-    # 设置 SHADOW_TLS_SNI
-    SHADOW_TLS_SNI="mensura.cdn-apple.com"
+    # 查看Snell Server配置信息
+    Read_config
 
     # 创建systemd服务文件
     service_file="/etc/systemd/system/shadow-tls.service"
@@ -735,7 +758,7 @@ sudo tee "$service_file" > /dev/null <<-EOF
 
 	[Service]
 	Type=simple
-	ExecStart=$destination --v3 server --listen 0.0.0.0:${SHADOW_TLS_PORT} --server 127.0.0.1:2345 --tls ${SHADOW_TLS_SNI} --password JsJeWtjiUyJ5yeto
+	ExecStart=$destination --v3 server --listen 0.0.0.0:${SHADOW_TLS_PORT} --server 127.0.0.1:${port} --tls ${SHADOW_TLS_SNI} --password JsJeWtjiUyJ5yeto
 	StandardOutput=syslog
 	StandardError=syslog
 	SyslogIdentifier=shadow-tls
@@ -754,7 +777,6 @@ EOF
         status=$(systemctl status shadow-tls.service | grep "Active" | awk -F'[()]' '{print $2}')
         if [ "$status" == "running" ]; then
             echo -e "${Yellow_font_prefix}Shadow-TLS 服务已成功启动并且正在运行${Font_color_suffix}"
-            Read_config
             echo -e "—————————————————————————"
             echo -e "${Green_font_prefix}Please copy the following line to the Surge [Proxy] section:${Font_color_suffix}" 
             if [[ "${obfs}" == "off" ]]; then
@@ -787,7 +809,7 @@ Uninstall_Shadow_TLS(){
             echo "正在停止 shadow-tls 服务..."
             sudo systemctl stop shadow-tls.service
             if [[ $? -eq 0 ]]; then
-            echo "shadow-tls 服务已停止"
+            echo -e "${Blue_font_prefix}shadow-tls 服务已停止${Font_color_suffix}"
             else
             echo "停止服务失败，请手动检查"
            fi
@@ -795,7 +817,7 @@ Uninstall_Shadow_TLS(){
             echo "正在禁用 shadow-tls 服务..."
             sudo systemctl disable shadow-tls.service
             if [[ $? -eq 0 ]]; then
-            echo "shadow-tls 服务已禁用"
+            echo -e "${Blue_font_prefix}shadow-tls 服务已禁用${Font_color_suffix}"
             else
             echo "禁用服务失败，请手动检查"
             fi
@@ -804,7 +826,7 @@ Uninstall_Shadow_TLS(){
             echo "正在停止 shadow-tls 服务..."
             sudo systemctl stop shadow-tls.service
             if [[ $? -eq 0 ]]; then
-            echo "shadow-tls 服务已停止"
+            echo -e "${Blue_font_prefix}shadow-tls 服务已停止${Font_color_suffix}"
             else
             echo "停止服务失败，请手动检查"
            fi
@@ -815,7 +837,7 @@ Uninstall_Shadow_TLS(){
             echo "正在删除服务文件..."
             sudo rm /etc/systemd/system/shadow-tls.service
             if [[ $? -eq 0 ]]; then
-            echo "shadow-tls 服务文件已删除"
+            echo -e "${Blue_font_prefix}shadow-tls 服务文件已删除${Font_color_suffix}"
             else
             echo "停止服务失败，请手动检查"
            fi
@@ -832,7 +854,7 @@ Uninstall_Shadow_TLS(){
             echo "删除 shadow-tls 可执行文件..."
             sudo rm -rf /usr/local/bin/shadow-tls
             if [[ $? -eq 0 ]]; then
-            echo "shadow-tls 可执行文件删除完成"
+            echo -e "${Blue_font_prefix}shadow-tls 可执行文件删除完成${Font_color_suffix}"
             else
             echo "删除shadow-tls 可执行文件失败，请手动检查"
             fi
@@ -850,7 +872,7 @@ Start_Shadow_TLS(){
 	check_Shadow_TLS_status
 	[[ "$shadow_tls_status" == "running" ]] && echo -e "${Info} Shadow-TLS 已在运行 !" && exit 1
 	systemctl start shadow-tls
-	check_status
+	check_Shadow_TLS_status
 	[[ "$shadow_tls_status" == "running" ]] && echo -e "${Info} Shadow-TLS 启动成功 !"
     sleep 3s
     start_menu
@@ -920,23 +942,30 @@ Read_Shadow_TLS_config() {
     
     # 使用 awk 提取 SNI
     SHADOW_TLS_SNI=$(echo "$ExecStartLine" | awk -F '--tls ' '{print $2}' | awk '{print $1}')
+
+    # 使用 awk 提取 --password 之后的部分
+    SHADOW_TLS_PWD=$(echo "$ExecStartLine" | awk -F '--password ' '{print $2}' | awk '{print $1}')
 }
 
 
-Edit_Shadow_TLS(){
-# 提示用户输入 SHADOW_TLS_PORT 值
-read -e -p "请输入SHADOW_TLS_PORT值(1-65535,默认8443): " SHADOW_TLS_PORT
+Edit_Shadow_TLS_PORT(){
+# 循环直到用户输入有效的 SHADOW_TLS_PORT 值
+while true; do
+    # 提示用户输入 SHADOW_TLS_PORT 值
+    read -e -p "请输入SHADOW_TLS_PORT值(1-65535,默认8443): " SHADOW_TLS_PORT
 
-# 如果用户未输入值，则使用默认值 8443
-[[ -z "${SHADOW_TLS_PORT}" ]] && SHADOW_TLS_PORT="8443"
+    # 如果用户未输入值，则使用默认值 8443
+    [[ -z "${SHADOW_TLS_PORT}" ]] && SHADOW_TLS_PORT="8443"
 
-# 检查用户输入的值是否有效
-if ! [[ "$SHADOW_TLS_PORT" =~ ^[0-9]+$ ]] || [ "$SHADOW_TLS_PORT" -lt 1 ] || [ "$SHADOW_TLS_PORT" -gt 65535 ]; then
-    echo -e "${Error} SHADOW_TLS_PORT值必须是1到65535之间的数字"
-    exit 1
-fi
+    # 检查用户输入的值是否有效
+    if ! [[ "$SHADOW_TLS_PORT" =~ ^[0-9]+$ ]] || [ "$SHADOW_TLS_PORT" -lt 1 ] || [ "$SHADOW_TLS_PORT" -gt 65535 ]; then
+        echo -e "${Error} SHADOW_TLS_PORT值必须是1到65535之间的数字"
+    else
+        break
+    fi
+done
 
-    echo -e "\033[33mSHADOW_TLS_PORT: ${SHADOW_TLS_PORT}\033[0m"
+    echo -e "\033[33mSHADOW_TLS_PORT: ${SHADOW_TLS_PORT}\033[0m" & echo
 
 
 # 创建systemd服务文件
@@ -949,7 +978,7 @@ sudo tee /etc/systemd/system/shadow-tls.service > /dev/null <<-EOF
 
 	[Service]
 	Type=simple
-	ExecStart=/usr/local/bin/shadow-tls --v3 server --listen 0.0.0.0:${SHADOW_TLS_PORT} --server 127.0.0.1:2345 --tls ${SHADOW_TLS_SNI} --password JsJeWtjiUyJ5yeto
+	ExecStart=/usr/local/bin/shadow-tls --v3 server --listen 0.0.0.0:${SHADOW_TLS_PORT} --server 127.0.0.1:${port} --tls ${SHADOW_TLS_SNI} --password ${SHADOW_TLS_PWD}
 	StandardOutput=syslog
 	StandardError=syslog
 	SyslogIdentifier=shadow-tls
@@ -966,14 +995,13 @@ EOF
         # 提取服务状态
         shadow_tls_status=$(systemctl status shadow-tls.service | grep "Active" | awk -F'[()]' '{print $2}')
         if [ "$shadow_tls_status" == "running" ]; then
-            echo -e "${Green_font_prefix}服务已成功重启并且正在运行${Font_color_suffix}"
-            Read_config
+            echo -e "${Info} ${Green_font_prefix}服务已成功重启并且正在运行${Font_color_suffix}"
             echo -e "—————————————————————————"
             echo -e "${Green_font_prefix}Please copy the following line to the Surge [Proxy] section:${Font_color_suffix}" 
             if [[ "${obfs}" == "off" ]]; then
-            echo "$(curl -s ipinfo.io/city) = snell, $(curl -s ip.sb -4), ${SHADOW_TLS_PORT}, psk=${psk}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=JsJeWtjiUyJ5yeto, shadow-tls-sni=${SHADOW_TLS_SNI}, shadow-tls-version=3"
+            echo "$(curl -s ipinfo.io/city) = snell, $(curl -s ip.sb -4), ${SHADOW_TLS_PORT}, psk=${psk}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=${SHADOW_TLS_PWD}, shadow-tls-sni=${SHADOW_TLS_SNI}, shadow-tls-version=3"
             else
-            echo "$(curl -s ipinfo.io/city) = snell, $(curl -s ip.sb -4), ${SHADOW_TLS_PORT}, psk=${psk}, obfs=${obfs}, obfs-host=${host}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=JsJeWtjiUyJ5yeto, shadow-tls-sni=${SHADOW_TLS_SNI}, shadow-tls-version=3"
+            echo "$(curl -s ipinfo.io/city) = snell, $(curl -s ip.sb -4), ${SHADOW_TLS_PORT}, psk=${psk}, obfs=${obfs}, obfs-host=${host}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=${SHADOW_TLS_PWD}, shadow-tls-sni=${SHADOW_TLS_SNI}, shadow-tls-version=3"
             fi
             echo -e "—————————————————————————"
         else
@@ -993,7 +1021,7 @@ read -e -p "请输入SHADOW_SNI值(默认: mensura.cdn-apple.com): " SHADOW_TLS_
 # 如果用户未输入值，则使用默认值 8443
 [[ -z "${SHADOW_TLS_SNI}" ]] && SHADOW_TLS_SNI="mensura.cdn-apple.com"
 
-    echo -e "${Yellow_font_prefix}SHADOW_TLS_SNI: ${SHADOW_TLS_SNI}${Font_color_suffix}"
+    echo -e "${Yellow_font_prefix}SHADOW_TLS_SNI: ${SHADOW_TLS_SNI}${Font_color_suffix}" && echo
 
 
 # 创建systemd服务文件
@@ -1006,7 +1034,7 @@ sudo tee /etc/systemd/system/shadow-tls.service > /dev/null <<-EOF
 
 	[Service]
 	Type=simple
-	ExecStart=/usr/local/bin/shadow-tls --v3 server --listen 0.0.0.0:${SHADOW_TLS_PORT} --server 127.0.0.1:2345 --tls ${SHADOW_TLS_SNI} --password JsJeWtjiUyJ5yeto
+	ExecStart=/usr/local/bin/shadow-tls --v3 server --listen 0.0.0.0:${SHADOW_TLS_PORT} --server 127.0.0.1:${port} --tls ${SHADOW_TLS_SNI} --password ${SHADOW_TLS_PWD}
 	StandardOutput=syslog
 	StandardError=syslog
 	SyslogIdentifier=shadow-tls
@@ -1023,14 +1051,69 @@ EOF
         # 提取服务状态
         shadow_tls_status=$(systemctl status shadow-tls.service | grep "Active" | awk -F'[()]' '{print $2}')
         if [ "$shadow_tls_status" == "running" ]; then
-            echo -e "${Green_font_prefix}服务已成功重启并且正在运行${Font_color_suffix}"
-            Read_config
+            echo -e "${Info} ${Green_font_prefix}服务已成功重启并且正在运行${Font_color_suffix}"
             echo -e "—————————————————————————"
             echo -e "${Green_font_prefix}Please copy the following line to the Surge [Proxy] section:${Font_color_suffix}" 
             if [[ "${obfs}" == "off" ]]; then
-            echo "$(curl -s ipinfo.io/city) = snell, $(curl -s ip.sb -4), ${SHADOW_TLS_PORT}, psk=${psk}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=JsJeWtjiUyJ5yeto, shadow-tls-sni=${SHADOW_TLS_SNI}, shadow-tls-version=3"
+            echo "$(curl -s ipinfo.io/city) = snell, $(curl -s ip.sb -4), ${SHADOW_TLS_PORT}, psk=${psk}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=${SHADOW_TLS_PWD}, shadow-tls-sni=${SHADOW_TLS_SNI}, shadow-tls-version=3"
             else
-            echo "$(curl -s ipinfo.io/city) = snell, $(curl -s ip.sb -4), ${SHADOW_TLS_PORT}, psk=${psk}, obfs=${obfs}, obfs-host=${host}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=JsJeWtjiUyJ5yeto, shadow-tls-sni=${SHADOW_TLS_SNI}, shadow-tls-version=3"
+            echo "$(curl -s ipinfo.io/city) = snell, $(curl -s ip.sb -4), ${SHADOW_TLS_PORT}, psk=${psk}, obfs=${obfs}, obfs-host=${host}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=${SHADOW_TLS_PWD}, shadow-tls-sni=${SHADOW_TLS_SNI}, shadow-tls-version=3"
+            fi
+            echo -e "—————————————————————————"
+        else
+            echo -e "${Red_font_prefix}服务未在运行状态${Font_color_suffix}"
+            systemctl status shadow-tls.service
+        fi
+    else
+        echo -e "${Error} 错误: 启动 shadow-tls 服务失败"
+        exit 1
+    fi
+}
+
+Edit_Shadow_TLS_PWD(){
+# 提示用户输入 SHADOW_PWD 值
+read -e -p "请输入SHADOW_PWD值(默认: JsJeWtjiUyJ5yeto): " SHADOW_TLS_PWD
+
+# 如果用户未输入值，则使用默认值 JsJeWtjiUyJ5yeto
+[[ -z "${SHADOW_TLS_PWD}" ]] && SHADOW_TLS_PWD="JsJeWtjiUyJ5yeto"
+
+    echo -e "${Yellow_font_prefix}SHADOW_TLS_PWD: ${SHADOW_TLS_PWD}${Font_color_suffix}" && echo
+
+
+# 创建systemd服务文件
+sudo tee /etc/systemd/system/shadow-tls.service > /dev/null <<-EOF
+	[Unit]
+	Description=Shadow-TLS Server Service
+	Documentation=man:sstls-server
+	After=network-online.target
+	Wants=network-online.target
+
+	[Service]
+	Type=simple
+	ExecStart=/usr/local/bin/shadow-tls --v3 server --listen 0.0.0.0:${SHADOW_TLS_PORT} --server 127.0.0.1:${port} --tls ${SHADOW_TLS_SNI} --password ${SHADOW_TLS_PWD}
+	StandardOutput=syslog
+	StandardError=syslog
+	SyslogIdentifier=shadow-tls
+
+	[Install]
+	WantedBy=multi-user.target
+EOF
+
+    # 重新加载systemd守护进程
+    sudo systemctl daemon-reload
+
+    # 重启服务
+    if sudo systemctl restart shadow-tls.service; then
+        # 提取服务状态
+        shadow_tls_status=$(systemctl status shadow-tls.service | grep "Active" | awk -F'[()]' '{print $2}')
+        if [ "$shadow_tls_status" == "running" ]; then
+            echo -e "${Info} ${Green_font_prefix}服务已成功重启并且正在运行${Font_color_suffix}"
+            echo -e "—————————————————————————"
+            echo -e "${Green_font_prefix}Please copy the following line to the Surge [Proxy] section:${Font_color_suffix}" 
+            if [[ "${obfs}" == "off" ]]; then
+            echo "$(curl -s ipinfo.io/city) = snell, $(curl -s ip.sb -4), ${SHADOW_TLS_PORT}, psk=${psk}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=${SHADOW_TLS_PWD}, shadow-tls-sni=${SHADOW_TLS_SNI}, shadow-tls-version=3"
+            else
+            echo "$(curl -s ipinfo.io/city) = snell, $(curl -s ip.sb -4), ${SHADOW_TLS_PORT}, psk=${psk}, obfs=${obfs}, obfs-host=${host}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=${SHADOW_TLS_PWD}, shadow-tls-sni=${SHADOW_TLS_SNI}, shadow-tls-version=3"
             fi
             echo -e "—————————————————————————"
         else
@@ -1049,15 +1132,22 @@ Set_Shadow_TLS(){
 ==============================
  ${Green_font_prefix}1.${Font_color_suffix}  修改Shadow-TLS端口
  ${Green_font_prefix}2.${Font_color_suffix}  修改Shadow-TLS SNI
+ ${Green_font_prefix}3.${Font_color_suffix}  修改Shadow-TLS PASSWORD
  =============================="  && echo
 	read -e -p "(默认: 取消):" modify
 	[[ -z "${modify}" ]] && echo "已取消..." && exit 1
 	if [[ "${modify}" == "1" ]]; then
+	Read_config
 	Read_Shadow_TLS_config
-	Edit_Shadow_TLS
+	Edit_Shadow_TLS_PORT
 	elif [[ "${modify}" == "2" ]]; then
+	Read_config
 	Read_Shadow_TLS_config
 	Edit_Shadow_TLS_SNI
+	elif [[ "${modify}" == "3" ]]; then
+	Read_config
+	Read_Shadow_TLS_config
+	Edit_Shadow_TLS_PWD
 	else
 		echo -e "${Error} 请输入正确的数字${Yellow_font_prefix}[1]${Font_color_suffix}" && exit 1
 	fi
