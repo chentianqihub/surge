@@ -180,8 +180,6 @@ v4_Download(){
 Install() {
 	if [[ ! -e "${FOLDER}" ]]; then
 		mkdir "${FOLDER}"
-	else
-		[[ -e "${FILE}" ]] && rm -rf "${FILE}"
 	fi
 		echo -e "选择安装版本${Yellow_font_prefix}[2-4]${Font_color_suffix} 
 ==================================
@@ -196,6 +194,7 @@ ${Green_font_prefix} 2.${Font_color_suffix} v2  ${Green_font_prefix} 3.${Font_co
 	elif [[ ${ver} == "4" ]]; then
 		Install_v4
 	else
+	     echo -e "${Red_font_prefix}[Warn] 无效输入,将取默认值v4${Font_color_suffix}"
 		Install_v4
 	fi
 }
@@ -243,26 +242,32 @@ Read_config(){
 	ver=$(cat ${CONF}|grep 'version = '|awk -F 'version = ' '{print $NF}')
 }
 Set_port(){
-	while true
-		do
-		echo -e "${Tip} 本步骤不涉及系统防火墙端口操作，请手动放行相应端口！"
-		echo -e "请输入 Snell Server 端口${Yellow_font_prefix}[1-65535]${Font_color_suffix}"
-		read -e -p "(默认: 2345):" port
-		[[ -z "${port}" ]] && port="2345"
-		echo $((${port}+0)) &>/dev/null
-		if [[ $? -eq 0 ]]; then
-			if [[ ${port} -ge 1 ]] && [[ ${port} -le 65535 ]]; then
-				echo && echo "=============================="
-				echo -e "端口 : ${Red_background_prefix} ${port} ${Font_color_suffix}"
-				echo "==============================" && echo
-				break
-			else
-				echo "输入错误, 请输入正确的端口。"
-			fi
-		else
-			echo "输入错误, 请输入正确的端口。"
-		fi
-		done
+# 循环直到用户输入有效且未被占用的端口值
+while true; do
+    echo -e "请输入 Snell Server 端口${Yellow_font_prefix}[1-65535]${Font_color_suffix}"
+    read -e -p "(默认: 2345):" port
+    [[ -z "${port}" ]] && port="2345"
+
+    # 检查输入的端口是否为有效的数字
+    echo $((${port}+0)) &>/dev/null
+    if [[ $? -eq 0 ]]; then
+        if [[ ${port} -ge 1 ]] && [[ ${port} -le 65535 ]]; then
+            # 检查端口是否被占用
+            if ss -tunlp | awk '$5 ~ /:'"${port}"'$/' | grep --color=auto "${port}"; then
+                echo -e "${Error} 端口 ${port} 重复或已被占用,请选择其他端口!" && echo
+            else
+                echo && echo "=============================="
+                echo -e "端口 : ${Red_background_prefix} ${port} ${Font_color_suffix}"
+                echo "==============================" && echo
+                break
+            fi
+        else
+            echo "输入错误, 请输入正确的端口。"
+        fi
+    else
+        echo "输入错误, 请输入正确的端口。"
+    fi
+done
 }
 
 Set_ipv6(){
@@ -283,7 +288,7 @@ ${Green_font_prefix} 1.${Font_color_suffix} 开启  ${Green_font_prefix} 2.${Fon
 }
 
 Set_psk(){
-	echo "请输入 Snell Server 密钥${Yellow_font_prefix}[0-9][a-z][A-Z]${Font_color_suffix}"
+	echo -e "请输入 Snell Server 密钥${Yellow_font_prefix}[0-9][a-z][A-Z]${Font_color_suffix}"
 	read -e -p "(默认: 随机生成):" psk
 	[[ -z "${psk}" ]] && psk=$(tr -dc A-Za-z0-9 </dev/urandom | head -c 16)
 	echo && echo "=============================="
@@ -326,6 +331,7 @@ ${Green_font_prefix} 2.${Font_color_suffix} v2 ${Green_font_prefix} 3.${Font_col
 	elif [[ ${ver} == "4" ]]; then
 		ver=4
 	else
+	     echo -e "${Red_font_prefix}[Warn] 无效输入,将取默认值v4${Font_color_suffix}"
 		ver=4
 	fi
 	echo && echo "=================================="
@@ -698,7 +704,21 @@ while true; do
     if ! [[ "$SHADOW_TLS_PORT" =~ ^[0-9]+$ ]] || [ "$SHADOW_TLS_PORT" -lt 1 ] || [ "$SHADOW_TLS_PORT" -gt 65535 ]; then
         echo -e "${Error} SHADOW_TLS_PORT值必须是1到65535之间的数字"
         echo
+        continue
+    fi
+
+    # 检查端口是否被占用
+    if ss -tunlp | awk '/tcp/ && $5 ~ /:'"$SHADOW_TLS_PORT"'$/' | grep --color=auto "$SHADOW_TLS_PORT"; then
+    #if ss -tunlp | awk '/tcp/ && $5 ~ /:'"$SHADOW_TLS_PORT"'$/ {print $5}' | grep --color=auto .; then
+    #if [[ -n $(ss -tunlp | awk '/tcp/ && $5 ~ /:'"${SHADOW_TLS_PORT}"'$/ {print $5}' | sed 's/.*://g') ]]; then
+    #if ss -tunlp | awk -v p="$SHADOW_TLS_PORT" '/tcp/ && $5 ~ ":"p"$"' | grep --color=auto "$SHADOW_TLS_PORT" ; then
+    #if ss -tulnp | grep --color=auto -w ":${SHADOW_TLS_PORT} "; then
+    #if ss -tulnp | grep --color=auto -E ":[[:space:]]*${SHADOW_TLS_PORT}([[:space:]]|$)"; then
+    #if ss -tulnp | grep --color=auto -E ":${SHADOW_TLS_PORT}(\s+|$)"; then
+        echo -e "${Error} 端口 ${SHADOW_TLS_PORT} 重复或已被其它程序占用,请选择其它端口!"
+        echo
     else
+        # 端口未被占用，退出循环
         break
     fi
 done
@@ -960,7 +980,16 @@ while true; do
     # 检查用户输入的值是否有效
     if ! [[ "$SHADOW_TLS_PORT" =~ ^[0-9]+$ ]] || [ "$SHADOW_TLS_PORT" -lt 1 ] || [ "$SHADOW_TLS_PORT" -gt 65535 ]; then
         echo -e "${Error} SHADOW_TLS_PORT值必须是1到65535之间的数字"
+        echo
+        continue
+    fi
+
+    # 检查端口是否被占用
+    if ss -tunlp | awk '/tcp/ && $5 ~ /:'"$SHADOW_TLS_PORT"'$/' | grep --color=auto "$SHADOW_TLS_PORT"; then
+        echo -e "${Error} 端口 ${SHADOW_TLS_PORT} 重复或已被其它程序占用,请选择其它端口!"
+        echo
     else
+        # 端口未被占用，退出循环
         break
     fi
 done
@@ -1005,7 +1034,7 @@ EOF
             fi
             echo -e "—————————————————————————"
         else
-            echo -e "${Red_font_prefix}服务未在运行状态${Font_color_suffix}"
+            echo -e "${Error}${Red_font_prefix}服务未在运行状态,请手动检查${Font_color_suffix}"
             systemctl status shadow-tls.service
         fi
     else
@@ -1061,7 +1090,7 @@ EOF
             fi
             echo -e "—————————————————————————"
         else
-            echo -e "${Red_font_prefix}服务未在运行状态${Font_color_suffix}"
+            echo -e "${Error}${Red_font_prefix}服务未在运行状态,请手动检查${Font_color_suffix}"
             systemctl status shadow-tls.service
         fi
     else
@@ -1117,7 +1146,7 @@ EOF
             fi
             echo -e "—————————————————————————"
         else
-            echo -e "${Red_font_prefix}服务未在运行状态${Font_color_suffix}"
+            echo -e "${Error}${Red_font_prefix}服务未在运行状态,请手动检查${Font_color_suffix}"
             systemctl status shadow-tls.service
         fi
     else
@@ -1154,7 +1183,6 @@ Set_Shadow_TLS(){
     sleep 3s
     start_menu
 }
-
 
 
 Update_Shell(){
