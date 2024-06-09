@@ -91,7 +91,7 @@ net.ipv4.tcp_mtu_probing = 1
 net.core.default_qdisc=fq
 net.ipv4.tcp_congestion_control = bbr" >>/etc/sysctl.d/local.conf && sysctl --system >/dev/null 2>&1
 	else
-		echo -e "$Error系统内核版本过低，无法支持 TCP Fast Open ！"
+		echo -e "$Error系统内核版本过低，无法支持 TCP Fast Open !"
 	fi
 }
 
@@ -109,7 +109,7 @@ v2_Download() {
 	echo -e "${Info} 默认开始下载${Yellow_font_prefix}v2 备用源版${Font_color_suffix}Snell Server ……"
 	wget --no-check-certificate -N "https://raw.githubusercontent.com/xOS/Others/master/snell/v2.0.6/snell-server-v2.0.6-linux-${arch}.zip"
 	if [[ ! -e "snell-server-v2.0.6-linux-${arch}.zip" ]]; then
-		echo -e "${Error} Snell Server${Yellow_font_prefix}v2 备用源版${Font_color_suffix}下载失败！"
+		echo -e "${Error} Snell Server${Yellow_font_prefix}v2 备用源版${Font_color_suffix}下载失败!"
 		return 1 && exit 1
 	else
 		unzip -o "snell-server-v2.0.6-linux-${arch}.zip"
@@ -123,7 +123,7 @@ v2_Download() {
 		chmod +x snell-server
 		mv -f snell-server "${FILE}"
 		echo "v2.0.6" > ${Now_ver_File}
-		echo -e "${Info} Snell Server 主程序下载安装完毕！"
+		echo -e "${Info} Snell Server 主程序下载安装完毕 !"
 		return 0
 	fi
 }
@@ -133,7 +133,7 @@ v3_Download() {
 	echo -e "${Info} 试图请求${Yellow_font_prefix}v3 备用源版${Font_color_suffix}Snell Server ……"
 	wget --no-check-certificate -N "https://raw.githubusercontent.com/xOS/Others/master/snell/v3.0.1/snell-server-v3.0.1-linux-${arch}.zip"
 	if [[ ! -e "snell-server-v3.0.1-linux-${arch}.zip" ]]; then
-		echo -e "${Error} Snell Server${Yellow_font_prefix}v3 备用源版${Font_color_suffix}下载失败！"
+		echo -e "${Error} Snell Server${Yellow_font_prefix}v3 备用源版${Font_color_suffix}下载失败!"
 		return 1 && exit 1
 	else
 		unzip -o "snell-server-v3.0.1-linux-${arch}.zip"
@@ -147,7 +147,7 @@ v3_Download() {
 		chmod +x snell-server
 		mv -f snell-server "${FILE}"
 		echo "v3.0.1" > ${Now_ver_File}
-		echo -e "${Info} Snell Server 主程序下载安装完毕！"
+		echo -e "${Info} Snell Server 主程序下载安装完毕 !"
 		return 0
 	fi
 }
@@ -157,7 +157,7 @@ v4_Download(){
 	echo -e "${Info} 试图请求${Yellow_font_prefix}v4 官网源版${Font_color_suffix}Snell Server ……"
 	wget --no-check-certificate -N "https://dl.nssurge.com/snell/snell-server-v4.0.1-linux-${arch}.zip"
 	if [[ ! -e "snell-server-v4.0.1-linux-${arch}.zip" ]]; then
-		echo -e "${Error} Snell Server${Yellow_font_prefix}v4 官网源版${Font_color_suffix}下载失败！"
+		echo -e "${Error} Snell Server${Yellow_font_prefix}v4 官网源版${Font_color_suffix}下载失败!"
 		return 1 && exit 1
 	else
 		unzip -o "snell-server-v4.0.1-linux-${arch}.zip"
@@ -171,7 +171,7 @@ v4_Download(){
 		chmod +x snell-server
 		mv -f snell-server "${FILE}"
 		echo "v4.0.1" > ${Now_ver_File}
-		echo -e "${Info} Snell Server 主程序下载安装完毕！"
+		echo -e "${Info} Snell Server 主程序下载安装完毕 !"
 		return 0
 	fi
 }
@@ -194,7 +194,7 @@ ${Green_font_prefix} 2.${Font_color_suffix} v2  ${Green_font_prefix} 3.${Font_co
 	elif [[ ${ver} == "4" ]]; then
 		Install_v4
 	else
-	     echo -e "${Red_font_prefix}[Warn] 无效输入,将取默认值v4${Font_color_suffix}"
+	     echo -e "${Red_font_prefix}[Warn]${Font_color_suffix} 无效输入! 将取默认值${Yellow_font_prefix}v4${Font_color_suffix}"
 		Install_v4
 	fi
 }
@@ -262,10 +262,10 @@ while true; do
                 break
             fi
         else
-            echo "输入错误, 请输入正确的端口。"
+            echo "输入错误, 请输入正确的端口"
         fi
     else
-        echo "输入错误, 请输入正确的端口。"
+        echo "输入错误, 请输入正确的端口"
     fi
 done
 }
@@ -331,7 +331,7 @@ ${Green_font_prefix} 2.${Font_color_suffix} v2 ${Green_font_prefix} 3.${Font_col
 	elif [[ ${ver} == "4" ]]; then
 		ver=4
 	else
-	     echo -e "${Red_font_prefix}[Warn] 无效输入,将取默认值v4${Font_color_suffix}"
+	     echo -e "${Red_font_prefix}[Warn]${Font_color_suffix} 无效输入! 将取默认值${Yellow_font_prefix}v4${Font_color_suffix}"
 		ver=4
 	fi
 	echo && echo "=================================="
@@ -585,7 +585,7 @@ Stop(){
 Restart(){
 	check_installed_status
 	systemctl restart snell-server
-	echo -e "${Info} Snell Server 重启完毕!"
+	echo -e "${Info} Snell Server 重启完毕 !"
 	sleep 3s
 	View
     start_menu
@@ -617,7 +617,7 @@ Uninstall(){
         if [[ $? -eq 0 ]]; then
             echo -e "${Blue_font_prefix}Snell Server 服务已禁用${Font_color_suffix}"
         else
-            echo "禁用服务失败，请手动检查。"
+            echo "禁用服务失败，请手动检查"
         fi
 
         echo "正在删除 Snell Server 主程序和配置文件..."
@@ -1178,7 +1178,7 @@ Set_Shadow_TLS(){
 	Read_Shadow_TLS_config
 	Edit_Shadow_TLS_PWD
 	else
-		echo -e "${Error} 请输入正确的数字${Yellow_font_prefix}[1]${Font_color_suffix}" && exit 1
+		echo -e "${Error} 请输入正确的数字${Yellow_font_prefix}[1-3]${Font_color_suffix}" && exit 1
 	fi
     sleep 3s
     start_menu
