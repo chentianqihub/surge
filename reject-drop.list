@@ -22,7 +22,7 @@ DOMAIN,px.effirst.com
 DOMAIN,qzs.gdtimg.com
 DOMAIN,dataflow.biliapi.com
 DOMAIN,data.bilibili.com
-DOMAIN,app-site-association.cdn-apple.com,
+DOMAIN,app-site-association.cdn-apple.com
 DOMAIN,app-measurement.com
 DOMAIN,static.addtoany.com
 DOMAIN,applog.uc.cn
@@ -35,7 +35,7 @@ DOMAIN,ac.dun.163yun.com
 DOMAIN-KEYWORD,.lkqd
 DOMAIN-WILDCARD,mmfayl-*.appsflyersdk.com
 DOMAIN-SUFFIX,startup.mobile.yandex.net
-DOMAIN-SUFFIX,startup-mobile.ap.yandex-net.ru,
+DOMAIN-SUFFIX,startup-mobile.ap.yandex-net.ru
 DOMAIN-SUFFIX,webvisor.com
 DOMAIN-SUFFIX,flurry.com
 DOMAIN-SUFFIX,appsflyersdk.com
@@ -52,7 +52,7 @@ DOMAIN-SUFFIX,uimserv.net
 DOMAIN-SUFFIX,ui-portal.de
 DOMAIN-SUFFIX,da.mgtv.com
 DOMAIN-SUFFIX,mime.baidu.com
-DOMAIN-SUFFIX,bugsnag.com,
+DOMAIN-SUFFIX,bugsnag.com
 DOMAIN-SUFFIX,umengcloud.com
 DOMAIN-SUFFIX,ifs.tanx.com
 DOMAIN-SUFFIX,pingma.qq.com
