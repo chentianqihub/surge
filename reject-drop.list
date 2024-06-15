@@ -1,3 +1,4 @@
+DOMAIN,analytics.query.yahoo.com
 DOMAIN,waapdg.jd.com
 DOMAIN,xray.mail.ru
 DOMAIN,rs.mail.ru
@@ -32,6 +33,7 @@ DOMAIN,collector.github.com
 DOMAIN,e.reddit.com
 DOMAIN,clientlog3.music.163.com
 DOMAIN,ac.dun.163yun.com
+DOMAIN,ntb.lanjie100.com
 DOMAIN-KEYWORD,.lkqd
 DOMAIN-WILDCARD,mmfayl-*.appsflyersdk.com
 DOMAIN-SUFFIX,gvt2.com
