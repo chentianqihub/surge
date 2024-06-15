@@ -1,4 +1,7 @@
+DOMAIN,metrics.icloud.com
 DOMAIN,analytics.query.yahoo.com
+DOMAIN,jdqd.jd.com
+DOMAIN,shouji.sougou.com
 DOMAIN,waapdg.jd.com
 DOMAIN,xray.mail.ru
 DOMAIN,rs.mail.ru
@@ -8,6 +11,7 @@ DOMAIN,dad-api.dcard.tw
 DOMAIN,app-analytics-services.com
 DOMAIN,survey.survicate.com
 DOMAIN,hmma.baidu.com
+DOMAIN,safebrowsing.googleapis.com
 DOMAIN,jnn-pa.googleapis.com
 DOMAIN,crashlyticsreports-pa.googleapis.com
 DOMAIN,firebaselogging-pa.googleapis.com
@@ -33,9 +37,12 @@ DOMAIN,collector.github.com
 DOMAIN,e.reddit.com
 DOMAIN,clientlog3.music.163.com
 DOMAIN,ac.dun.163yun.com
+DOMAIN,ac.dun.163.com
 DOMAIN,ntb.lanjie100.com
 DOMAIN-KEYWORD,.lkqd
+DOMAIN-WILDCARD,log*-misc-lf.amemv.com
 DOMAIN-WILDCARD,mmfayl-*.appsflyersdk.com
+DOMAIN-SUFFIX,open.kwaizt.com
 DOMAIN-SUFFIX,gvt2.com
 DOMAIN-SUFFIX,startup.mobile.yandex.net
 DOMAIN-SUFFIX,startup-mobile.ap.yandex-net.ru
@@ -56,8 +63,9 @@ DOMAIN-SUFFIX,ui-portal.de
 DOMAIN-SUFFIX,da.mgtv.com
 DOMAIN-SUFFIX,mime.baidu.com
 DOMAIN-SUFFIX,bugsnag.com
+DOMAIN-SUFFIX,umeng.com
 DOMAIN-SUFFIX,umengcloud.com
-DOMAIN-SUFFIX,ifs.tanx.com
+DOMAIN-SUFFIX,tanx.com
 DOMAIN-SUFFIX,pingma.qq.com
 DOMAIN-SUFFIX,bugly.qq.com
 DOMAIN-SUFFIX,ssp.qq.com
