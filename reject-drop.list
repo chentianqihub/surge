@@ -1,4 +1,5 @@
 DOMAIN,metrics.icloud.com
+DOMAIN,analytics.cnblogs.com
 DOMAIN,zhihu-web-analytics.zhihu.com
 DOMAIN,analytics.query.yahoo.com
 DOMAIN,jdqd.jd.com
@@ -11,6 +12,7 @@ DOMAIN,ssl.google-analytics.com
 DOMAIN,dad-api.dcard.tw
 DOMAIN,app-analytics-services.com
 DOMAIN,survey.survicate.com
+DOMAIN,hm.baidu.com
 DOMAIN,hmma.baidu.com
 DOMAIN,safebrowsing.googleapis.com
 DOMAIN,jnn-pa.googleapis.com
