@@ -1,4 +1,5 @@
 DOMAIN,metrics.icloud.com
+DOMAIN,zhihu-web-analytics.zhihu.com
 DOMAIN,analytics.query.yahoo.com
 DOMAIN,jdqd.jd.com
 DOMAIN,shouji.sougou.com
@@ -42,6 +43,7 @@ DOMAIN,ntb.lanjie100.com
 DOMAIN-KEYWORD,.lkqd
 DOMAIN-WILDCARD,log*-misc-lf.amemv.com
 DOMAIN-WILDCARD,mmfayl-*.appsflyersdk.com
+DOMAIN-SUFFIX,volceapplog.com
 DOMAIN-SUFFIX,open.kwaizt.com
 DOMAIN-SUFFIX,gvt2.com
 DOMAIN-SUFFIX,startup.mobile.yandex.net
