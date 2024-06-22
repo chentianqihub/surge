@@ -16,12 +16,13 @@ DOMAIN,app-analytics-services.com
 DOMAIN,survey.survicate.com
 DOMAIN,hm.baidu.com
 DOMAIN,hmma.baidu.com
+DOMAIN,device-provisioning.googleapis.com
 DOMAIN,safebrowsing.googleapis.com
 DOMAIN,jnn-pa.googleapis.com
 DOMAIN,crashlyticsreports-pa.googleapis.com
 DOMAIN,firebaselogging-pa.googleapis.com
-DOMAIN,smartad.10010.com
 DOMAIN,www.googletagmanager.com
+DOMAIN,smartad.10010.com
 DOMAIN,api2.amplitude.com
 DOMAIN,adashx.ut.ele.me
 DOMAIN,h-adashx.ut.ele.me
@@ -49,6 +50,7 @@ DOMAIN,ntb.lanjie100.com
 DOMAIN-KEYWORD,.lkqd
 DOMAIN-WILDCARD,log*-misc-lf.amemv.com
 DOMAIN-WILDCARD,mmfayl-*.appsflyersdk.com
+DOMAIN-SUFFIX,crashlytics.com
 DOMAIN-SUFFIX,scorecardresearch.com
 DOMAIN-SUFFIX,volceapplog.com
 DOMAIN-SUFFIX,open.kwaizt.com
