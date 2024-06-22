@@ -49,6 +49,7 @@ DOMAIN,ntb.lanjie100.com
 DOMAIN-KEYWORD,.lkqd
 DOMAIN-WILDCARD,log*-misc-lf.amemv.com
 DOMAIN-WILDCARD,mmfayl-*.appsflyersdk.com
+DOMAIN-SUFFIX,scorecardresearch.com
 DOMAIN-SUFFIX,volceapplog.com
 DOMAIN-SUFFIX,open.kwaizt.com
 DOMAIN-SUFFIX,gvt2.com
@@ -87,4 +88,6 @@ DOMAIN-SUFFIX,bugly.qq.com
 DOMAIN-SUFFIX,ssp.qq.com
 DOMAIN-SUFFIX,trace.qq.com
 DOMAIN-SUFFIX,mazu.m.qq.com
+DOMAIN-SUFFIX,toggle.qq.com
+DOMAIN-SUFFIX,aegis.qq.com
 AND,((DOMAIN-KEYWORD,mam), (DOMAIN-KEYWORD,netease))
