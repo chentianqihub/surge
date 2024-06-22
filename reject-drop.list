@@ -50,6 +50,8 @@ DOMAIN,ntb.lanjie100.com
 DOMAIN-KEYWORD,.lkqd
 DOMAIN-WILDCARD,log*-misc-lf.amemv.com
 DOMAIN-WILDCARD,mmfayl-*.appsflyersdk.com
+DOMAIN-SUFFIX,iscrv.com
+DOMAIN-SUFFIX,cnzz.com
 DOMAIN-SUFFIX,crashlytics.com
 DOMAIN-SUFFIX,scorecardresearch.com
 DOMAIN-SUFFIX,volceapplog.com
@@ -80,6 +82,7 @@ DOMAIN-SUFFIX,miao.baidu.com
 DOMAIN-SUFFIX,wkctj.baidu.com
 DOMAIN-SUFFIX,dlswbr.baidu.com
 DOMAIN-SUFFIX,nsclick.baidu.com
+DOMAIN-SUFFIX,baidustatic.com
 DOMAIN-SUFFIX,rumt-zh.com
 DOMAIN-SUFFIX,bugsnag.com
 DOMAIN-SUFFIX,umeng.com
