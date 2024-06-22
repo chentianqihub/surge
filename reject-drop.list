@@ -53,6 +53,7 @@ DOMAIN,ntb.lanjie100.com
 DOMAIN-KEYWORD,.lkqd
 DOMAIN-WILDCARD,log*-misc-lf.amemv.com
 DOMAIN-WILDCARD,mmfayl-*.appsflyersdk.com
+DOMAIN-SUFFIX,mmstat.com
 DOMAIN-SUFFIX,iscrv.com
 DOMAIN-SUFFIX,cnzz.com
 DOMAIN-SUFFIX,crashlytics.com
