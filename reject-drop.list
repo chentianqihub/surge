@@ -112,4 +112,5 @@ DOMAIN-SUFFIX,trace.qq.com
 DOMAIN-SUFFIX,mazu.m.qq.com
 DOMAIN-SUFFIX,toggle.qq.com
 DOMAIN-SUFFIX,aegis.qq.com
+DOMAIN-SUFFIX,up-hl.3g.qq.com
 AND,((DOMAIN-KEYWORD,mam), (DOMAIN-KEYWORD,netease))
