@@ -1,3 +1,4 @@
+DOMAIN,events.mapbox.com
 DOMAIN,apps.sascdn.com
 DOMAIN,confiant-integrations.global.ssl.fastly.net
 DOMAIN,log.pinterest.com
@@ -59,6 +60,8 @@ DOMAIN,ntb.lanjie100.com
 DOMAIN-KEYWORD,.lkqd
 DOMAIN-WILDCARD,log*-misc-lf.amemv.com
 DOMAIN-WILDCARD,mmfayl-*.appsflyersdk.com
+DOMAIN-WILDCARD,ced*.sascdn.com
+DOMAIN-SUFFIX,smartserver.com
 DOMAIN-SUFFIX,cm.bilibili.com
 DOMAIN-SUFFIX,mobileconfig.sascdn.com
 DOMAIN-SUFFIX,mobilefuse.com
