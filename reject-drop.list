@@ -61,7 +61,7 @@ DOMAIN-KEYWORD,.lkqd
 DOMAIN-WILDCARD,log*-misc-lf.amemv.com
 DOMAIN-WILDCARD,mmfayl-*.appsflyersdk.com
 DOMAIN-WILDCARD,ced*.sascdn.com
-DOMAIN-SUFFIX,smartserver.com
+DOMAIN-SUFFIX,smartadserver.com
 DOMAIN-SUFFIX,cm.bilibili.com
 DOMAIN-SUFFIX,mobileconfig.sascdn.com
 DOMAIN-SUFFIX,mobilefuse.com
