@@ -21,6 +21,7 @@ DOMAIN,waapdg.jd.com
 DOMAIN,xray.mail.ru
 DOMAIN,rs.mail.ru
 DOMAIN,openmonitor.alipay-eco.com
+DOMAIN,collect.alipay.com
 DOMAIN,dad-api.dcard.tw
 DOMAIN,app-analytics-services.com
 DOMAIN,survey.survicate.com
@@ -37,9 +38,11 @@ DOMAIN,smartad.10010.com
 DOMAIN,api2.amplitude.com
 DOMAIN,adashx.ut.ele.me
 DOMAIN,h-adashx.ut.ele.me
+DOMAIN,app-monitor.ele.me
 DOMAIN,loggw-ex.alipay.com
 DOMAIN,fourier.taobao.com
 DOMAIN,sjarvis.taobao.com
+DOMAIN,audid-api.taobao.com
 DOMAIN,px.effirst.com
 DOMAIN,qzs.gdtimg.com
 DOMAIN,dataflow.biliapi.com
@@ -62,6 +65,7 @@ DOMAIN-KEYWORD,.lkqd
 DOMAIN-WILDCARD,log*-misc-lf.amemv.com
 DOMAIN-WILDCARD,mmfayl-*.appsflyersdk.com
 DOMAIN-WILDCARD,ced*.sascdn.com
+DOMAIN-SUFFIX,gepush.com
 DOMAIN-SUFFIX,ingest.sentry.io
 DOMAIN-SUFFIX,smartadserver.com
 DOMAIN-SUFFIX,cm.bilibili.com
