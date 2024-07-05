@@ -1,3 +1,4 @@
+DOMAIN,logs.netflix.com
 DOMAIN,images.ctfassets.net
 DOMAIN,events.mapbox.com
 DOMAIN,apps.sascdn.com
@@ -95,6 +96,7 @@ DOMAIN-SUFFIX,appier.net
 DOMAIN-SUFFIX,pubnative.net
 DOMAIN-SUFFIX,amazon-adsystem.com
 DOMAIN-SUFFIX,notes-analytics-events.apple.com
+DOMAIN-SUFFIX,books-analytics-events.apple.com
 DOMAIN-SUFFIX,browser-intake-datadoghq.com
 DOMAIN-SUFFIX,dorangesource.alicdn.com
 DOMAIN-SUFFIX,ynuf.aliapp.org
@@ -122,6 +124,7 @@ DOMAIN-SUFFIX,trace.qq.com
 DOMAIN-SUFFIX,mazu.m.qq.com
 DOMAIN-SUFFIX,toggle.qq.com
 DOMAIN-SUFFIX,aegis.qq.com
+DOMAIN-SUFFIX,mdt.qq.com
 DOMAIN-SUFFIX,up-hl.3g.qq.com
 DOMAIN-SUFFIX,yun-hl.3g.qq.com
 AND,((DOMAIN-KEYWORD,mam), (DOMAIN-KEYWORD,netease))
