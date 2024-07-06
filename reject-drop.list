@@ -19,10 +19,12 @@ DOMAIN,analytics.query.yahoo.com
 DOMAIN,jdqd.jd.com
 DOMAIN,shouji.sougou.com
 DOMAIN,waapdg.jd.com
+DOMAIN,mars.jd.com
 DOMAIN,xray.mail.ru
 DOMAIN,rs.mail.ru
 DOMAIN,openmonitor.alipay-eco.com
 DOMAIN,collect.alipay.com
+DOMAIN,abtest.alibaba.com
 DOMAIN,dad-api.dcard.tw
 DOMAIN,app-analytics-services.com
 DOMAIN,survey.survicate.com
@@ -111,6 +113,7 @@ DOMAIN-SUFFIX,miao.baidu.com
 DOMAIN-SUFFIX,wkctj.baidu.com
 DOMAIN-SUFFIX,dlswbr.baidu.com
 DOMAIN-SUFFIX,nsclick.baidu.com
+DOMAIN-SUFFIX,ada.baidu.com
 DOMAIN-SUFFIX,baidustatic.com
 DOMAIN-SUFFIX,rumt-zh.com
 DOMAIN-SUFFIX,bugsnag.com
