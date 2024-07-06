@@ -1,4 +1,6 @@
+DOMAIN,ichnaea-web.netflix.com
 DOMAIN,logs.netflix.com
+DOMAIN,geolocation.onetrust.com
 DOMAIN,images.ctfassets.net
 DOMAIN,events.mapbox.com
 DOMAIN,apps.sascdn.com
