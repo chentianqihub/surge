@@ -70,6 +70,9 @@ DOMAIN-KEYWORD,.lkqd
 DOMAIN-WILDCARD,log*-misc-lf.amemv.com
 DOMAIN-WILDCARD,mmfayl-*.appsflyersdk.com
 DOMAIN-WILDCARD,ced*.sascdn.com
+DOMAIN-SUFFIX,assemblyexchange.com
+DOMAIN-SUFFIX,stretchsquirrel.com
+DOMAIN-SUFFIX,btloader.com
 DOMAIN-SUFFIX,gepush.com
 DOMAIN-SUFFIX,ingest.sentry.io
 DOMAIN-SUFFIX,smartadserver.com
