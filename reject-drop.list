@@ -142,4 +142,5 @@ DOMAIN-SUFFIX,aegis.qq.com
 DOMAIN-SUFFIX,mdt.qq.com
 DOMAIN-SUFFIX,up-hl.3g.qq.com
 DOMAIN-SUFFIX,yun-hl.3g.qq.com
+DOMAIN-SUFFIX,wxs.qq.com
 AND,((DOMAIN-KEYWORD,mam), (DOMAIN-KEYWORD,netease))
