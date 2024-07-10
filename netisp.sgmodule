@@ -1,6 +1,5 @@
 #!name= NetISP 面板
 #!desc= 可自定义隐藏IP段/超时
-#!system= ios
 #!category= Key
 #!arguments= script-update:-1 ,icons:globe.asia.australia, icolor:#6699FF, GPT:0 ,HideIP:1, cnTimeout:1000, usTimeout:3000,
 #!date= 2024-01-30 08:08:35
