@@ -77,6 +77,10 @@ DOMAIN,h-adashx.ut.taobao.com
 DOMAIN,adashx.m.taobao.com
 DOMAIN,collector.github.com
 DOMAIN,e.reddit.com
+DOMAIN,metrics-logger.spot.im
+DOMAIN,direct-events-collector.spot.im
+DOMAIN,api-2-0.spot.im
+DOMAIN,stats.wp.com
 DOMAIN,clientlog3.music.163.com
 DOMAIN,ac.dun.163yun.com
 DOMAIN,ac.dun.163.com
@@ -85,6 +89,9 @@ DOMAIN-KEYWORD,.lkqd
 DOMAIN-WILDCARD,log*-misc-lf.amemv.com
 DOMAIN-WILDCARD,mmfayl-*.appsflyersdk.com
 DOMAIN-WILDCARD,ced*.sascdn.com
+DOMAIN-SUFFIX,parsely.com
+DOMAIN-SUFFIX,videoplayerhub.com
+DOMAIN-SUFFIX,googlesyndication.com
 DOMAIN-SUFFIX,googleoptimize.com
 DOMAIN-SUFFIX,liadm.com
 DOMAIN-SUFFIX,trackcmp.net
