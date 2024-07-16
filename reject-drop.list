@@ -1,3 +1,5 @@
+DOMAIN,acjs.aliyun.com
+DOMAIN,erebor.douban.com
 DOMAIN,tms.fmm.io
 DOMAIN,in.appcenter.ms
 DOMAIN,pixel.ipinfo.io
@@ -63,6 +65,7 @@ DOMAIN,adashx.ut.ele.me
 DOMAIN,h-adashx.ut.ele.me
 DOMAIN,app-monitor.ele.me
 DOMAIN,loggw-ex.alipay.com
+DOMAIN,loggw.alipay.com.cn
 DOMAIN,fourier.taobao.com
 DOMAIN,sjarvis.taobao.com
 DOMAIN,audid-api.taobao.com
