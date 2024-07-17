@@ -95,6 +95,7 @@ DOMAIN-KEYWORD,.lkqd
 DOMAIN-WILDCARD,log*-misc-lf.amemv.com
 DOMAIN-WILDCARD,mmfayl-*.appsflyersdk.com
 DOMAIN-WILDCARD,ced*.sascdn.com
+DOMAIN-SUFFIX,jpush.cn
 DOMAIN-SUFFIX,sedoparking.com
 DOMAIN-SUFFIX,batch.com
 DOMAIN-SUFFIX,privacy-center.org
