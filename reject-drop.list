@@ -14,7 +14,6 @@ DOMAIN,data-sdk-uuid-log.d.meituan.net
 DOMAIN,data-sdk-uuid-report.dreport.meituan.net
 DOMAIN,log.mgtv.com
 DOMAIN,js.hsforms.net
-DOMAIN,p.typekit.net
 DOMAIN,ichnaea-web.netflix.com
 DOMAIN,logs.netflix.com
 DOMAIN,geolocation.onetrust.com
@@ -95,6 +94,7 @@ DOMAIN-KEYWORD,.lkqd
 DOMAIN-WILDCARD,log*-misc-lf.amemv.com
 DOMAIN-WILDCARD,mmfayl-*.appsflyersdk.com
 DOMAIN-WILDCARD,ced*.sascdn.com
+DOMAIN-SUFFIX,branch.io
 DOMAIN-SUFFIX,jpush.cn
 DOMAIN-SUFFIX,sedoparking.com
 DOMAIN-SUFFIX,batch.com
