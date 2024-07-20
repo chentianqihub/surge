@@ -143,7 +143,6 @@ DOMAIN-KEYWORD,vps
 DOMAIN-KEYWORD,vpn
 DOMAIN-WILDCARD,*.filen.*
 DOMAIN-WILDCARD,*.filen-?.net
-
 # Internet Data Center
 DOMAIN-SUFFIX,misaka.io
 DOMAIN-SUFFIX,64clouds.com
