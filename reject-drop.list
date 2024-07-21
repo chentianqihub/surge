@@ -1,3 +1,5 @@
+DOMAIN,skan.singular.net
+DOMAIN,dc.sigmob.cn
 DOMAIN,events.launchdarkly.com
 DOMAIN,acjs.aliyun.com
 DOMAIN,erebor.douban.com
@@ -96,6 +98,12 @@ DOMAIN-KEYWORD,.lkqd
 DOMAIN-WILDCARD,log*-misc-lf.amemv.com
 DOMAIN-WILDCARD,mmfayl-*.appsflyersdk.com
 DOMAIN-WILDCARD,ced*.sascdn.com
+DOMAIN-SUFFIX,openinstall.io
+DOMAIN-SUFFIX,ml314.com
+DOMAIN-SUFFIX,adsafeprotected.com
+DOMAIN-SUFFIX,moatads.com
+DOMAIN-SUFFIX,datadoghq-browser-agent.com
+DOMAIN-SUFFIX,adnxs.com
 DOMAIN-SUFFIX,branch.io
 DOMAIN-SUFFIX,jpush.cn
 DOMAIN-SUFFIX,sedoparking.com
