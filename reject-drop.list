@@ -1,3 +1,4 @@
+DOMAIN,kxlogo.knet.cn
 DOMAIN,skan.singular.net
 DOMAIN,dc.sigmob.cn
 DOMAIN,events.launchdarkly.com
@@ -98,6 +99,7 @@ DOMAIN-KEYWORD,.lkqd
 DOMAIN-WILDCARD,log*-misc-lf.amemv.com
 DOMAIN-WILDCARD,mmfayl-*.appsflyersdk.com
 DOMAIN-WILDCARD,ced*.sascdn.com
+DOMAIN-SUFFIX,tagtic.cn
 DOMAIN-SUFFIX,openinstall.io
 DOMAIN-SUFFIX,ml314.com
 DOMAIN-SUFFIX,adsafeprotected.com
@@ -152,6 +154,7 @@ DOMAIN-SUFFIX,books-analytics-events.apple.com
 DOMAIN-SUFFIX,browser-intake-datadoghq.com
 DOMAIN-SUFFIX,dorangesource.alicdn.com
 DOMAIN-SUFFIX,ilce.alicdn.com
+DOMAIN-SUFFIX,alimama.alicdn.com
 DOMAIN-SUFFIX,ynuf.aliapp.org
 DOMAIN-SUFFIX,ynuf.alipay.com
 DOMAIN-SUFFIX,criteo.com
@@ -167,6 +170,7 @@ DOMAIN-SUFFIX,dlswbr.baidu.com
 DOMAIN-SUFFIX,nsclick.baidu.com
 DOMAIN-SUFFIX,ada.baidu.com
 DOMAIN-SUFFIX,baidustatic.com
+DOMAIN-SUFFIX,pos.baidu.com
 DOMAIN-SUFFIX,rumt-zh.com
 DOMAIN-SUFFIX,bugsnag.com
 DOMAIN-SUFFIX,umeng.com
