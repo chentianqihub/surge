@@ -7,6 +7,7 @@ DOMAIN,downloader.disk.yandex.ru
 DOMAIN,mcusercontent.com
 DOMAIN,pixel.wp.com
 DOMAIN,checkip.amazonaws.com
+DOMAIN-SUFFIX,readwise.io
 DOMAIN-SUFFIX,immich.app
 DOMAIN-SUFFIX,coze.com
 DOMAIN-SUFFIX,namesilo.com
