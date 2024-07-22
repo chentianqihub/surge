@@ -99,6 +99,7 @@ DOMAIN-KEYWORD,.lkqd
 DOMAIN-WILDCARD,log*-misc-lf.amemv.com
 DOMAIN-WILDCARD,mmfayl-*.appsflyersdk.com
 DOMAIN-WILDCARD,ced*.sascdn.com
+DOMAIN-SUFFIX,staticfile.org
 DOMAIN-SUFFIX,tagtic.cn
 DOMAIN-SUFFIX,openinstall.io
 DOMAIN-SUFFIX,ml314.com
