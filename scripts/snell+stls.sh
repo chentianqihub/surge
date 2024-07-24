@@ -2,7 +2,7 @@
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
 export PATH
 
-sh_ver="1.6.0"
+sh_ver="1.6.1"
 filepath=$(cd "$(dirname "$0")"; pwd)
 file_1=$(echo -e "${filepath}"|awk -F "$0" '{print $1}')
 FOLDER="/etc/snell/"
@@ -796,7 +796,7 @@ EOF
         # 提取服务状态
         status=$(systemctl status shadow-tls.service | grep "Active" | awk -F'[()]' '{print $2}')
         if [ "$status" == "running" ]; then
-            echo -e "${Yellow_font_prefix}Shadow-TLS 服务已成功启动并且正在运行${Font_color_suffix}"
+            echo -e "${Info} ${Yellow_font_prefix}Shadow-TLS 服务已成功启动并且正在运行 !${Font_color_suffix}"
             echo -e "—————————————————————————"
             echo -e "${Green_font_prefix}Please copy the following line to the Surge [Proxy] section:${Font_color_suffix}" 
             if [[ "${obfs}" == "off" ]]; then
@@ -1024,7 +1024,7 @@ EOF
         # 提取服务状态
         shadow_tls_status=$(systemctl status shadow-tls.service | grep "Active" | awk -F'[()]' '{print $2}')
         if [ "$shadow_tls_status" == "running" ]; then
-            echo -e "${Info} ${Green_font_prefix}服务已成功重启并且正在运行${Font_color_suffix}"
+            echo -e "${Info} ${Green_font_prefix}服务已成功重启并且正在运行 !${Font_color_suffix}"
             echo -e "—————————————————————————"
             echo -e "${Green_font_prefix}Please copy the following line to the Surge [Proxy] section:${Font_color_suffix}" 
             if [[ "${obfs}" == "off" ]]; then
@@ -1032,7 +1032,7 @@ EOF
             else
             echo "$(curl -s ipinfo.io/city) = snell, $(curl -s ip.sb -4), ${SHADOW_TLS_PORT}, psk=${psk}, obfs=${obfs}, obfs-host=${host}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=${SHADOW_TLS_PWD}, shadow-tls-sni=${SHADOW_TLS_SNI}, shadow-tls-version=3"
             fi
-            echo -e "—————————————————————————"
+            echo -e "—————————————————————————" && exit 1
         else
             echo -e "${Error}${Red_font_prefix}服务未在运行状态,请手动检查${Font_color_suffix}"
             systemctl status shadow-tls.service
@@ -1080,7 +1080,7 @@ EOF
         # 提取服务状态
         shadow_tls_status=$(systemctl status shadow-tls.service | grep "Active" | awk -F'[()]' '{print $2}')
         if [ "$shadow_tls_status" == "running" ]; then
-            echo -e "${Info} ${Green_font_prefix}服务已成功重启并且正在运行${Font_color_suffix}"
+            echo -e "${Info} ${Green_font_prefix}服务已成功重启并且正在运行 !${Font_color_suffix}"
             echo -e "—————————————————————————"
             echo -e "${Green_font_prefix}Please copy the following line to the Surge [Proxy] section:${Font_color_suffix}" 
             if [[ "${obfs}" == "off" ]]; then
@@ -1088,7 +1088,7 @@ EOF
             else
             echo "$(curl -s ipinfo.io/city) = snell, $(curl -s ip.sb -4), ${SHADOW_TLS_PORT}, psk=${psk}, obfs=${obfs}, obfs-host=${host}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=${SHADOW_TLS_PWD}, shadow-tls-sni=${SHADOW_TLS_SNI}, shadow-tls-version=3"
             fi
-            echo -e "—————————————————————————"
+            echo -e "—————————————————————————" && exit 1
         else
             echo -e "${Error}${Red_font_prefix}服务未在运行状态,请手动检查${Font_color_suffix}"
             systemctl status shadow-tls.service
@@ -1136,7 +1136,7 @@ EOF
         # 提取服务状态
         shadow_tls_status=$(systemctl status shadow-tls.service | grep "Active" | awk -F'[()]' '{print $2}')
         if [ "$shadow_tls_status" == "running" ]; then
-            echo -e "${Info} ${Green_font_prefix}服务已成功重启并且正在运行${Font_color_suffix}"
+            echo -e "${Info} ${Green_font_prefix}服务已成功重启并且正在运行 !${Font_color_suffix}"
             echo -e "—————————————————————————"
             echo -e "${Green_font_prefix}Please copy the following line to the Surge [Proxy] section:${Font_color_suffix}" 
             if [[ "${obfs}" == "off" ]]; then
@@ -1144,7 +1144,7 @@ EOF
             else
             echo "$(curl -s ipinfo.io/city) = snell, $(curl -s ip.sb -4), ${SHADOW_TLS_PORT}, psk=${psk}, obfs=${obfs}, obfs-host=${host}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=${SHADOW_TLS_PWD}, shadow-tls-sni=${SHADOW_TLS_SNI}, shadow-tls-version=3"
             fi
-            echo -e "—————————————————————————"
+            echo -e "—————————————————————————" && exit 1
         else
             echo -e "${Error}${Red_font_prefix}服务未在运行状态,请手动检查${Font_color_suffix}"
             systemctl status shadow-tls.service
