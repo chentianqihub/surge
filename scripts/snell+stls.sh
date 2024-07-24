@@ -2,7 +2,7 @@
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
 export PATH
 
-sh_ver="1.6.1"
+sh_ver="1.6.2"
 filepath=$(cd "$(dirname "$0")"; pwd)
 file_1=$(echo -e "${filepath}"|awk -F "$0" '{print $1}')
 FOLDER="/etc/snell/"
@@ -804,7 +804,7 @@ EOF
             else
             echo "$(curl -s ipinfo.io/city) = snell, $(curl -s ip.sb -4), ${SHADOW_TLS_PORT}, psk=${psk}, obfs=${obfs}, obfs-host=${host}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=JsJeWtjiUyJ5yeto, shadow-tls-sni=${SHADOW_TLS_SNI}, shadow-tls-version=3"
             fi
-            echo -e "—————————————————————————"
+            echo -e "—————————————————————————" && exit 1
         else
             echo "服务未在运行状态"
         fi
