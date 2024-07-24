@@ -158,6 +158,7 @@ DOMAIN-SUFFIX,pubnative.net
 DOMAIN-SUFFIX,amazon-adsystem.com
 DOMAIN-SUFFIX,notes-analytics-events.apple.com
 DOMAIN-SUFFIX,books-analytics-events.apple.com
+DOMAIN-SUFFIX,iadsdk.apple.com
 DOMAIN-SUFFIX,browser-intake-datadoghq.com
 DOMAIN-SUFFIX,dorangesource.alicdn.com
 DOMAIN-SUFFIX,ilce.alicdn.com
