@@ -1,3 +1,8 @@
+DOMAIN,yads.c.yimg.jp
+DOMAIN,dsb.yahoo.co.jp
+DOMAIN,clb.yahoo.co.jp
+DOMAIN,a1.api.bbc.co.uk
+DOMAIN,gn-flagpoles.api.bbci.co.uk
 DOMAIN,kxlogo.knet.cn
 DOMAIN,skan.singular.net
 DOMAIN,dc.sigmob.cn
@@ -99,6 +104,7 @@ DOMAIN-KEYWORD,.lkqd
 DOMAIN-WILDCARD,log*-misc-lf.amemv.com
 DOMAIN-WILDCARD,mmfayl-*.appsflyersdk.com
 DOMAIN-WILDCARD,ced*.sascdn.com
+DOMAIN-SUFFIX,chartbeat.com
 DOMAIN-SUFFIX,staticfile.org
 DOMAIN-SUFFIX,tagtic.cn
 DOMAIN-SUFFIX,openinstall.io
