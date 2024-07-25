@@ -2,7 +2,7 @@
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
 export PATH
 
-sh_ver="1.6.3"
+sh_ver="1.6.4"
 filepath=$(cd "$(dirname "$0")"; pwd)
 file_1=$(echo -e "${filepath}"|awk -F "$0" '{print $1}')
 FOLDER="/etc/snell/"
@@ -18,7 +18,7 @@ Tip="${Yellow_font_prefix}[注意]${Font_color_suffix}"
 Warn="${Yellow_font_prefix}[Warn]${Font_color_suffix}"
 
 check_root(){
-	[[ $EUID != 0 ]] && echo -e "${Error} 当前非ROOT账号(或没有ROOT权限)，无法继续操作，请更换ROOT账号或使用 ${Green_background_prefix}sudo su${Font_color_suffix} 命令获取临时ROOT权限（执行后可能会提示输入当前账号的密码）。" && exit 1
+	[[ $EUID != 0 ]] && echo -e "${Error} 当前非ROOT账号(或没有ROOT权限),无法继续操作,请更换ROOT账号或使用 ${Green_background_prefix}sudo su${Font_color_suffix} 命令获取临时ROOT权限（执行后可能会提示输入当前账号的密码）。" && exit 1
 }
 #检查系统
 check_sys(){
@@ -91,12 +91,12 @@ net.ipv4.tcp_mtu_probing = 1
 net.core.default_qdisc=fq
 net.ipv4.tcp_congestion_control = bbr" >>/etc/sysctl.d/local.conf && sysctl --system >/dev/null 2>&1
 	else
-		echo -e "$Error系统内核版本过低，无法支持 TCP Fast Open !"
+		echo -e "$Error系统内核版本过低,无法支持 TCP Fast Open !"
 	fi
 }
 
 check_installed_status(){
-	[[ ! -e ${FILE} ]] && echo -e "${Error} Snell Server 没有安装，请检查 !" && exit 1
+	[[ ! -e ${FILE} ]] && echo -e "${Error} Snell Server 没有安装,请检查 !" && exit 1
 }
 
 check_status(){
@@ -495,7 +495,7 @@ Install_v2(){
 	Service
 	echo -e "${Info} 开始写入 配置文件..."
 	Write_config
-	echo -e "${Info} 所有步骤 安装完毕，开始启动..."
+	echo -e "${Info} 所有步骤 安装完毕,开始启动..."
 	Start
     sleep 3s
     start_menu
@@ -520,7 +520,7 @@ Install_v3(){
 	Service
 	echo -e "${Info} 开始写入 配置文件..."
 	Write_config
-	echo -e "${Info} 所有步骤 安装完毕，开始启动..."
+	echo -e "${Info} 所有步骤 安装完毕,开始启动..."
 	Start
     sleep 3s
     start_menu
@@ -547,7 +547,7 @@ Install_v4(){
 	Service
 	echo -e "${Info} 开始写入 配置文件..."
 	Write_config
-	echo -e "${Info} 所有步骤 安装完毕，开始启动..."
+	echo -e "${Info} 所有步骤 安装完毕,开始启动..."
 	# print snell server info
      echo -e "—————————————————————————"
      echo -e "${Green_font_prefix}Please copy the following line to the Surge [Proxy] section:${Font_color_suffix}" 
@@ -576,7 +576,7 @@ Start(){
 Stop(){
 	check_installed_status
 	check_status
-	[[ ! "$status" == "running" ]] && echo -e "${Error} Snell Server 没有运行，请检查 !" && exit 1
+	[[ ! "$status" == "running" ]] && echo -e "${Error} Snell Server 没有运行,请检查 !" && exit 1
 	systemctl stop snell-server
 	echo -e "${Info} Snell Server 停止成功 !"
     sleep 3s
@@ -609,7 +609,7 @@ Uninstall(){
         if [[ $? -eq 0 ]]; then
             echo -e "${Blue_font_prefix}Snell Server 服务已停止${Font_color_suffix}"
         else
-            echo "停止服务失败，请手动检查"
+            echo "停止服务失败,请手动检查"
         fi
 
         echo "正在禁用 Snell Server 服务..."
@@ -617,7 +617,7 @@ Uninstall(){
         if [[ $? -eq 0 ]]; then
             echo -e "${Blue_font_prefix}Snell Server 服务已禁用${Font_color_suffix}"
         else
-            echo "禁用服务失败，请手动检查"
+            echo "禁用服务失败,请手动检查"
         fi
 
         echo "正在删除 Snell Server 主程序和配置文件..."
@@ -625,14 +625,14 @@ Uninstall(){
         if [[ $? -eq 0 ]]; then
             echo -e "${Blue_font_prefix}Snell Server 主程序删除完成${Font_color_suffix}"
         else
-            echo "删除Snell Server 主程序失败，请手动检查"
+            echo "删除Snell Server 主程序失败,请手动检查"
         fi
         
         rm -rf /etc/snell
         if [[ $? -eq 0 ]]; then
             echo -e "${Blue_font_prefix}Snell Server 配置文件删除完成${Font_color_suffix}"
         else
-            echo "删除配置文件失败，请手动检查"
+            echo "删除配置文件失败,请手动检查"
         fi
 
         echo && echo -e "${Yellow_font_prefix}Snell Server 卸载完成 !${Font_color_suffix}" && echo
@@ -697,7 +697,7 @@ while true; do
     # 提示用户输入 SHADOW_TLS_PORT 值
     read -e -p "请输入SHADOW_TLS_PORT值(1-65535,默认8443): " SHADOW_TLS_PORT
 
-    # 如果用户未输入值，则使用默认值 8443
+    # 如果用户未输入值,则使用默认值 8443
     [[ -z "${SHADOW_TLS_PORT}" ]] && SHADOW_TLS_PORT="8443"
 
     # 检查用户输入的值是否有效
@@ -718,7 +718,7 @@ while true; do
         echo -e "${Error} 端口 ${SHADOW_TLS_PORT} 重复或已被其它程序占用,请选择其它端口!"
         echo
     else
-        # 端口未被占用，退出循环
+        # 端口未被占用,退出循环
         break
     fi
 done
@@ -729,7 +729,7 @@ echo -e "\033[33mSHADOW_TLS_PORT: ${SHADOW_TLS_PORT}\033[0m" && echo
     # 提示用户输入 SHADOW_SNI 值
 read -e -p "请输入SHADOW_SNI值(默认: mensura.cdn-apple.com): " SHADOW_TLS_SNI
 
-    # 如果用户未输入值，则使用默认值 mensura.cdn-apple.com
+    # 如果用户未输入值,则使用默认值 mensura.cdn-apple.com
 [[ -z "${SHADOW_TLS_SNI}" ]] && SHADOW_TLS_SNI="mensura.cdn-apple.com"
 
 # 输出最终的 SHADOW_TLS_SNI 值
@@ -739,7 +739,7 @@ echo -e "${Yellow_font_prefix}SHADOW_TLS_SNI: ${SHADOW_TLS_SNI}${Font_color_suff
     # 提示用户输入 SHADOW_PWD 值
 read -e -p "请输入SHADOW_PWD值(默认: JsJeWtjiUyJ5yeto): " SHADOW_TLS_PWD
 
-    # 如果用户未输入值，则使用默认值 JsJeWtjiUyJ5yeto
+    # 如果用户未输入值,则使用默认值 JsJeWtjiUyJ5yeto
 [[ -z "${SHADOW_TLS_PWD}" ]] && SHADOW_TLS_PWD="JsJeWtjiUyJ5yeto"
 
 # 输出最终的 SHADOW_TLS_PWD 值
@@ -821,7 +821,7 @@ Uninstall_Shadow_TLS(){
     echo "确定要卸载 Shadow-TLS ? (y/N)"
     echo
     read -e -p "(默认: n):" ynun
-    [[ -z "${ynun}" ]] && ynun="n" # 如果用户没有输入，设置默认值为 'n'
+    [[ -z "${ynun}" ]] && ynun="n" # 如果用户没有输入,设置默认值为 'n'
     
     if [[ "${ynun}" =~ ^[Yy]$ ]]; then
         # 检查服务是否启动
@@ -831,7 +831,7 @@ Uninstall_Shadow_TLS(){
             if [[ $? -eq 0 ]]; then
             echo -e "${Blue_font_prefix}shadow-tls 服务已停止${Font_color_suffix}"
             else
-            echo "停止服务失败，请手动检查"
+            echo "停止服务失败,请手动检查"
            fi
            
             echo "正在禁用 shadow-tls 服务..."
@@ -839,7 +839,7 @@ Uninstall_Shadow_TLS(){
             if [[ $? -eq 0 ]]; then
             echo -e "${Blue_font_prefix}shadow-tls 服务已禁用${Font_color_suffix}"
             else
-            echo "禁用服务失败，请手动检查"
+            echo "禁用服务失败,请手动检查"
             fi
         else
             echo -e "${Warn} shadow-tls 服务已被禁用"
@@ -848,7 +848,7 @@ Uninstall_Shadow_TLS(){
             if [[ $? -eq 0 ]]; then
             echo -e "${Blue_font_prefix}shadow-tls 服务已停止${Font_color_suffix}"
             else
-            echo "停止服务失败，请手动检查"
+            echo "停止服务失败,请手动检查"
            fi
         fi
 
@@ -859,7 +859,7 @@ Uninstall_Shadow_TLS(){
             if [[ $? -eq 0 ]]; then
             echo -e "${Blue_font_prefix}shadow-tls 服务文件已删除${Font_color_suffix}"
             else
-            echo "停止服务失败，请手动检查"
+            echo "停止服务失败,请手动检查"
            fi
            
             echo "重新加载 systemd 配置..."
@@ -867,7 +867,7 @@ Uninstall_Shadow_TLS(){
             echo "重置 systemd 失败状态..."
             sudo systemctl reset-failed
         else
-            echo "服务文件不存在，无需删除"
+            echo "服务文件不存在,无需删除"
         fi
 
         # 删除检查可执行文件
@@ -876,7 +876,7 @@ Uninstall_Shadow_TLS(){
             if [[ $? -eq 0 ]]; then
             echo -e "${Blue_font_prefix}shadow-tls 可执行文件删除完成${Font_color_suffix}"
             else
-            echo "删除shadow-tls 可执行文件失败，请手动检查"
+            echo "删除shadow-tls 可执行文件失败,请手动检查"
             fi
 
         echo -e "${Yellow_font_prefix}Shadow-TLS 服务已成功卸载 !${Font_color_suffix}"
@@ -901,7 +901,7 @@ Start_Shadow_TLS(){
 Stop_Shadow_TLS(){
      check_Shadow_TLS_installed_status
 	check_Shadow_TLS_status
-	[[ !"$shadow_tls_status" == "running" ]] && echo -e "${Error} Shadow-TLS 未在运行，请检查 !" && exit 1
+	[[ !"$shadow_tls_status" == "running" ]] && echo -e "${Error} Shadow-TLS 未在运行,请检查 !" && exit 1
 	systemctl stop shadow-tls
 	echo -e "${Info} Shadow-TLS 停止成功 !"
     sleep 3s
@@ -928,7 +928,7 @@ Status_Shadow_TLS(){
 }
 
 check_Shadow_TLS_installed_status(){
-	[[ ! -e "/usr/local/bin/shadow-tls" ]] && echo -e "${Error} Shadow-TLS 没有安装，请检查 !" && exit 1
+	[[ ! -e "/usr/local/bin/shadow-tls" ]] && echo -e "${Error} Shadow-TLS 没有安装,请检查 !" && exit 1
 }
 
 check_Shadow_TLS_status(){
@@ -974,7 +974,7 @@ while true; do
     # 提示用户输入 SHADOW_TLS_PORT 值
     read -e -p "请输入SHADOW_TLS_PORT值(1-65535,默认8443): " SHADOW_TLS_PORT
 
-    # 如果用户未输入值，则使用默认值 8443
+    # 如果用户未输入值,则使用默认值 8443
     [[ -z "${SHADOW_TLS_PORT}" ]] && SHADOW_TLS_PORT="8443"
 
     # 检查用户输入的值是否有效
@@ -989,7 +989,7 @@ while true; do
         echo -e "${Error} 端口 ${SHADOW_TLS_PORT} 重复或已被其它程序占用,请选择其它端口!"
         echo
     else
-        # 端口未被占用，退出循环
+        # 端口未被占用,退出循环
         break
     fi
 done
@@ -1047,7 +1047,7 @@ Edit_Shadow_TLS_SNI(){
 # 提示用户输入 SHADOW_SNI 值
 read -e -p "请输入SHADOW_SNI值(默认: mensura.cdn-apple.com): " SHADOW_TLS_SNI
 
-# 如果用户未输入值，则使用默认值 8443
+# 如果用户未输入值,则使用默认值 8443
 [[ -z "${SHADOW_TLS_SNI}" ]] && SHADOW_TLS_SNI="mensura.cdn-apple.com"
 
     echo -e "${Yellow_font_prefix}SHADOW_TLS_SNI: ${SHADOW_TLS_SNI}${Font_color_suffix}" && echo
@@ -1103,7 +1103,7 @@ Edit_Shadow_TLS_PWD(){
 # 提示用户输入 SHADOW_PWD 值
 read -e -p "请输入SHADOW_PWD值(默认: JsJeWtjiUyJ5yeto): " SHADOW_TLS_PWD
 
-# 如果用户未输入值，则使用默认值 JsJeWtjiUyJ5yeto
+# 如果用户未输入值,则使用默认值 JsJeWtjiUyJ5yeto
 [[ -z "${SHADOW_TLS_PWD}" ]] && SHADOW_TLS_PWD="JsJeWtjiUyJ5yeto"
 
     echo -e "${Yellow_font_prefix}SHADOW_TLS_PWD: ${SHADOW_TLS_PWD}${Font_color_suffix}" && echo
@@ -1186,11 +1186,11 @@ Set_Shadow_TLS(){
 
 
 Update_Shell(){
-	echo -e "当前版本为 [ ${sh_ver} ]，开始检测最新版本..."
+	echo -e "当前版本为 [ ${sh_ver} ],开始检测最新版本..."
 	sh_new_ver=$(wget --no-check-certificate -qO- "https://raw.githubusercontent.com/chentianqihub/surge/main/scripts/snell%2Bstls.sh"|grep 'sh_ver="'|awk -F "=" '{print $NF}'|sed 's/\"//g'|head -1)
 	[[ -z ${sh_new_ver} ]] && echo -e "${Error} 检测最新版本失败 !" && start_menu
 	if [[ ${sh_new_ver} != ${sh_ver} ]]; then
-		echo -e "发现新版本[ ${sh_new_ver} ]，是否更新？[Y/n]"
+		echo -e "发现新版本[ ${sh_new_ver} ],是否更新？[Y/n]"
 		read -p "(默认: y):" yn
 		[[ -z "${yn}" ]] && yn="y"
 		if [[ ${yn} == [Yy] ]]; then
@@ -1279,7 +1279,7 @@ Snell Server 管理脚本 ${Red_font_prefix}[v${sh_ver}]${Font_color_suffix}
 	echo
 	read -e -p " 请输入数字[0-17]（默认值: 1）:" num
 	
-     # 如果用户未输入值，则使用默认值1
+     # 如果用户未输入值,则使用默认值1
      [[ -z "$num" ]] && num=1
 	
 	case "$num" in
