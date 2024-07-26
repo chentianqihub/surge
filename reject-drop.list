@@ -1,3 +1,6 @@
+DOMAIN,counter.yadro.ru
+DOMAIN,prvc.io
+DOMAIN,api.onesignal.com
 DOMAIN,yads.c.yimg.jp
 DOMAIN,dsb.yahoo.co.jp
 DOMAIN,clb.yahoo.co.jp
@@ -105,6 +108,11 @@ DOMAIN-KEYWORD,.lkqd
 DOMAIN-WILDCARD,log*-misc-lf.amemv.com
 DOMAIN-WILDCARD,mmfayl-*.appsflyersdk.com
 DOMAIN-WILDCARD,ced*.sascdn.com
+DOMAIN-SUFFIX,vidoomy.com
+DOMAIN-SUFFIX,growingio.com
+DOMAIN-SUFFIX,syndicatedsearch.goog
+DOMAIN-SUFFIX,parking.godaddy.com
+DOMAIN-SUFFIX,trafficjunky.com
 DOMAIN-SUFFIX,chartbeat.com
 DOMAIN-SUFFIX,staticfile.org
 DOMAIN-SUFFIX,tagtic.cn
