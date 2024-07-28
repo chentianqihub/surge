@@ -7,6 +7,11 @@ DOMAIN,downloader.disk.yandex.ru
 DOMAIN,mcusercontent.com
 DOMAIN,pixel.wp.com
 DOMAIN,checkip.amazonaws.com
+DOMAIN-KEYWORD,z-library.
+DOMAIN-KEYWORD,z-lib.
+DOMAIN-KEYWORD,-zlib.
+DOMAIN-SUFFIX,fcdn.sk
+DOMAIN-SUFFIX,1lib.sk
 DOMAIN-SUFFIX,readwise.io
 DOMAIN-SUFFIX,immich.app
 DOMAIN-SUFFIX,coze.com
