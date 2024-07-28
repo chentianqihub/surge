@@ -108,6 +108,11 @@ DOMAIN-KEYWORD,.lkqd
 DOMAIN-WILDCARD,log*-misc-lf.amemv.com
 DOMAIN-WILDCARD,mmfayl-*.appsflyersdk.com
 DOMAIN-WILDCARD,ced*.sascdn.com
+DOMAIN-SUFFIX,chartbeat.net
+DOMAIN-SUFFIX,rmhfrtnd.com
+DOMAIN-SUFFIX,trackwilltrk.com
+DOMAIN-SUFFIX,tsyndicate.com
+DOMAIN-SUFFIX,dididy.xyz
 DOMAIN-SUFFIX,vidoomy.com
 DOMAIN-SUFFIX,growingio.com
 DOMAIN-SUFFIX,syndicatedsearch.goog
