@@ -108,6 +108,7 @@ DOMAIN-KEYWORD,.lkqd
 DOMAIN-WILDCARD,log*-misc-lf.amemv.com
 DOMAIN-WILDCARD,mmfayl-*.appsflyersdk.com
 DOMAIN-WILDCARD,ced*.sascdn.com
+DOMAIN-SUFFIX,clarity.ms
 DOMAIN-SUFFIX,chartbeat.net
 DOMAIN-SUFFIX,rmhfrtnd.com
 DOMAIN-SUFFIX,trackwilltrk.com
