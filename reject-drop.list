@@ -1,3 +1,5 @@
+DOMAIN,events.newsroom.bi
+DOMAIN,mbid.marfeelrev.com
 DOMAIN,counter.yadro.ru
 DOMAIN,prvc.io
 DOMAIN,api.onesignal.com
@@ -51,7 +53,7 @@ DOMAIN,jdqd.jd.com
 DOMAIN,shouji.sougou.com
 DOMAIN,waapdg.jd.com
 DOMAIN,mars.jd.com
-DOMAIN,gia.jd.com
+#DOMAIN,gia.jd.com
 DOMAIN,policy.jd.com
 DOMAIN,im-x.jd.com
 DOMAIN,xray.mail.ru
@@ -108,6 +110,15 @@ DOMAIN-KEYWORD,.lkqd
 DOMAIN-WILDCARD,log*-misc-lf.amemv.com
 DOMAIN-WILDCARD,mmfayl-*.appsflyersdk.com
 DOMAIN-WILDCARD,ced*.sascdn.com
+DOMAIN-SUFFIX,taboola.com
+DOMAIN-SUFFIX,onthe.io
+DOMAIN-SUFFIX,rubiconproject.com
+DOMAIN-SUFFIX,seedtag.com
+DOMAIN-SUFFIX,teads.tv
+DOMAIN-SUFFIX,360yield.com
+DOMAIN-SUFFIX,casalemedia.com
+DOMAIN-SUFFIX,openx.net
+DOMAIN-SUFFIX,marfeel.com
 DOMAIN-SUFFIX,clarity.ms
 DOMAIN-SUFFIX,chartbeat.net
 DOMAIN-SUFFIX,rmhfrtnd.com
