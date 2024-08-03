@@ -1,3 +1,5 @@
+DOMAIN,track.hk01.com
+DOMAIN,cdn.onesignal.com
 DOMAIN,events.newsroom.bi
 DOMAIN,mbid.marfeelrev.com
 DOMAIN,counter.yadro.ru
@@ -111,6 +113,7 @@ DOMAIN-KEYWORD,.lkqd
 DOMAIN-WILDCARD,log*-misc-lf.amemv.com
 DOMAIN-WILDCARD,mmfayl-*.appsflyersdk.com
 DOMAIN-WILDCARD,ced*.sascdn.com
+DOMAIN-SUFFIX,uidapi.com
 DOMAIN-SUFFIX,zqkxlf.com
 DOMAIN-SUFFIX,yuanpinghengkangfuyouxiangongsi.top
 DOMAIN-SUFFIX,kzepp.com
