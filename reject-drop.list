@@ -1,3 +1,5 @@
+DOMAIN,metrics.brightcove.com
+DOMAIN,qsearch-a.akamaihd.net
 DOMAIN,snap.licdn.com
 DOMAIN,track.hk01.com
 DOMAIN,cdn.onesignal.com
@@ -114,6 +116,15 @@ DOMAIN-KEYWORD,.lkqd
 DOMAIN-WILDCARD,log*-misc-lf.amemv.com
 DOMAIN-WILDCARD,mmfayl-*.appsflyersdk.com
 DOMAIN-WILDCARD,ced*.sascdn.com
+DOMAIN-SUFFIX,1rx.io
+DOMAIN-SUFFIX,2mdn.net
+DOMAIN-SUFFIX,creativecdn.com
+DOMAIN-SUFFIX,lijit.com
+DOMAIN-SUFFIX,adsrvr.org
+DOMAIN-SUFFIX,emxdgt.com
+DOMAIN-SUFFIX,kargo.com
+DOMAIN-SUFFIX,indexww.com
+DOMAIN-SUFFIX,criteo.net
 DOMAIN-SUFFIX,cdn-image.com
 DOMAIN-SUFFIX,go-mpulse.net
 DOMAIN-SUFFIX,jads.co
