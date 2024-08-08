@@ -1,3 +1,4 @@
+DOMAIN,mixer.sina.cn
 DOMAIN,metrics.brightcove.com
 DOMAIN,qsearch-a.akamaihd.net
 DOMAIN,snap.licdn.com
@@ -34,7 +35,7 @@ DOMAIN,data-sdk-uuid-report.dreport.meituan.net
 DOMAIN,log.mgtv.com
 DOMAIN,js.hsforms.net
 DOMAIN,ichnaea-web.netflix.com
-DOMAIN,logs.netflix.com
+#DOMAIN,logs.netflix.com
 DOMAIN,geolocation.onetrust.com
 DOMAIN,images.ctfassets.net
 DOMAIN,events.mapbox.com
