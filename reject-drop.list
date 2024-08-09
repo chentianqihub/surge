@@ -6,6 +6,9 @@ DOMAIN,track.hk01.com
 DOMAIN,cdn.onesignal.com
 DOMAIN,events.newsroom.bi
 DOMAIN,mbid.marfeelrev.com
+DOMAIN,mc.yandex.ru
+DOMAIN,startup.mobile.yandex.net
+DOMAIN,startup-mobile.ap.yandex-net.ru
 DOMAIN,counter.yadro.ru
 DOMAIN,prvc.io
 DOMAIN,api.onesignal.com
@@ -216,8 +219,7 @@ DOMAIN-SUFFIX,scorecardresearch.com
 DOMAIN-SUFFIX,volceapplog.com
 DOMAIN-SUFFIX,open.kwaizt.com
 DOMAIN-SUFFIX,gvt2.com
-DOMAIN-SUFFIX,startup.mobile.yandex.net
-DOMAIN-SUFFIX,startup-mobile.ap.yandex-net.ru
+DOMAIN-SUFFIX,adfox.ru
 DOMAIN-SUFFIX,webvisor.com
 DOMAIN-SUFFIX,flurry.com
 DOMAIN-SUFFIX,appsflyersdk.com
