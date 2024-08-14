@@ -125,6 +125,8 @@ DOMAIN-KEYWORD,.lkqd
 DOMAIN-WILDCARD,log*-misc-lf.amemv.com
 DOMAIN-WILDCARD,mmfayl-*.appsflyersdk.com
 DOMAIN-WILDCARD,ced*.sascdn.com
+DOMAIN-SUFFIX,colossusssp.com
+DOMAIN-SUFFIX,ea.epochbase.com
 DOMAIN-SUFFIX,dable.io
 DOMAIN-SUFFIX,skimresources.com
 DOMAIN-SUFFIX,gscontxt.net
