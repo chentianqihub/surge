@@ -10,6 +10,7 @@ DOMAIN,checkip.amazonaws.com
 DOMAIN-KEYWORD,z-library.
 DOMAIN-KEYWORD,z-lib.
 DOMAIN-KEYWORD,-zlib.
+DOMAIN-SUFFIX,1x.com
 DOMAIN-SUFFIX,fcdn.sk
 DOMAIN-SUFFIX,lumiproxy.com
 DOMAIN-SUFFIX,1lib.sk
@@ -36,6 +37,7 @@ DOMAIN-SUFFIX,itdog.cn
 DOMAIN-SUFFIX,ping.chinaz.com
 DOMAIN-SUFFIX,vfly2.com
 DOMAIN-SUFFIX,cock.li
+DOMAIN-SUFFIX,zuisk.net
 DOMAIN-SUFFIX,resye.com
 DOMAIN-SUFFIX,styls.org
 DOMAIN-SUFFIX,misks.net
