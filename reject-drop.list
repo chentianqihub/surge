@@ -1,3 +1,8 @@
+DOMAIN,recs-api.conde.digital
+DOMAIN,globalservices.conde.digital
+DOMAIN,cdn.amplitude.com
+DOMAIN,syndication.twitter.com
+DOMAIN,data.media-lab.ai
 DOMAIN,mixer.sina.cn
 DOMAIN,metrics.brightcove.com
 DOMAIN,qsearch-a.akamaihd.net
@@ -120,6 +125,13 @@ DOMAIN-KEYWORD,.lkqd
 DOMAIN-WILDCARD,log*-misc-lf.amemv.com
 DOMAIN-WILDCARD,mmfayl-*.appsflyersdk.com
 DOMAIN-WILDCARD,ced*.sascdn.com
+DOMAIN-SUFFIX,dable.io
+DOMAIN-SUFFIX,skimresources.com
+DOMAIN-SUFFIX,gscontxt.net
+DOMAIN-SUFFIX,sail-horizon.com
+DOMAIN-SUFFIX,permutive.app
+DOMAIN-SUFFIX,permutive.com
+DOMAIN-SUFFIX,speedcurve.com
 DOMAIN-SUFFIX,1rx.io
 DOMAIN-SUFFIX,2mdn.net
 DOMAIN-SUFFIX,creativecdn.com
