@@ -1,3 +1,4 @@
+DOMAIN,xp.apple.com
 DOMAIN,recs-api.conde.digital
 DOMAIN,globalservices.conde.digital
 DOMAIN,cdn.amplitude.com
@@ -125,6 +126,11 @@ DOMAIN-KEYWORD,.lkqd
 DOMAIN-WILDCARD,log*-misc-lf.amemv.com
 DOMAIN-WILDCARD,mmfayl-*.appsflyersdk.com
 DOMAIN-WILDCARD,ced*.sascdn.com
+DOMAIN-SUFFIX,zemanta.com
+DOMAIN-SUFFIX,ay.delivery
+DOMAIN-SUFFIX,clean.gg
+DOMAIN-SUFFIX,trafficjunky.net
+DOMAIN-SUFFIX,etahub.com
 DOMAIN-SUFFIX,colossusssp.com
 DOMAIN-SUFFIX,ea.epochbase.com
 DOMAIN-SUFFIX,dable.io
