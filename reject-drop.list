@@ -1,3 +1,6 @@
+DOMAIN,glitter.services.disqus.com
+DOMAIN,referrer.disqus.com
+DOMAIN,links.services.disqus.com
 DOMAIN,xp.apple.com
 DOMAIN,recs-api.conde.digital
 DOMAIN,globalservices.conde.digital
@@ -126,6 +129,8 @@ DOMAIN-KEYWORD,.lkqd
 DOMAIN-WILDCARD,log*-misc-lf.amemv.com
 DOMAIN-WILDCARD,mmfayl-*.appsflyersdk.com
 DOMAIN-WILDCARD,ced*.sascdn.com
+DOMAIN-SUFFIX,x.disq.us
+DOMAIN-SUFFIX,viglink.com
 DOMAIN-SUFFIX,zemanta.com
 DOMAIN-SUFFIX,ay.delivery
 DOMAIN-SUFFIX,clean.gg
