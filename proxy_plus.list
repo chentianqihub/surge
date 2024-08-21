@@ -1,3 +1,4 @@
+DOMAIN,cr.adsappier.com
 DOMAIN,docs.sentry.io
 DOMAIN,limbopro.com
 DOMAIN,apple.sjv.io
@@ -10,6 +11,10 @@ DOMAIN,checkip.amazonaws.com
 DOMAIN-KEYWORD,z-library.
 DOMAIN-KEYWORD,z-lib.
 DOMAIN-KEYWORD,-zlib.
+DOMAIN-SUFFIX,cards-css.iqiyi.com
+DOMAIN-SUFFIX,qchannel03.cn
+DOMAIN-SUFFIX,qchannel01.cn
+DOMAIN-SUFFIX,adkernel.com
 DOMAIN-SUFFIX,gigafile.nu
 DOMAIN-SUFFIX,1x.com
 DOMAIN-SUFFIX,fcdn.sk
