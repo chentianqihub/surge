@@ -10,6 +10,7 @@ DOMAIN,checkip.amazonaws.com
 DOMAIN-KEYWORD,z-library.
 DOMAIN-KEYWORD,z-lib.
 DOMAIN-KEYWORD,-zlib.
+DOMAIN-SUFFIX,gigafile.nu
 DOMAIN-SUFFIX,1x.com
 DOMAIN-SUFFIX,fcdn.sk
 DOMAIN-SUFFIX,lumiproxy.com
@@ -166,6 +167,8 @@ DOMAIN-SUFFIX,gigsgigscloud.com
 DOMAIN-SUFFIX,netfront.net
 DOMAIN-SUFFIX,justmysocks.net
 DOMAIN-SUFFIX,bestvm.cloud
+DOMAIN-SUFFIX,justhost.asia
+DOMAIN-SUFFIX,justhost.ru
 DOMAIN-SUFFIX,yxvm.com
 DOMAIN-SUFFIX,justg.com
 DOMAIN-SUFFIX,hostyun.com
