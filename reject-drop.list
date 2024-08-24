@@ -1,3 +1,6 @@
+DOMAIN,hartattenuate.com
+DOMAIN,creative.myavlive.com
+DOMAIN,jspassport.ssl.qhimg.com
 DOMAIN,cards-css.iqiyi.com
 DOMAIN,static-s.iqiyi.com
 DOMAIN,cr.adsappier.com
@@ -19,6 +22,7 @@ DOMAIN,cdn.onesignal.com
 DOMAIN,events.newsroom.bi
 DOMAIN,mbid.marfeelrev.com
 DOMAIN,top-fwz1.mail.ru
+DOMAIN,mc.yandex.com
 DOMAIN,mc.yandex.ru
 DOMAIN,startup.mobile.yandex.net
 DOMAIN,startup-mobile.ap.yandex-net.ru
@@ -133,6 +137,7 @@ DOMAIN-KEYWORD,.lkqd
 DOMAIN-WILDCARD,log*-misc-lf.amemv.com
 DOMAIN-WILDCARD,mmfayl-*.appsflyersdk.com
 DOMAIN-WILDCARD,ced*.sascdn.com
+DOMAIN-SUFFIX,hartattenuate.com
 DOMAIN-SUFFIX,qchannel03.cn
 DOMAIN-SUFFIX,qchannel01.cn
 DOMAIN-SUFFIX,adkernel.com
@@ -202,7 +207,7 @@ DOMAIN-SUFFIX,clarity.ms
 DOMAIN-SUFFIX,chartbeat.net
 DOMAIN-SUFFIX,rmhfrtnd.com
 DOMAIN-SUFFIX,trackwilltrk.com
-DOMAIN-SUFFIX,tsyndicate.com
+#DOMAIN-SUFFIX,tsyndicate.com
 DOMAIN-SUFFIX,dididy.xyz
 DOMAIN-SUFFIX,vidoomy.com
 DOMAIN-SUFFIX,growingio.com
