@@ -139,6 +139,9 @@ DOMAIN-KEYWORD,.lkqd
 DOMAIN-WILDCARD,log*-misc-lf.amemv.com
 DOMAIN-WILDCARD,mmfayl-*.appsflyersdk.com
 DOMAIN-WILDCARD,ced*.sascdn.com
+DOMAIN-SUFFIX,npttech.com
+DOMAIN-SUFFIX,demdex.net
+DOMAIN-SUFFIX,customer.io
 DOMAIN-SUFFIX,partwithner.com
 DOMAIN-SUFFIX,twinrdsyte.com
 DOMAIN-SUFFIX,thecatmachine.com
