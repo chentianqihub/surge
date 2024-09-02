@@ -826,7 +826,7 @@ sudo tee "$service_file" > /dev/null <<-EOF
 
 	[Service]
 	Type=simple
-	ExecStart=${Shadow_TLS_FILE} --v3 server --listen 0.0.0.0:${SHADOW_TLS_PORT} --server 127.0.0.1:${port} --tls ${SHADOW_TLS_SNI} --password JsJeWtjiUyJ5yeto
+	ExecStart=${Shadow_TLS_FILE} --v3 server --listen 0.0.0.0:${SHADOW_TLS_PORT} --server 127.0.0.1:${port} --tls ${SHADOW_TLS_SNI} --password ${SHADOW_TLS_PWD}
 	StandardOutput=syslog
 	StandardError=syslog
 	SyslogIdentifier=shadow-tls
@@ -854,7 +854,7 @@ EOF
             fi
             echo -e "—————————————————————————" && exit 1
         else
-            echo "服务未在运行状态"
+            echo -e "${Error} 服务未在运行状态"
         fi
     else
         echo -e "${Error} 错误: 启动 shadow-tls 服务失败"
@@ -1081,7 +1081,7 @@ EOF
             fi
             echo -e "—————————————————————————" && exit 1
         else
-            echo -e "${Error}${Red_font_prefix}服务未在运行状态,请手动检查${Font_color_suffix}"
+            echo -e "${Error} 服务未在运行状态,请手动检查"
             systemctl status shadow-tls.service
         fi
     else
@@ -1138,7 +1138,7 @@ EOF
             fi
             echo -e "—————————————————————————" && exit 1
         else
-            echo -e "${Error}${Red_font_prefix}服务未在运行状态,请手动检查${Font_color_suffix}"
+            echo -e "${Error} 服务未在运行状态,请手动检查"
             systemctl status shadow-tls.service
         fi
     else
@@ -1195,7 +1195,7 @@ EOF
             fi
             echo -e "—————————————————————————" && exit 1
         else
-            echo -e "${Error}${Red_font_prefix}服务未在运行状态,请手动检查${Font_color_suffix}"
+            echo -e "${Error} 服务未在运行状态,请手动检查"
             systemctl status shadow-tls.service
         fi
     else
@@ -1261,7 +1261,7 @@ sudo tee "$service_file" > /dev/null <<-EOF
 
 	[Service]
 	Type=simple
-	ExecStart=${Shadow_TLS_FILE} --v3 server --listen 0.0.0.0:${SHADOW_TLS_PORT} --server 127.0.0.1:${port} --tls ${SHADOW_TLS_SNI} --password JsJeWtjiUyJ5yeto
+	ExecStart=${Shadow_TLS_FILE} --v3 server --listen 0.0.0.0:${SHADOW_TLS_PORT} --server 127.0.0.1:${port} --tls ${SHADOW_TLS_SNI} --password ${SHADOW_TLS_PWD}
 	StandardOutput=syslog
 	StandardError=syslog
 	SyslogIdentifier=shadow-tls
@@ -1288,7 +1288,7 @@ EOF
             fi
             echo -e "—————————————————————————" && exit 1
         else
-            echo "服务未在运行状态"
+            echo -e "${Error} 服务未在运行状态"
         fi
     else
         echo -e "${Error} 错误: 启动 shadow-tls 服务失败"
@@ -1403,7 +1403,7 @@ Snell Server 管理脚本 ${Red_font_prefix}[v${sh_ver}]${Font_color_suffix}
 	if [[ -e ${FILE} ]]; then
 	        #check_status
 		status=`systemctl status snell-server | grep Active | awk '{print $3}' | cut -d "(" -f2 | cut -d ")" -f1`
-                getVer
+                getVer > /dev/null 2>&1
 		if [[ "$status" == "running" ]]; then
 			echo -e " 当前Snell状态: ${Green_font_prefix}已安装${Yellow_font_prefix}[v${new_ver}]${Font_color_suffix}并${Green_font_prefix}已启动${Font_color_suffix}"
 		else
