@@ -187,7 +187,7 @@ v4_Download(){
 		echo -e "${Error} Snell Server ${Yellow_font_prefix}v4 官网源版${Font_color_suffix} 安装失败 !"
 		return 1 && exit 1
 	else
-		rm -rf "snell-server-v${new_ver} -linux-${arch}.zip"
+		rm -rf "snell-server-v${new_ver}-linux-${arch}.zip"
 		chmod +x snell-server
 		mv -f snell-server "${FILE}"
 		echo "v${new_ver}" > ${Now_ver_File}
@@ -387,7 +387,7 @@ Set_host(){
 }
 
 Set_tfo(){
-	echo -e "是否开启 TCP Fast Open ？
+	echo -e "是否开启 TCP Fast Open ?
 ==================================
 ${Green_font_prefix} 1.${Font_color_suffix} 开启  ${Green_font_prefix} 2.${Font_color_suffix} 关闭
 =================================="
