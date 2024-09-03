@@ -2,7 +2,7 @@
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
 export PATH
 
-sh_ver="1.6.5"
+sh_ver="1.6.6"
 filepath=$(cd "$(dirname "$0")"; pwd)
 file_1=$(echo -e "${filepath}"|awk -F "$0" '{print $1}')
 FOLDER="/etc/snell/"
@@ -124,10 +124,10 @@ getVer(){
 
 # v2 备用源
 v2_Download() {
-	echo -e "${Info} 默认开始下载 ${Yellow_font_prefix}v2 备用源版 ${Font_color_suffix}Snell Server ……"
+	echo -e "${Info} 默认开始下载 ${Yellow_font_prefix}v2 备用源版 ${Font_color_suffix}Snell Server ..."
 	wget --no-check-certificate -N "https://raw.githubusercontent.com/xOS/Others/master/snell/v2.0.6/snell-server-v2.0.6-linux-${arch}.zip"
 	if [[ ! -e "snell-server-v2.0.6-linux-${arch}.zip" ]]; then
-		echo -e "${Error} Snell Server ${Yellow_font_prefix}v2 备用源版${Font_color_suffix} 下载失败!"
+		echo -e "${Error} Snell Server ${Yellow_font_prefix}v2 备用源版${Font_color_suffix} 下载失败 !"
 		return 1 && exit 1
 	else
 		unzip -o "snell-server-v2.0.6-linux-${arch}.zip"
@@ -148,10 +148,10 @@ v2_Download() {
 
 # v3 备用源
 v3_Download() {
-	echo -e "${Info} 试图请求 ${Yellow_font_prefix}v3 备用源版${Font_color_suffix} Snell Server ……"
+	echo -e "${Info} 试图请求 ${Yellow_font_prefix}v3 备用源版${Font_color_suffix} Snell Server ..."
 	wget --no-check-certificate -N "https://raw.githubusercontent.com/xOS/Others/master/snell/v3.0.1/snell-server-v3.0.1-linux-${arch}.zip"
 	if [[ ! -e "snell-server-v3.0.1-linux-${arch}.zip" ]]; then
-		echo -e "${Error} Snell Server ${Yellow_font_prefix}v3 备用源版${Font_color_suffix} 下载失败!"
+		echo -e "${Error} Snell Server ${Yellow_font_prefix}v3 备用源版${Font_color_suffix} 下载失败 !"
 		return 1 && exit 1
 	else
 		unzip -o "snell-server-v3.0.1-linux-${arch}.zip"
@@ -177,7 +177,7 @@ v4_Download(){
 
 	wget --no-check-certificate -N "${snell_v4_url}"
 	if [[ ! -e "snell-server-v${new_ver}-linux-${arch}.zip" ]]; then
-		echo -e "${Error} Snell Server ${Yellow_font_prefix}v4 官网源版${Font_color_suffix} 下载失败!"
+		echo -e "${Error} Snell Server ${Yellow_font_prefix}v4 官网源版${Font_color_suffix} 下载失败 !"
 		return 1 && exit 1
 	else
 		unzip -o "snell-server-v${new_ver}-linux-${arch}.zip"
@@ -201,7 +201,7 @@ Install() {
 	if [[ ! -e "${FOLDER}" ]]; then
 		mkdir "${FOLDER}"
 	fi
-    [[ -e ${FILE} ]] && echo -e "${Error} 检测到 Snell Server 已安装 ,请先卸载再进行安装!" && exit 1
+    [[ -e ${FILE} ]] && echo -e "${Error} 检测到 Snell Server 已安装,请先卸载再进行安装 !" && exit 1
 		echo -e "选择安装版本${Yellow_font_prefix}[2-4]${Font_color_suffix} 
 ==================================
 ${Green_font_prefix} 2.${Font_color_suffix} v2  ${Green_font_prefix} 3.${Font_color_suffix} v3  ${Green_font_prefix} 4.${Font_color_suffix} v4
@@ -215,8 +215,9 @@ ${Green_font_prefix} 2.${Font_color_suffix} v2  ${Green_font_prefix} 3.${Font_co
 	elif [[ ${ver} == "4" ]]; then
 		Install_v4
 	else
-	     echo -e "${Red_font_prefix}[Warn]${Font_color_suffix} 无效输入! 将取默认值${Yellow_font_prefix}v4${Font_color_suffix}"
-		Install_v4
+	     echo -e "${Red_font_prefix}[Warn]${Font_color_suffix} 无效输入! 将取默认值${Yellow_font_prefix} v4${Font_color_suffix}"
+		ver="4"
+                Install_v4
 	fi
 }
 
@@ -253,6 +254,7 @@ dns = ${dns}
 version = ${ver}
 EOF
 }
+
 Read_config(){
 	[[ ! -e ${CONF} ]] && echo -e "${Error} Snell Server 配置文件不存在 !" && exit 1
 	ipv6=$(cat ${CONF}|grep 'ipv6 = '|awk -F 'ipv6 = ' '{print $NF}')
@@ -261,13 +263,15 @@ Read_config(){
 	obfs=$(cat ${CONF}|grep 'obfs = '|awk -F 'obfs = ' '{print $NF}')
 	host=$(cat ${CONF}|grep 'obfs-host = '|awk -F 'obfs-host = ' '{print $NF}')
 	tfo=$(cat ${CONF}|grep 'tfo = '|awk -F 'tfo = ' '{print $NF}')
+        dns=$(cat ${CONF}|grep 'dns = '|awk -F 'dns = ' '{print $NF}')
 	ver=$(cat ${CONF}|grep 'version = '|awk -F 'version = ' '{print $NF}')
 }
+
 Set_port(){
     # 循环直到用户输入有效且未被占用的端口值
     while true; do
         echo -e "请输入 Snell Server 端口${Yellow_font_prefix}[1-65535]${Font_color_suffix}"
-        read -e -p "(默认: 2345):" port
+        read -e -p "(默认: 2345): " port
         [[ -z "${port}" ]] && port="2345"
 
         # 检查输入的端口是否为数字并在有效范围内
@@ -282,7 +286,7 @@ Set_port(){
                 break
             fi
         else
-            echo "输入错误, 请输入正确的端口。"
+            echo -e "${Error} 输入错误, 请输入正确的端口 !"
         fi
     done
 }
@@ -292,7 +296,7 @@ Set_ipv6(){
 ==================================
 ${Green_font_prefix} 1.${Font_color_suffix} 开启  ${Green_font_prefix} 2.${Font_color_suffix} 关闭
 =================================="
-	read -e -p "(默认：2.关闭)：" ipv6
+	read -e -p "(默认: 2.关闭): " ipv6
 	[[ -z "${ipv6}" ]] && ipv6="2"
 	if [[ ${ipv6} == "1" ]]; then
 		ipv6=true
@@ -300,37 +304,54 @@ ${Green_font_prefix} 1.${Font_color_suffix} 开启  ${Green_font_prefix} 2.${Fon
 		ipv6=false
 	fi
 	echo && echo "=================================="
-	echo -e "IPv6 解析 开启状态：${Red_background_prefix} ${ipv6} ${Font_color_suffix}"
+	echo -e "IPv6 解析 开启状态: ${Red_background_prefix} ${ipv6} ${Font_color_suffix}"
 	echo "==================================" && echo
 }
 
 Set_psk(){
 	echo -e "请输入 Snell Server 密钥 [0-9][a-z][A-Z]"
-	read -e -p "(默认: 随机生成):" psk
+	read -e -p "(默认: 随机生成): " psk
 	[[ -z "${psk}" ]] && psk=$(tr -dc A-Za-z0-9 </dev/urandom | head -c 16)
 	echo && echo "=============================="
 	echo -e "密钥 : ${Red_background_prefix} ${psk} ${Font_color_suffix}"
 	echo "==============================" && echo
 }
 
-Set_obfs(){
+Set_obfs() {
+    if [[ ${ver} == "4" ]]; then
     echo -e "配置 OBFS, ${Tip} 无特殊作用不建议启用该项
+==================================
+${Green_font_prefix} 1.${Font_color_suffix} HTTP ${Green_font_prefix} 2.${Font_color_suffix} 关闭
+=================================="
+        read -e -p "(默认: 2.关闭): " obfs_input
+        [[ -z "${obfs_input}" ]] && obfs_input="2"
+        if [[ ${obfs_input} == "1" ]]; then
+            obfs="http"
+        elif [[ ${obfs_input} == "2" ]]; then
+            obfs="off"
+        else
+            obfs="off"
+        fi
+    else
+        echo -e "配置 OBFS, ${Tip} 无特殊作用不建议启用该项
 ==================================
 ${Green_font_prefix} 1.${Font_color_suffix} TLS  ${Green_font_prefix} 2.${Font_color_suffix} HTTP ${Green_font_prefix} 3.${Font_color_suffix} 关闭
 =================================="
-    read -e -p "(默认：3.关闭)：" obfs_input
-    [[ -z "${obfs_input}" ]] && obfs_input="3"
-    if [[ ${obfs_input} == "1" ]]; then
-        obfs="tls"
-    elif [[ ${obfs_input} == "2" ]]; then
-        obfs="http"
-    elif [[ ${obfs_input} == "3" ]]; then
-        obfs="off"
-    else
-        obfs="off"
+        read -e -p "(默认: 3.关闭): " obfs_input
+        [[ -z "${obfs_input}" ]] && obfs_input="3"
+        if [[ ${obfs_input} == "1" ]]; then
+            obfs="tls"
+        elif [[ ${obfs_input} == "2" ]]; then
+            obfs="http"
+        elif [[ ${obfs_input} == "3" ]]; then
+            obfs="off"
+        else
+            obfs="off"
+        fi
     fi
+
     echo && echo "=================================="
-    echo -e "OBFS 状态：${Red_background_prefix} ${obfs} ${Font_color_suffix}"
+    echo -e "OBFS 状态: ${Red_background_prefix} ${obfs} ${Font_color_suffix}"
     echo "==================================" && echo
 }
 
@@ -339,7 +360,7 @@ Set_ver(){
 ==================================
 ${Green_font_prefix} 2.${Font_color_suffix} v2 ${Green_font_prefix} 3.${Font_color_suffix} v3 ${Green_font_prefix} 4.${Font_color_suffix} v4 
 =================================="
-	read -e -p "(默认：4.v4)：" ver
+	read -e -p "(默认: 4.v4): " ver
 	[[ -z "${ver}" ]] && ver="4"
 	if [[ ${ver} == "2" ]]; then
 		ver=2
@@ -348,20 +369,20 @@ ${Green_font_prefix} 2.${Font_color_suffix} v2 ${Green_font_prefix} 3.${Font_col
 	elif [[ ${ver} == "4" ]]; then
 		ver=4
 	else
-	     echo -e "${Red_font_prefix}[Warn]${Font_color_suffix} 无效输入! 将取默认值${Yellow_font_prefix}v4${Font_color_suffix}"
+	     echo -e "${Red_font_prefix}[Warn]${Font_color_suffix} 无效输入! 将取默认值${Yellow_font_prefix} v4${Font_color_suffix}"
 		ver=4
 	fi
 	echo && echo "=================================="
-	echo -e "Snell Server 协议版本：${Red_background_prefix} ${ver} ${Font_color_suffix}"
+	echo -e "Snell Server 协议版本: ${Red_background_prefix} ${ver} ${Font_color_suffix}"
 	echo "==================================" && echo
 }
 
 Set_host(){
 	echo "请输入 Snell Server 域名 "
-	read -e -p "(默认: icloud.com):" host
+	read -e -p "(默认: icloud.com): " host
 	[[ -z "${host}" ]] && host=icloud.com
 	echo && echo "=============================="
-	echo -e "	域名 : ${Red_background_prefix} ${host} ${Font_color_suffix}"
+	echo -e "域名 : ${Red_background_prefix} ${host} ${Font_color_suffix}"
 	echo "==============================" && echo
 }
 
@@ -370,7 +391,7 @@ Set_tfo(){
 ==================================
 ${Green_font_prefix} 1.${Font_color_suffix} 开启  ${Green_font_prefix} 2.${Font_color_suffix} 关闭
 =================================="
-	read -e -p "(默认：1.开启)：" tfo
+	read -e -p "(默认: 1.开启): " tfo
 	[[ -z "${tfo}" ]] && tfo="1"
 	if [[ ${tfo} == "1" ]]; then
 		tfo=true
@@ -379,13 +400,13 @@ ${Green_font_prefix} 1.${Font_color_suffix} 开启  ${Green_font_prefix} 2.${Fon
 		tfo=false
 	fi
 	echo && echo "=================================="
-	echo -e "TCP Fast Open 开启状态：${Red_background_prefix} ${tfo} ${Font_color_suffix}"
+	echo -e "TCP Fast Open 开启状态: ${Red_background_prefix} ${tfo} ${Font_color_suffix}"
 	echo "==================================" && echo
 }
 
 Set_dns(){
-	echo -e "${Tip} 请输入正确格式的的 DNS,多条记录以英文逗号隔开,仅支持 v4.1.0b1 版本及以上。"
-	read -e -p "(默认值：8.8.8.8, 1.1.1.1, 2001:4860:4860::8888)：" dns
+	echo -e "${Tip} 请输入正确格式的的 DNS, 多条记录以英文逗号隔开, 仅支持 ${Yellow_font_prefix}[v4.1.0b1]${Font_color_suffix} 及以上版本"
+	read -e -p "(默认值: 8.8.8.8, 1.1.1.1, 2001:4860:4860::8888): " dns
 	[[ -z "${dns}" ]] && dns="8.8.8.8, 1.1.1.1, 2001:4860:4860::8888"
 	echo && echo "=================================="
 	echo -e "当前 DNS 为：${Red_background_prefix} ${dns} ${Font_color_suffix}"
@@ -394,18 +415,22 @@ Set_dns(){
 
 Set(){
 	check_installed_status
-	echo && echo -e "请输入要操作配置项的序号,然后回车
+	echo
+	echo -e "请输入要操作配置项的序号,然后回车
 ==============================
  ${Green_font_prefix}1.${Font_color_suffix}  修改 端口
  ${Green_font_prefix}2.${Font_color_suffix}  修改 密钥
  ${Green_font_prefix}3.${Font_color_suffix}  配置 OBFS
  ${Green_font_prefix}4.${Font_color_suffix}  配置 OBFS 域名
  ${Green_font_prefix}5.${Font_color_suffix}  开关 IPv6 解析
- ${Green_font_prefix}6.${Font_color_suffix}  开关 TCP Fast Open
- ${Green_font_prefix}7.${Font_color_suffix}  配置 DNS
- ${Green_font_prefix}8.${Font_color_suffix}  配置 Snell Server 协议版本
+ ${Green_font_prefix}6.${Font_color_suffix}  开关 TCP Fast Open"
+
+if [[ -n "${dns}" ]]; then
+    echo -e " ${Green_font_prefix}7.${Font_color_suffix}  配置 DNS"
+    echo -e " ${Green_font_prefix}8.${Font_color_suffix}  配置 Snell Server 协议版本
 ==============================
- ${Green_font_prefix}9.${Font_color_suffix}  修改 全部配置" && echo
+ ${Green_font_prefix}9.${Font_color_suffix}  修改 全部配置"
+        echo
 	read -e -p "(默认: 取消):" modify
 	[[ -z "${modify}" ]] && echo "已取消..." && exit 1
 	if [[ "${modify}" == "1" ]]; then
@@ -416,7 +441,7 @@ Set(){
 		Set_host=${host}
 		Set_ipv6=${ipv6}
 		Set_tfo=${tfo}
-    Set_dns=${dns}
+                Set_dns=${dns}
 		Set_ver=${ver}
 		Write_config
 		Restart
@@ -428,7 +453,7 @@ Set(){
 		Set_host=${host}
 		Set_ipv6=${ipv6}
 		Set_tfo=${tfo}
-    Set_dns=${dns}
+                Set_dns=${dns}
 		Set_ver=${ver}
 		Write_config
 		Restart
@@ -440,7 +465,7 @@ Set(){
 		Set_host=${host}
 		Set_ipv6=${ipv6}
 		Set_tfo=${tfo}
-    Set_dns=${dns}
+                Set_dns=${dns}
 		Set_ver=${ver}
 		Write_config
 		Restart
@@ -452,7 +477,7 @@ Set(){
 		Set_host
 		Set_ipv6=${ipv6}
 		Set_tfo=${tfo}
-    Set_dns=${dns}
+                Set_dns=${dns}
 		Set_ver=${ver}
 		Write_config
 		Restart
@@ -464,7 +489,7 @@ Set(){
 		Set_host=${host}
 		Set_ipv6
 		Set_tfo=${tfo}
-    Set_dns=${dns}
+                Set_dns=${dns}
 		Set_ver=${ver}
 		Write_config
 		Restart
@@ -476,7 +501,7 @@ Set(){
 		Set_host=${host}
 		Set_ipv6=${ipv6}
 		Set_tfo
-    Set_dns=${dns}
+                Set_dns=${dns}
 		Set_ver=${ver}
 		Write_config
 		Restart
@@ -504,8 +529,8 @@ Set(){
 		Set_ver
 		Write_config
 		Restart
-  elif [[ "${modify}" == "9" ]]; then
-    Read_config
+         elif [[ "${modify}" == "9" ]]; then
+                Read_config
 		Set_port
 		Set_psk
 		Set_obfs
@@ -516,9 +541,118 @@ Set(){
 		Set_ver
 		Write_config
 		Restart
-	else
+	 else
 		echo -e "${Error} 请输入正确的数字${Yellow_font_prefix}[1-9]${Font_color_suffix}" && exit 1
-	fi
+	 fi
+else
+    echo -e " ${Green_font_prefix}7.${Font_color_suffix}  配置 Snell Server 协议版本
+==============================
+ ${Green_font_prefix}8.${Font_color_suffix}  修改 全部配置"
+        echo
+	read -e -p "(默认: 取消):" modify
+	[[ -z "${modify}" ]] && echo "已取消..." && exit 1
+	if [[ "${modify}" == "1" ]]; then
+		Read_config
+		Set_port
+		Set_psk=${psk}
+		Set_obfs=${obfs}
+		Set_host=${host}
+		Set_ipv6=${ipv6}
+		Set_tfo=${tfo}
+                Set_dns=${dns}
+		Set_ver=${ver}
+		Write_config
+		Restart
+	elif [[ "${modify}" == "2" ]]; then
+		Read_config
+		Set_port=${port}
+		Set_psk
+		Set_obfs=${obfs}
+		Set_host=${host}
+		Set_ipv6=${ipv6}
+		Set_tfo=${tfo}
+                Set_dns=${dns}
+		Set_ver=${ver}
+		Write_config
+		Restart
+	elif [[ "${modify}" == "3" ]]; then
+		Read_config
+		Set_port=${port}
+		Set_psk=${psk}
+		Set_obfs
+		Set_host=${host}
+		Set_ipv6=${ipv6}
+		Set_tfo=${tfo}
+                Set_dns=${dns}
+		Set_ver=${ver}
+		Write_config
+		Restart
+	elif [[ "${modify}" == "4" ]]; then
+		Read_config
+		Set_port=${port}
+		Set_psk=${psk}
+		Set_obfs=${obfs}
+		Set_host
+		Set_ipv6=${ipv6}
+		Set_tfo=${tfo}
+                Set_dns=${dns}
+		Set_ver=${ver}
+		Write_config
+		Restart
+	elif [[ "${modify}" == "5" ]]; then
+		Read_config
+		Set_port=${port}
+		Set_psk=${psk}
+		Set_obfs=${obfs}
+		Set_host=${host}
+		Set_ipv6
+		Set_tfo=${tfo}
+                Set_dns=${dns}
+		Set_ver=${ver}
+		Write_config
+		Restart
+	elif [[ "${modify}" == "6" ]]; then
+		Read_config
+		Set_port=${port}
+		Set_psk=${psk}
+		Set_obfs=${obfs}
+		Set_host=${host}
+		Set_ipv6=${ipv6}
+		Set_tfo
+                Set_dns=${dns}
+		Set_ver=${ver}
+		Write_config
+		Restart
+	elif [[ "${modify}" == "7" ]]; then
+		Read_config
+		Set_port=${port}
+		Set_psk=${psk}
+		Set_obfs=${obfs}
+		Set_host=${host}
+		Set_ipv6=${ipv6}
+		Set_tfo=${tfo}
+		Set_ver
+		if [[ ${ver} == "4" ]]; then
+		Set_dns
+		fi
+		Write_config
+		Restart
+        elif [[ "${modify}" == "8" ]]; then
+                Read_config
+		Set_port
+		Set_psk
+		Set_obfs
+		Set_host
+		Set_ipv6
+		Set_tfo
+		Set_dns
+		Set_ver
+		Write_config
+		Restart
+        else
+		echo -e "${Error} 请输入正确的数字${Yellow_font_prefix}[1-9]${Font_color_suffix}" && exit 1
+        fi
+fi
     sleep 3s
     start_menu
 }
@@ -531,7 +665,7 @@ Install_v2(){
 	Set_psk
 	Set_obfs  
      if [[ "${obfs}" != "off" ]]; then
-        Set_host  # 只有当 obfs 不是 "off" 时才调用
+        Set_host  
      fi
 	Set_ipv6
 	Set_tfo
@@ -557,7 +691,7 @@ Install_v3(){
 	Set_psk
 	Set_obfs  
      if [[ "${obfs}" != "off" ]]; then
-        Set_host  # 只有当 obfs 不是 "off" 时才调用
+        Set_host  
      fi
 	Set_ipv6
 	Set_tfo
@@ -587,7 +721,7 @@ Install_v4(){
      fi
 	Set_ipv6
 	Set_tfo
-  Set_dns
+        Set_dns
 	echo -e "${Info} 开始安装/配置 依赖..."
 	Installation_dependency
 	echo -e "${Info} 开始下载/安装..."
@@ -684,7 +818,8 @@ Uninstall(){
             echo "删除配置文件失败,请手动检查"
         fi
 
-        echo && echo -e "${Yellow_font_prefix}Snell Server 卸载完成 !${Font_color_suffix}" && echo
+        echo -e "—————————————————————————"
+	echo -e "${Yellow_font_prefix}Snell Server 卸载完成 !${Font_color_suffix}" && echo
     else
         echo && echo "卸载已取消..." && echo
     fi
@@ -704,6 +839,7 @@ getipv4(){
 		fi
 	fi
 }
+
 getipv6(){
 	ip6=$(wget -qO- -6 -t1 -T2 ifconfig.co)
 	if [[ -z "${ip6}" ]]; then
@@ -717,16 +853,21 @@ View(){
 	getipv4
 	getipv6
 	clear && echo
-	echo -e "Snell Server 配置信息："
+	echo -e "Snell Server 配置信息: "
 	echo -e "—————————————————————————"
 	[[ "${ipv4}" != "IPv4_Error" ]] && echo -e " 地址\t: ${Green_font_prefix}${ipv4}${Font_color_suffix}"
 	[[ "${ip6}" != "IPv6_Error" ]] && echo -e " 地址\t: ${Green_font_prefix}${ip6}${Font_color_suffix}"
 	echo -e " 端口\t: ${Green_font_prefix}${port}${Font_color_suffix}"
 	echo -e " 密钥\t: ${Green_font_prefix}${psk}${Font_color_suffix}"
 	echo -e " OBFS\t: ${Green_font_prefix}${obfs}${Font_color_suffix}"
-	echo -e " 域名\t: ${Green_font_prefix}${host}${Font_color_suffix}"
+        if [[ -n "${host}" ]]; then
+        echo -e " 域名\t: ${Green_font_prefix}${host}${Font_color_suffix}"
+        fi
 	echo -e " IPv6\t: ${Green_font_prefix}${ipv6}${Font_color_suffix}"
 	echo -e " TFO\t: ${Green_font_prefix}${tfo}${Font_color_suffix}"
+        if [[ -n "${dns}" ]]; then
+	echo -e " DNS\t: ${Green_font_prefix}${dns}${Font_color_suffix}"
+	fi
 	echo -e " VER\t: ${Green_font_prefix}${ver}${Font_color_suffix}"
 	echo -e "—————————————————————————"
 	echo
@@ -734,9 +875,17 @@ View(){
 }
 
 Status(){
-	echo -e "${Info} 获取 Snell Server 活动日志 ……"
+	echo -e "${Info} 获取 Snell Server 活动日志 ..."
 	echo -e "${Tip} ${Yellow_font_prefix}返回主菜单请按 q${Font_color_suffix} "
 	systemctl status snell-server
+        sleep 1s
+	start_menu
+}
+
+Journal(){
+        echo -e "${Info} 获取 Snell Server 服务日志 ..."
+	journalctl -u snell
+	sleep 2s 
 	start_menu
 }
 
@@ -879,15 +1028,15 @@ Uninstall_Shadow_TLS(){
             if [[ $? -eq 0 ]]; then
             echo -e "${Blue_font_prefix}shadow-tls 服务已停止${Font_color_suffix}"
             else
-            echo "停止服务失败,请手动检查"
-           fi
+            echo -e "${Error} 停止服务失败,请手动检查"
+            fi
            
             echo "正在禁用 shadow-tls 服务..."
             sudo systemctl disable shadow-tls.service
             if [[ $? -eq 0 ]]; then
             echo -e "${Blue_font_prefix}shadow-tls 服务已禁用${Font_color_suffix}"
             else
-            echo "禁用服务失败,请手动检查"
+            echo -e "${Error} 禁用服务失败,请手动检查"
             fi
         else
             echo -e "${Warn} shadow-tls 服务已被禁用"
@@ -896,8 +1045,8 @@ Uninstall_Shadow_TLS(){
             if [[ $? -eq 0 ]]; then
             echo -e "${Blue_font_prefix}shadow-tls 服务已停止${Font_color_suffix}"
             else
-            echo "停止服务失败,请手动检查"
-           fi
+            echo -e "${Warn} 停止服务失败,请手动检查"
+            fi
         fi
 
         # 检查服务文件是否存在并删除
@@ -907,15 +1056,14 @@ Uninstall_Shadow_TLS(){
             if [[ $? -eq 0 ]]; then
             echo -e "${Blue_font_prefix}shadow-tls 服务文件已删除${Font_color_suffix}"
             else
-            echo "停止服务失败,请手动检查"
-           fi
-           
+            echo -e "${Error} 删除服务文件失败,请手动检查"
+            fi
             echo "重新加载 systemd 配置..."
             sudo systemctl daemon-reload
             echo "重置 systemd 失败状态..."
             sudo systemctl reset-failed
         else
-            echo "服务文件不存在,无需删除"
+            echo -e "${Warn} 服务文件不存在,无需删除"
         fi
 
         # 删除检查可执行文件
@@ -924,9 +1072,10 @@ Uninstall_Shadow_TLS(){
             if [[ $? -eq 0 ]]; then
             echo -e "${Blue_font_prefix}shadow-tls 可执行文件删除完成${Font_color_suffix}"
             else
-            echo "删除shadow-tls 可执行文件失败,请手动检查"
+            echo -e "${Error} 删除shadow-tls 可执行文件失败,请手动检查"
             fi
-
+        
+	echo -e "—————————————————————————"
         echo -e "${Yellow_font_prefix}Shadow-TLS 服务已成功卸载 !${Font_color_suffix}"
     else
         echo && echo "卸载已取消..." && echo
@@ -965,18 +1114,27 @@ Restart_Shadow_TLS(){
 }
 
 Status_Shadow_TLS(){
-	echo -e "${Info} 获取 Shadow_TLS 活动日志 ……"
-	if systemctl is-enabled --quiet shadow-tls.service; then
+	echo -e "${Info} 获取 Shadow_TLS 运行状态 ..."
+	#if systemctl is-enabled --quiet shadow-tls.service; then
+        if [[ -e ${Shadow_TLS_FILE} ]]; then
 	echo -e "${Tip} ${Yellow_font_prefix}返回主菜单请按 q${Font_color_suffix} "
 	else
             echo -e "${Error} ${Red_font_prefix}shadow-tls 服务未安装${Font_color_suffix}"
 	fi
 	systemctl status shadow-tls
+        sleep 1s
+	start_menu
+}
+
+Journal_Shadow_TLS(){
+        echo -e "${Info} 获取 Shadow-TLS 服务日志 ..."
+        echo -e "${Tip} ${Yellow_font_prefix}返回主菜单请按 q${Font_color_suffix} "
+	journalctl -u shadow-tls
 	start_menu
 }
 
 check_Shadow_TLS_installed_status(){
-	[[ ! -e "/usr/local/bin/shadow-tls" ]] && echo -e "${Error} Shadow-TLS 没有安装,请检查 !" && exit 1
+	[[ ! -e ${Shadow_TLS_FILE} ]] && echo -e "${Error} Shadow-TLS 没有安装,请检查 !" && exit 1
 }
 
 check_Shadow_TLS_status(){
@@ -1386,35 +1544,46 @@ Snell Server 管理脚本 ${Red_font_prefix}[v${sh_ver}]${Font_color_suffix}
  ${Green_font_prefix} 6.${Font_color_suffix} 设置 Snell配置信息
  ${Green_font_prefix} 7.${Font_color_suffix} 查看 Snell配置信息
  ${Green_font_prefix} 8.${Font_color_suffix} 查看 Snell运行状态
+ ${Green_font_prefix} 9.${Font_color_suffix} 查看 Snell实时日志
 ——————————————————————————————
- ${Green_font_prefix} 9.${Font_color_suffix} 退出脚本
+ ${Green_font_prefix} 10.${Font_color_suffix} 退出脚本
 ——————————————————————————————
- ${Green_font_prefix} 10.${Font_color_suffix} 安装 Shadow-TLS
- ${Green_font_prefix} 11.${Font_color_suffix} 卸载 Shadow-TLS
+ ${Green_font_prefix} 11.${Font_color_suffix} 安装 Shadow-TLS
+ ${Green_font_prefix} 12.${Font_color_suffix} 卸载 Shadow-TLS
 ——————————————————————————————
- ${Green_font_prefix} 12.${Font_color_suffix} 启动 Shadow-TLS
- ${Green_font_prefix} 13.${Font_color_suffix} 停止 Shadow-TLS
- ${Green_font_prefix} 14.${Font_color_suffix} 重启 Shadow-TLS
+ ${Green_font_prefix} 13.${Font_color_suffix} 启动 Shadow-TLS
+ ${Green_font_prefix} 14.${Font_color_suffix} 停止 Shadow-TLS
+ ${Green_font_prefix} 15.${Font_color_suffix} 重启 Shadow-TLS
 ——————————————————————————————
- ${Green_font_prefix} 15.${Font_color_suffix} 查看 Shadow-TLS运行状态
- ${Green_font_prefix} 16.${Font_color_suffix} 查看 Shadow-TLS服务文件
- ${Green_font_prefix} 17.${Font_color_suffix} 设置 Shadow-TLS配置信息
+ ${Green_font_prefix} 16.${Font_color_suffix} 查看 Shadow-TLS运行状态
+ ${Green_font_prefix} 17.${Font_color_suffix} 查看 Shadow-TLS实时日志
+ ${Green_font_prefix} 18.${Font_color_suffix} 查看 Shadow-TLS服务文件
+ ${Green_font_prefix} 19.${Font_color_suffix} 设置 Shadow-TLS配置信息
 ==============================" && echo
 	if [[ -e ${FILE} ]]; then
 	        #check_status
 		status=`systemctl status snell-server | grep Active | awk '{print $3}' | cut -d "(" -f2 | cut -d ")" -f1`
+                version=$(cat ${CONF}|grep 'version = '|awk -F 'version = ' '{print $NF}')
                 getVer > /dev/null 2>&1
-		if [[ "$status" == "running" ]]; then
-			echo -e " 当前Snell状态: ${Green_font_prefix}已安装${Yellow_font_prefix}[v${new_ver}]${Font_color_suffix}并${Green_font_prefix}已启动${Font_color_suffix}"
-		else
-			echo -e " 当前Snell状态: ${Green_font_prefix}已安装${Yellow_font_prefix}[v${new_ver}]${Font_color_suffix}但${Red_font_prefix}未启动${Font_color_suffix}"
-		fi
+		if [[ "$version" == "4" ]]; then
+                   if [[ "$status" == "running" ]]; then
+                       echo -e " 当前Snell状态: ${Green_font_prefix}已安装${Yellow_font_prefix}[v${new_ver}]${Font_color_suffix}并${Green_font_prefix}已启动${Font_color_suffix}"
+                   else
+                       echo -e " 当前Snell状态: ${Green_font_prefix}已安装${Yellow_font_prefix}[v${new_ver}]${Font_color_suffix}但${Red_font_prefix}未启动${Font_color_suffix}"
+                   fi
+                else
+                   if [[ "$status" == "running" ]]; then
+                       echo -e " 当前Snell状态: ${Green_font_prefix}已安装${Yellow_font_prefix}[v$(cat ${CONF} | grep 'version = ' | awk -F 'version = ' '{print $NF}')]${Font_color_suffix}并${Green_font_prefix}已启动${Font_color_suffix}"
+                   else
+                       echo -e " 当前Snell状态: ${Green_font_prefix}已安装${Yellow_font_prefix}[v$(cat ${CONF} | grep 'version = ' | awk -F 'version = ' '{print $NF}')]${Font_color_suffix}但${Red_font_prefix}未启动${Font_color_suffix}"
+                   fi
+                fi
 	else
 		echo -e " 当前Snell状态: ${Red_font_prefix}未安装${Font_color_suffix}"
 	fi
 	
 	if [[ -e ${Shadow_TLS_FILE} ]]; then
-		check_Shadow_TLS_status
+		check_Shadow_TLS_status > /dev/null 2>&1
 		SHADOW_TLS_VERSION=$(curl -s "https://api.github.com/repos/ihciah/shadow-tls/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
 		if [[ "$shadow_tls_status" == "running" ]]; then
 			echo -e " 当前Shadow-TLS状态: ${Green_font_prefix}已安装${Yellow_font_prefix}[${SHADOW_TLS_VERSION}]${Font_color_suffix}并${Green_font_prefix}已启动${Font_color_suffix}"
@@ -1425,7 +1594,7 @@ Snell Server 管理脚本 ${Red_font_prefix}[v${sh_ver}]${Font_color_suffix}
 		echo -e " 当前Shadow-TLS状态: ${Red_font_prefix}未安装${Font_color_suffix}"
 	fi
 	echo
-	read -e -p " 请输入数字[0-17]（默认值: 1）:" num
+	read -e -p " 请输入数字[0-19]（默认值: 1）: " num
 	
      # 如果用户未输入值,则使用默认值1
      [[ -z "$num" ]] && num=1
@@ -1459,34 +1628,40 @@ Snell Server 管理脚本 ${Red_font_prefix}[v${sh_ver}]${Font_color_suffix}
 		Status
 		;;
 		9)
-		exit 1
+		Journal
 		;;
 		10)
+		exit 1
+		;;
+                11)
                 Install_Shadow_TLS
                 ;;
-                11)
+                12)
                 Uninstall_Shadow_TLS
                 ;;
-                12)
+                13)
                 Start_Shadow_TLS
                 ;;
-                13)
+                14)
                 Stop_Shadow_TLS
                 ;;
-                14)
+                15)
                 Restart_Shadow_TLS
                 ;;
-                15)
+                16)
                 Status_Shadow_TLS
                 ;;
-                16)
+                17)
+                Journal_Shadow_TLS
+                ;;
+                18)
                 View_Shadow_TLS
                 ;;
-                17)
+                19)
                 Set_Shadow_TLS
                 ;;
 		*)
-		echo -e "请输入正确数字${Yellow_font_prefix}[0-17]${Font_color_suffix}"
+		echo -e "${Error} 请输入正确数字${Yellow_font_prefix}[0-19]${Font_color_suffix}"
 		;;
 	esac
 }
