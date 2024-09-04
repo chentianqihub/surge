@@ -1,3 +1,4 @@
+DOMAIN,tr.line.me
 DOMAIN,exp.notion.so
 DOMAIN,api.sprig.com
 DOMAIN,hartattenuate.com
@@ -117,6 +118,7 @@ DOMAIN,px.effirst.com
 DOMAIN,qzs.gdtimg.com
 DOMAIN,dataflow.biliapi.com
 DOMAIN,data.bilibili.com
+DOMAIN,live-trace.bilibili.com
 DOMAIN,app-site-association.cdn-apple.com
 DOMAIN,app-measurement.com
 DOMAIN,static.addtoany.com
@@ -139,6 +141,7 @@ DOMAIN-KEYWORD,.lkqd
 DOMAIN-WILDCARD,log*-misc-lf.amemv.com
 DOMAIN-WILDCARD,mmfayl-*.appsflyersdk.com
 DOMAIN-WILDCARD,ced*.sascdn.com
+DOMAIN-SUFFIX,popin.cc
 DOMAIN-SUFFIX,npttech.com
 DOMAIN-SUFFIX,demdex.net
 DOMAIN-SUFFIX,customer.io
