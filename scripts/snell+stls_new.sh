@@ -2,7 +2,7 @@
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
 export PATH
 
-sh_ver="1.6.8"
+sh_ver="1.6.9"
 filepath=$(cd "$(dirname "$0")"; pwd)
 file_1=$(echo -e "${filepath}"|awk -F "$0" '{print $1}')
 FOLDER="/etc/snell/"
@@ -451,7 +451,7 @@ if [[ -n "${dns}" ]]; then
 ==============================
  ${Green_font_prefix}9.${Font_color_suffix}  修改 全部配置"
         echo
-	read -e -p "(默认: 取消):" modify
+	read -e -p "(默认: 取消): " modify
 	[[ -z "${modify}" ]] && echo "已取消..." && exit 1
 	if [[ "${modify}" == "1" ]]; then
 		Read_config
@@ -494,7 +494,10 @@ if [[ -n "${dns}" ]]; then
 		Set_port=${port}
 		Set_psk=${psk}
 		Set_obfs=${obfs}
-		Set_host
+		if [[ "${obfs}" = "off" ]]; then
+		echo -e "${Error} 当前 obfs 处于关闭状态, 请先开启后再设置 obfs-host" && exit 1
+		else Set_host
+		fi
 		Set_ipv6=${ipv6}
 		Set_tfo=${tfo}
                 Set_dns=${dns}
@@ -573,7 +576,7 @@ else
 ==============================
  ${Green_font_prefix}8.${Font_color_suffix}  修改 全部配置"
         echo
-	read -e -p "(默认: 取消):" modify
+	read -e -p "(默认: 取消): " modify
 	[[ -z "${modify}" ]] && echo "已取消..." && exit 1
 	if [[ "${modify}" == "1" ]]; then
 		Read_config
@@ -616,7 +619,10 @@ else
 		Set_port=${port}
 		Set_psk=${psk}
 		Set_obfs=${obfs}
-		Set_host
+		if [[ "${obfs}" = "off" ]]; then
+		echo -e "${Error} 当前 obfs 处于关闭状态, 请先开启后再设置 obfs-host" && exit 1
+		else Set_host
+		fi
 		Set_ipv6=${ipv6}
 		Set_tfo=${tfo}
                 Set_dns=${dns}
@@ -815,7 +821,7 @@ Uninstall(){
     check_installed_status
     echo "确定要卸载 Snell Server ? (y/N)"
     echo
-    read -e -p "(默认: n):" unyn
+    read -e -p "(默认: n): " unyn
     [[ -z ${unyn} ]] && unyn="n"
     if [[ ${unyn} == [Yy] ]]; then
         echo "正在停止 Snell Server 服务..."
@@ -1055,7 +1061,7 @@ Uninstall_Shadow_TLS(){
     check_Shadow_TLS_installed_status
     echo "确定要卸载 Shadow-TLS ? (y/N)"
     echo
-    read -e -p "(默认: n):" ynun
+    read -e -p "(默认: n): " ynun
     [[ -z "${ynun}" ]] && ynun="n" # 如果用户没有输入,设置默认值为 'n'
     
     if [[ "${ynun}" =~ ^[Yy]$ ]]; then
@@ -1504,7 +1510,7 @@ Set_Shadow_TLS(){
  ${Green_font_prefix}3.${Font_color_suffix}  修改Shadow-TLS PASSWORD
  ==============================
  ${Green_font_prefix}4.${Font_color_suffix}  修改Shadow-TLS 全部配置"  && echo
-	read -e -p "(默认: 取消):" modify
+	read -e -p "(默认: 取消): " modify
 	[[ -z "${modify}" ]] && echo "已取消..." && exit 1
 	if [[ "${modify}" == "1" ]]; then
 	Read_config
@@ -1534,7 +1540,7 @@ Update_Shell(){
 	[[ -z ${sh_new_ver} ]] && echo -e "${Error} 检测最新版本失败 !" && start_menu
 	if [[ ${sh_new_ver} != ${sh_ver} ]]; then
 		echo -e "发现新版本[ ${sh_new_ver} ],是否更新？[Y/n]"
-		read -p "(默认: y):" yn
+		read -p "(默认: y): " yn
 		[[ -z "${yn}" ]] && yn="y"
 		if [[ ${yn} == [Yy] ]]; then
 			wget -O snell+stls_new.sh --no-check-certificate https://raw.githubusercontent.com/chentianqihub/surge/main/scripts/snell%2Bstls_new.sh && chmod +x snell+stls_new.sh
