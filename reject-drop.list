@@ -1,5 +1,7 @@
+DOMAIN,a.quora.com
 DOMAIN,tr.line.me
 DOMAIN,exp.notion.so
+DOMAIN,analytics.95516.com
 DOMAIN,api.sprig.com
 DOMAIN,hartattenuate.com
 DOMAIN,creative.myavlive.com
@@ -141,6 +143,8 @@ DOMAIN-KEYWORD,.lkqd
 DOMAIN-WILDCARD,log*-misc-lf.amemv.com
 DOMAIN-WILDCARD,mmfayl-*.appsflyersdk.com
 DOMAIN-WILDCARD,ced*.sascdn.com
+DOMAIN-SUFFIX,doubleverify.com
+DOMAIN-SUFFIX,ads-twitter.com
 DOMAIN-SUFFIX,popin.cc
 DOMAIN-SUFFIX,npttech.com
 DOMAIN-SUFFIX,demdex.net
