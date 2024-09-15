@@ -1,3 +1,8 @@
+DOMAIN,alt-r.my.com
+DOMAIN,ad.mail.ru
+DOMAIN,c.holmesmind.com
+DOMAIN,front.optimonk.com
+DOMAIN,jfapiprod.optimonk.com
 DOMAIN,a.quora.com
 DOMAIN,tr.line.me
 DOMAIN,exp.notion.so
@@ -143,6 +148,7 @@ DOMAIN-KEYWORD,.lkqd
 DOMAIN-WILDCARD,log*-misc-lf.amemv.com
 DOMAIN-WILDCARD,mmfayl-*.appsflyersdk.com
 DOMAIN-WILDCARD,ced*.sascdn.com
+DOMAIN-SUFFIX,rlcdn.com
 DOMAIN-SUFFIX,doubleverify.com
 DOMAIN-SUFFIX,ads-twitter.com
 DOMAIN-SUFFIX,popin.cc
