@@ -2,7 +2,7 @@
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
 export PATH
 
-sh_ver="1.7.3"
+sh_ver="1.7.4"
 filepath=$(cd "$(dirname "$0")"; pwd)
 file_1=$(echo -e "${filepath}"|awk -F "$0" '{print $1}')
 FOLDER="/etc/snell/"
@@ -110,7 +110,7 @@ check_status(){
 
 getSnellv4Url(){
 	sysArch
-	snell_v4_url="https://dl.nssurge.com/snell/snell-server-v4.1.0-linux-${arch}.zip"
+	snell_v4_url="https://dl.nssurge.com/snell/snell-server-v4.1.1-linux-${arch}.zip"
 }
 
 getVer(){
