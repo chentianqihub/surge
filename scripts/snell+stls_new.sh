@@ -1496,7 +1496,7 @@ EOF
 }
 
 ReInstall_Shadow_TLS(){
-echo -e "请选择 Shadow-TLS 监听v4 or v6地址(默认: v4) ?
+echo -e "请选择 Shadow-TLS 监听 v4 or v6 地址(默认: v4) ?  ${Tip} 一般系统已启用 IPv6 双栈支持
 ==================================
 ${Green_font_prefix} 1.${Font_color_suffix} v4  ${Green_font_prefix} 2.${Font_color_suffix} v6
 =================================="
