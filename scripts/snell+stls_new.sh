@@ -2,7 +2,7 @@
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
 export PATH
 
-sh_ver="1.7.1"
+sh_ver="1.7.2"
 filepath=$(cd "$(dirname "$0")"; pwd)
 file_1=$(echo -e "${filepath}"|awk -F "$0" '{print $1}')
 FOLDER="/etc/snell/"
@@ -961,7 +961,7 @@ echo -e "${Info} 开始下载/安装..."
 Install_Shadow_TLS(){
     [[ -e ${Shadow_TLS_FILE} ]] && echo -e "${Error} 检测到 Shadow-TLS 已安装 ,请先卸载再执行安装!" && exit 1
 
-echo -e "请选择 Shadow-TLS 监听v4 or v6地址(默认: v4) ?
+echo -e "请选择 Shadow-TLS 监听 v4 or v6 地址(默认: v4) ?  ${Tip} 一般系统已启用 IPv6 双栈支持
 ==================================
 ${Green_font_prefix} 1.${Font_color_suffix} v4  ${Green_font_prefix} 2.${Font_color_suffix} v6
 =================================="
@@ -1205,15 +1205,22 @@ Output_Shadow_TLS(){
 echo -e "—————————————————————————"
             echo -e "${Green_font_prefix}Please copy the following lines to the Surge [Proxy] section:${Font_color_suffix}" 
             if [[ "${SHADOW_TLS_IPVER}" == "::0" ]]; then
-            IP=$(curl -s ip.sb -6)
-            else
-            IP=$(curl -s ip.sb -4)
-            fi
             if [[ "${obfs}" == "off" ]]; then
-            echo "$(curl -s ipinfo.io/city) = snell, ${IP}, ${SHADOW_TLS_PORT}, psk=${psk}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=JsJeWtjiUyJ5yeto, shadow-tls-sni=${SHADOW_TLS_SNI}, shadow-tls-version=3"
+            echo "$(curl -s ipinfo.io/city) = snell, $(curl -s ip.sb -6), ${SHADOW_TLS_PORT}, psk=${psk}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=${SHADOW_TLS_PASSWORD}, shadow-tls-sni=${SHADOW_TLS_SNI}, shadow-tls-version=3"
+            echo -e "—————————————————————————"
+            echo "$(curl -s ipinfo.io/city) = snell, $(curl -s ip.sb -4), ${SHADOW_TLS_PORT}, psk=${psk}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=${SHADOW_TLS_PASSWORD}, shadow-tls-sni=${SHADOW_TLS_SNI}, shadow-tls-version=3"
             else
-            echo "$(curl -s ipinfo.io/city) = snell, ${IP}, ${SHADOW_TLS_PORT}, psk=${psk}, obfs=${obfs}, obfs-host=${host}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=JsJeWtjiUyJ5yeto, shadow-tls-sni=${SHADOW_TLS_SNI}, shadow-tls-version=3"
+            echo "$(curl -s ipinfo.io/city) = snell, $(curl -s ip.sb -6), ${SHADOW_TLS_PORT}, psk=${psk}, obfs=${obfs}, obfs-host=${host}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=${SHADOW_TLS_PASSWORD}, shadow-tls-sni=${SHADOW_TLS_SNI}, shadow-tls-version=3"
+            echo -e "—————————————————————————"
+            echo "$(curl -s ipinfo.io/city) = snell, $(curl -s ip.sb -4), ${SHADOW_TLS_PORT}, psk=${psk}, obfs=${obfs}, obfs-host=${host}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=${SHADOW_TLS_PASSWORD}, shadow-tls-sni=${SHADOW_TLS_SNI}, shadow-tls-version=3"
             fi
+    else
+            if [[ "${obfs}" == "off" ]]; then
+            echo "$(curl -s ipinfo.io/city) = snell, $(curl -s ip.sb -4), ${SHADOW_TLS_PORT}, psk=${psk}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=${SHADOW_TLS_PASSWORD}, shadow-tls-sni=${SHADOW_TLS_SNI}, shadow-tls-version=3"
+            else
+            echo "$(curl -s ipinfo.io/city) = snell, $(curl -s ip.sb -4), ${SHADOW_TLS_PORT}, psk=${psk}, obfs=${obfs}, obfs-host=${host}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=${SHADOW_TLS_PASSWORD}, shadow-tls-sni=${SHADOW_TLS_SNI}, shadow-tls-version=3"
+            fi
+    fi
             echo -e "—————————————————————————" && exit 1
 }
 
@@ -1430,7 +1437,7 @@ EOF
 }
 
 Edit_Shadow_TLS_IPVER(){
-echo -e "请选择 Shadow-TLS 监听v4 or v6地址(默认: v4) ?
+echo -e "请选择 Shadow-TLS 监听 v4 or v6 地址(默认: v4) ?  ${Tip} 一般系统已启用 IPv6 双栈支持
 ==================================
 ${Green_font_prefix} 1.${Font_color_suffix} v4  ${Green_font_prefix} 2.${Font_color_suffix} v6
 =================================="
@@ -1597,10 +1604,10 @@ Set_Shadow_TLS(){
 	check_Shadow_TLS_installed_status
 	echo && echo -e "你想要做什么？
 ==============================
- ${Green_font_prefix}1.${Font_color_suffix}  修改Shadow-TLS 端口
+ ${Green_font_prefix}1.${Font_color_suffix}  修改Shadow-TLS 监听端口
  ${Green_font_prefix}2.${Font_color_suffix}  修改Shadow-TLS SNI
  ${Green_font_prefix}3.${Font_color_suffix}  修改Shadow-TLS PASSWORD
- ${Green_font_prefix}4.${Font_color_suffix}  修改Shadow-TLS 监听地址
+ ${Green_font_prefix}4.${Font_color_suffix}  修改Shadow-TLS 监听类型
  ==============================
  ${Green_font_prefix}5.${Font_color_suffix}  修改Shadow-TLS 全部配置"  && echo
 	read -e -p "(默认: 取消): " modify
