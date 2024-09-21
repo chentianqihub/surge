@@ -2,7 +2,7 @@
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
 export PATH
 
-sh_ver="1.7.2"
+sh_ver="1.7.3"
 filepath=$(cd "$(dirname "$0")"; pwd)
 file_1=$(echo -e "${filepath}"|awk -F "$0" '{print $1}')
 FOLDER="/etc/snell/"
@@ -971,12 +971,16 @@ ${Green_font_prefix} 1.${Font_color_suffix} v4  ${Green_font_prefix} 2.${Font_co
 		SHADOW_TLS_IPVER="0.0.0.0"
 		echo -e "Shadow-TLS 监听地址类型: ${Red_background_prefix} v4 ${Font_color_suffix}" && echo
      elif  [[ ${SHADOW_TLS_IPVER} == "2" ]]; then 
-		SHADOW_TLS_IPVER="::0"
-		echo -e "Shadow-TLS 监听地址类型: ${Red_background_prefix} v6 ${Font_color_suffix}" && echo
+		if curl -s -6 ip.sb > /dev/null 2>&1; then
+		   SHADOW_TLS_IPVER="::0"
+		   echo -e "Shadow-TLS 监听地址类型: ${Red_background_prefix} v6 ${Font_color_suffix}" && echo
+		else 
+		   echo -e "${Error} IPv6 未启用, 或无法连接到外部网络, 请检查 !" && exit 1
+		fi
      else 
           echo -e "${Warn} 无效输入! 将取默认值${Yellow_font_prefix} v4 ${Font_color_suffix}" && echo
 		SHADOW_TLS_IPVER="0.0.0.0"		
-	fi
+     fi
     
     # 循环直到用户输入有效的 SHADOW_TLS_PORT 值
 while true; do
@@ -1204,7 +1208,7 @@ Journal_Shadow_TLS(){
 Output_Shadow_TLS(){
 echo -e "—————————————————————————"
             echo -e "${Green_font_prefix}Please copy the following lines to the Surge [Proxy] section:${Font_color_suffix}" 
-            if [[ "${SHADOW_TLS_IPVER}" == "::0" ]]; then
+    if [[ "${SHADOW_TLS_IPVER}" == "::0" ]]; then
             if [[ "${obfs}" == "off" ]]; then
             echo "$(curl -s ipinfo.io/city) = snell, $(curl -s ip.sb -6), ${SHADOW_TLS_PORT}, psk=${psk}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=${SHADOW_TLS_PASSWORD}, shadow-tls-sni=${SHADOW_TLS_SNI}, shadow-tls-version=3"
             echo -e "—————————————————————————"
@@ -1448,8 +1452,12 @@ ${Green_font_prefix} 1.${Font_color_suffix} v4  ${Green_font_prefix} 2.${Font_co
 		SHADOW_TLS_IPVER="0.0.0.0"
 		echo -e "Shadow-TLS 监听地址类型: ${Red_background_prefix} v4 ${Font_color_suffix}" && echo
      elif  [[ ${SHADOW_TLS_IPVER} == "2" ]]; then 
-		SHADOW_TLS_IPVER="::0"
-		echo -e "Shadow-TLS 监听地址类型: ${Red_background_prefix} v6 ${Font_color_suffix}" && echo
+		if curl -s -6 ip.sb > /dev/null 2>&1; then
+		   SHADOW_TLS_IPVER="::0"
+		   echo -e "Shadow-TLS 监听地址类型: ${Red_background_prefix} v6 ${Font_color_suffix}" && echo
+		else 
+		   echo -e "${Error} IPv6 未启用, 或无法连接到外部网络, 请检查 !" && exit 1
+		fi
      else 
           echo -e "${Warn} 无效输入! 将取默认值${Yellow_font_prefix} v4 ${Font_color_suffix}" && echo
 		SHADOW_TLS_IPVER="0.0.0.0"		
@@ -1507,8 +1515,12 @@ ${Green_font_prefix} 1.${Font_color_suffix} v4  ${Green_font_prefix} 2.${Font_co
 		SHADOW_TLS_IPVER="0.0.0.0"
 		echo -e "Shadow-TLS 监听地址类型: ${Red_background_prefix} v4 ${Font_color_suffix}" && echo
      elif  [[ ${SHADOW_TLS_IPVER} == "2" ]]; then 
-		SHADOW_TLS_IPVER="::0"
-		echo -e "Shadow-TLS 监听地址类型: ${Red_background_prefix} v6 ${Font_color_suffix}" && echo
+		if curl -s -6 ip.sb > /dev/null 2>&1; then
+		   SHADOW_TLS_IPVER="::0"
+		   echo -e "Shadow-TLS 监听地址类型: ${Red_background_prefix} v6 ${Font_color_suffix}" && echo
+		else 
+		   echo -e "${Error} IPv6 未启用, 或无法连接到外部网络, 请检查 !" && exit 1
+		fi
      else 
           echo -e "${Warn} 无效输入! 将取默认值${Yellow_font_prefix} v4 ${Font_color_suffix}" && echo
 		SHADOW_TLS_IPVER="0.0.0.0"		
