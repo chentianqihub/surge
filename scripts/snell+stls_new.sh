@@ -2,7 +2,7 @@
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
 export PATH
 
-sh_ver="1.7.0"
+sh_ver="1.7.1"
 filepath=$(cd "$(dirname "$0")"; pwd)
 file_1=$(echo -e "${filepath}"|awk -F "$0" '{print $1}')
 FOLDER="/etc/snell/"
@@ -961,7 +961,7 @@ echo -e "${Info} 开始下载/安装..."
 Install_Shadow_TLS(){
     [[ -e ${Shadow_TLS_FILE} ]] && echo -e "${Error} 检测到 Shadow-TLS 已安装 ,请先卸载再执行安装!" && exit 1
 
-echo -e "你选择 Shadow-TLS 监听v4 or v6地址(默认: v4) ?
+echo -e "请选择 Shadow-TLS 监听v4 or v6地址(默认: v4) ?
 ==================================
 ${Green_font_prefix} 1.${Font_color_suffix} v4  ${Green_font_prefix} 2.${Font_color_suffix} v6
 =================================="
@@ -969,10 +969,10 @@ ${Green_font_prefix} 1.${Font_color_suffix} v4  ${Green_font_prefix} 2.${Font_co
      [[ -z "${SHADOW_TLS_IPVER}" ]] && SHADOW_TLS_IPVER="1"
      if [[ ${SHADOW_TLS_IPVER} == "1" ]]; then
 		SHADOW_TLS_IPVER="0.0.0.0"
-		echo -e "Shadow-TLS 监听地址: ${Red_background_prefix} v4 ${Font_color_suffix}" && echo
+		echo -e "Shadow-TLS 监听地址类型: ${Red_background_prefix} v4 ${Font_color_suffix}" && echo
      elif  [[ ${SHADOW_TLS_IPVER} == "2" ]]; then 
 		SHADOW_TLS_IPVER="::0"
-		echo -e "Shadow-TLS 监听地址: ${Red_background_prefix} v6 ${Font_color_suffix}" && echo
+		echo -e "Shadow-TLS 监听地址类型: ${Red_background_prefix} v6 ${Font_color_suffix}" && echo
      else 
           echo -e "${Warn} 无效输入! 将取默认值${Yellow_font_prefix} v4 ${Font_color_suffix}" && echo
 		SHADOW_TLS_IPVER="0.0.0.0"		
@@ -1430,7 +1430,7 @@ EOF
 }
 
 Edit_Shadow_TLS_IPVER(){
-echo -e "你选择 Shadow-TLS 监听v4 or v6地址(默认: v4) ?
+echo -e "请选择 Shadow-TLS 监听v4 or v6地址(默认: v4) ?
 ==================================
 ${Green_font_prefix} 1.${Font_color_suffix} v4  ${Green_font_prefix} 2.${Font_color_suffix} v6
 =================================="
@@ -1439,10 +1439,10 @@ ${Green_font_prefix} 1.${Font_color_suffix} v4  ${Green_font_prefix} 2.${Font_co
      
      if [[ ${SHADOW_TLS_IPVER} == "1" ]]; then
 		SHADOW_TLS_IPVER="0.0.0.0"
-		echo -e "Shadow-TLS 监听地址: ${Red_background_prefix} v4 ${Font_color_suffix}" && echo
+		echo -e "Shadow-TLS 监听地址类型: ${Red_background_prefix} v4 ${Font_color_suffix}" && echo
      elif  [[ ${SHADOW_TLS_IPVER} == "2" ]]; then 
 		SHADOW_TLS_IPVER="::0"
-		echo -e "Shadow-TLS 监听地址: ${Red_background_prefix} v6 ${Font_color_suffix}" && echo
+		echo -e "Shadow-TLS 监听地址类型: ${Red_background_prefix} v6 ${Font_color_suffix}" && echo
      else 
           echo -e "${Warn} 无效输入! 将取默认值${Yellow_font_prefix} v4 ${Font_color_suffix}" && echo
 		SHADOW_TLS_IPVER="0.0.0.0"		
@@ -1489,7 +1489,7 @@ EOF
 }
 
 ReInstall_Shadow_TLS(){
-echo -e "你选择 Shadow-TLS 监听v4 or v6地址(默认: v4) ?
+echo -e "请选择 Shadow-TLS 监听v4 or v6地址(默认: v4) ?
 ==================================
 ${Green_font_prefix} 1.${Font_color_suffix} v4  ${Green_font_prefix} 2.${Font_color_suffix} v6
 =================================="
@@ -1498,10 +1498,10 @@ ${Green_font_prefix} 1.${Font_color_suffix} v4  ${Green_font_prefix} 2.${Font_co
      
      if [[ ${SHADOW_TLS_IPVER} == "1" ]]; then
 		SHADOW_TLS_IPVER="0.0.0.0"
-		echo -e "Shadow-TLS 监听地址: ${Red_background_prefix} v4 ${Font_color_suffix}" && echo
+		echo -e "Shadow-TLS 监听地址类型: ${Red_background_prefix} v4 ${Font_color_suffix}" && echo
      elif  [[ ${SHADOW_TLS_IPVER} == "2" ]]; then 
 		SHADOW_TLS_IPVER="::0"
-		echo -e "Shadow-TLS 监听地址: ${Red_background_prefix} v6 ${Font_color_suffix}" && echo
+		echo -e "Shadow-TLS 监听地址类型: ${Red_background_prefix} v6 ${Font_color_suffix}" && echo
      else 
           echo -e "${Warn} 无效输入! 将取默认值${Yellow_font_prefix} v4 ${Font_color_suffix}" && echo
 		SHADOW_TLS_IPVER="0.0.0.0"		
