@@ -1,3 +1,6 @@
+DOMAIN,matomo.openstreetmap.org
+DOMAIN,collector.xhamster.com
+DOMAIN,sstats.adobe.com
 DOMAIN,alt-r.my.com
 DOMAIN,ad.mail.ru
 DOMAIN,c.holmesmind.com
@@ -148,6 +151,10 @@ DOMAIN-KEYWORD,.lkqd
 DOMAIN-WILDCARD,log*-misc-lf.amemv.com
 DOMAIN-WILDCARD,mmfayl-*.appsflyersdk.com
 DOMAIN-WILDCARD,ced*.sascdn.com
+DOMAIN-SUFFIX,imrworldwide.com
+DOMAIN-SUFFIX,adtdp.com
+DOMAIN-SUFFIX,xhcdn.com
+DOMAIN-SUFFIX,newrelic.com
 DOMAIN-SUFFIX,rlcdn.com
 DOMAIN-SUFFIX,doubleverify.com
 DOMAIN-SUFFIX,ads-twitter.com
