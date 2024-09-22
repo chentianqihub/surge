@@ -2,7 +2,7 @@
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
 export PATH
 
-sh_ver="1.7.4"
+sh_ver="1.7.5"
 filepath=$(cd "$(dirname "$0")"; pwd)
 file_1=$(echo -e "${filepath}"|awk -F "$0" '{print $1}')
 FOLDER="/etc/snell/"
@@ -244,6 +244,7 @@ systemctl enable --now snell-server
 }
 
 Write_config(){
+if [[ "${obfs}" != "off" ]]; then
 	cat > ${CONF}<<-EOF
 [snell-server]
 listen = ::0:${port}
@@ -255,6 +256,18 @@ tfo = ${tfo}
 dns = ${dns}
 version = ${ver}
 EOF
+else
+     cat > ${CONF}<<-EOF
+[snell-server]
+listen = ::0:${port}
+ipv6 = ${ipv6}
+psk = ${psk}
+obfs = ${obfs}
+tfo = ${tfo}
+dns = ${dns}
+version = ${ver}
+EOF
+fi
 }
 
 Read_config(){
@@ -272,6 +285,7 @@ Read_config(){
 Set_port(){
     # 循环直到用户输入有效且未被占用的端口值
     while true; do
+        echo -e "${Tip} 本步骤不涉及系统防火墙端口操作, 请手动放行相应端口 !"
         echo -e "请输入 Snell Server 端口${Yellow_font_prefix}[1-65535]${Font_color_suffix}"
         read -e -p "(默认: 2345): " port
         [[ -z "${port}" ]] && port="2345"
@@ -446,7 +460,7 @@ Set_dns(){
 Set(){
 	check_installed_status
 	echo
-	echo -e "请输入要操作配置项的序号,然后回车
+	echo -e "请输入要操作配置项的序号, 然后回车
 ==============================
  ${Green_font_prefix}1.${Font_color_suffix}  修改 端口
  ${Green_font_prefix}2.${Font_color_suffix}  修改 密钥
@@ -971,12 +985,8 @@ ${Green_font_prefix} 1.${Font_color_suffix} v4  ${Green_font_prefix} 2.${Font_co
 		SHADOW_TLS_IPVER="0.0.0.0"
 		echo -e "Shadow-TLS 监听地址类型: ${Red_background_prefix} v4 ${Font_color_suffix}" && echo
      elif  [[ ${SHADOW_TLS_IPVER} == "2" ]]; then 
-		if curl -s -6 ip.sb > /dev/null 2>&1; then
 		   SHADOW_TLS_IPVER="::0"
 		   echo -e "Shadow-TLS 监听地址类型: ${Red_background_prefix} v6 ${Font_color_suffix}" && echo
-		else 
-		   echo -e "${Error} IPv6 未启用, 或无法连接到外部网络, 请检查 !" && exit 1
-		fi
      else 
           echo -e "${Warn} 无效输入! 将取默认值${Yellow_font_prefix} v4 ${Font_color_suffix}" && echo
 		SHADOW_TLS_IPVER="0.0.0.0"		
@@ -1207,22 +1217,39 @@ Journal_Shadow_TLS(){
 
 Output_Shadow_TLS(){
 echo -e "—————————————————————————"
-            echo -e "${Green_font_prefix}Please copy the following lines to the Surge [Proxy] section:${Font_color_suffix}" 
+            echo -e "${Green_font_prefix}Please copy the following lines to the Surge [Proxy] section:${Font_color_suffix}"
+            # 先获取 IPv4 和 IPv6 地址
+            ipv4_addr=$(curl -s --connect-timeout 5 ip.sb -4)
+            ipv6_addr=$(curl -s --connect-timeout 5 ip.sb -6)
+            ip_city=$(curl -s ipinfo.io/city) 
+            
     if [[ "${SHADOW_TLS_IPVER}" == "::0" ]]; then
             if [[ "${obfs}" == "off" ]]; then
-            echo "$(curl -s ipinfo.io/city) = snell, $(curl -s ip.sb -6), ${SHADOW_TLS_PORT}, psk=${psk}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=${SHADOW_TLS_PASSWORD}, shadow-tls-sni=${SHADOW_TLS_SNI}, shadow-tls-version=3"
-            echo -e "—————————————————————————"
-            echo "$(curl -s ipinfo.io/city) = snell, $(curl -s ip.sb -4), ${SHADOW_TLS_PORT}, psk=${psk}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=${SHADOW_TLS_PASSWORD}, shadow-tls-sni=${SHADOW_TLS_SNI}, shadow-tls-version=3"
+                 if [[ -n "$ipv6_addr" ]]; then
+                 echo "${ip_city} = snell, $(curl -s ip.sb -6), ${SHADOW_TLS_PORT}, psk=${psk}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=${SHADOW_TLS_PWD}, shadow-tls-sni=${SHADOW_TLS_SNI}, shadow-tls-version=3"
+                 echo -e "—————————————————————————"
+                 echo "${ip_city} = snell, $(curl -s ip.sb -4), ${SHADOW_TLS_PORT}, psk=${psk}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=${SHADOW_TLS_PWD}, shadow-tls-sni=${SHADOW_TLS_SNI}, shadow-tls-version=3"
+                 else
+                 echo "IPv6 is not available."
+                 echo -e "—————————————————————————"
+                 echo "${ip_city} = snell, $(curl -s ip.sb -4), ${SHADOW_TLS_PORT}, psk=${psk}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=${SHADOW_TLS_PWD}, shadow-tls-sni=${SHADOW_TLS_SNI}, shadow-tls-version=3"
+                 fi
             else
-            echo "$(curl -s ipinfo.io/city) = snell, $(curl -s ip.sb -6), ${SHADOW_TLS_PORT}, psk=${psk}, obfs=${obfs}, obfs-host=${host}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=${SHADOW_TLS_PASSWORD}, shadow-tls-sni=${SHADOW_TLS_SNI}, shadow-tls-version=3"
-            echo -e "—————————————————————————"
-            echo "$(curl -s ipinfo.io/city) = snell, $(curl -s ip.sb -4), ${SHADOW_TLS_PORT}, psk=${psk}, obfs=${obfs}, obfs-host=${host}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=${SHADOW_TLS_PASSWORD}, shadow-tls-sni=${SHADOW_TLS_SNI}, shadow-tls-version=3"
+                 if [[ -n "$ipv6_addr" ]]; then
+                 echo "${ip_city} = snell, $(curl -s ip.sb -6), ${SHADOW_TLS_PORT}, psk=${psk}, obfs=${obfs}, obfs-host=${host}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=${SHADOW_TLS_PWD}, shadow-tls-sni=${SHADOW_TLS_SNI}, shadow-tls-version=3"
+                 echo -e "—————————————————————————"
+                 echo "${ip_city} = snell, $(curl -s ip.sb -4), ${SHADOW_TLS_PORT}, psk=${psk}, obfs=${obfs}, obfs-host=${host}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=${SHADOW_TLS_PWD}, shadow-tls-sni=${SHADOW_TLS_SNI}, shadow-tls-version=3"
+                 else
+                 echo "IPv6 is not available."
+                 echo -e "—————————————————————————"
+                 echo "${ip_city} = snell, $(curl -s ip.sb -4), ${SHADOW_TLS_PORT}, psk=${psk}, obfs=${obfs}, obfs-host=${host}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=${SHADOW_TLS_PWD}, shadow-tls-sni=${SHADOW_TLS_SNI}, shadow-tls-version=3"
+                 fi                 
             fi
     else
             if [[ "${obfs}" == "off" ]]; then
-            echo "$(curl -s ipinfo.io/city) = snell, $(curl -s ip.sb -4), ${SHADOW_TLS_PORT}, psk=${psk}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=${SHADOW_TLS_PASSWORD}, shadow-tls-sni=${SHADOW_TLS_SNI}, shadow-tls-version=3"
+            echo "$(curl -s ipinfo.io/city) = snell, $(curl -s ip.sb -4), ${SHADOW_TLS_PORT}, psk=${psk}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=${SHADOW_TLS_PWD}, shadow-tls-sni=${SHADOW_TLS_SNI}, shadow-tls-version=3"
             else
-            echo "$(curl -s ipinfo.io/city) = snell, $(curl -s ip.sb -4), ${SHADOW_TLS_PORT}, psk=${psk}, obfs=${obfs}, obfs-host=${host}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=${SHADOW_TLS_PASSWORD}, shadow-tls-sni=${SHADOW_TLS_SNI}, shadow-tls-version=3"
+            echo "$(curl -s ipinfo.io/city) = snell, $(curl -s ip.sb -4), ${SHADOW_TLS_PORT}, psk=${psk}, obfs=${obfs}, obfs-host=${host}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=${SHADOW_TLS_PWD}, shadow-tls-sni=${SHADOW_TLS_SNI}, shadow-tls-version=3"
             fi
     fi
             echo -e "—————————————————————————" && exit 1
@@ -1452,12 +1479,8 @@ ${Green_font_prefix} 1.${Font_color_suffix} v4  ${Green_font_prefix} 2.${Font_co
 		SHADOW_TLS_IPVER="0.0.0.0"
 		echo -e "Shadow-TLS 监听地址类型: ${Red_background_prefix} v4 ${Font_color_suffix}" && echo
      elif  [[ ${SHADOW_TLS_IPVER} == "2" ]]; then 
-		if curl -s -6 ip.sb > /dev/null 2>&1; then
 		   SHADOW_TLS_IPVER="::0"
 		   echo -e "Shadow-TLS 监听地址类型: ${Red_background_prefix} v6 ${Font_color_suffix}" && echo
-		else 
-		   echo -e "${Error} IPv6 未启用, 或无法连接到外部网络, 请检查 !" && exit 1
-		fi
      else 
           echo -e "${Warn} 无效输入! 将取默认值${Yellow_font_prefix} v4 ${Font_color_suffix}" && echo
 		SHADOW_TLS_IPVER="0.0.0.0"		
@@ -1515,12 +1538,8 @@ ${Green_font_prefix} 1.${Font_color_suffix} v4  ${Green_font_prefix} 2.${Font_co
 		SHADOW_TLS_IPVER="0.0.0.0"
 		echo -e "Shadow-TLS 监听地址类型: ${Red_background_prefix} v4 ${Font_color_suffix}" && echo
      elif  [[ ${SHADOW_TLS_IPVER} == "2" ]]; then 
-		if curl -s -6 ip.sb > /dev/null 2>&1; then
 		   SHADOW_TLS_IPVER="::0"
 		   echo -e "Shadow-TLS 监听地址类型: ${Red_background_prefix} v6 ${Font_color_suffix}" && echo
-		else 
-		   echo -e "${Error} IPv6 未启用, 或无法连接到外部网络, 请检查 !" && exit 1
-		fi
      else 
           echo -e "${Warn} 无效输入! 将取默认值${Yellow_font_prefix} v4 ${Font_color_suffix}" && echo
 		SHADOW_TLS_IPVER="0.0.0.0"		
@@ -1614,7 +1633,7 @@ EOF
 
 Set_Shadow_TLS(){
 	check_Shadow_TLS_installed_status
-	echo && echo -e "你想要做什么？
+	echo && echo -e "请输入要操作配置项的序号, 然后回车
 ==============================
  ${Green_font_prefix}1.${Font_color_suffix}  修改Shadow-TLS 监听端口
  ${Green_font_prefix}2.${Font_color_suffix}  修改Shadow-TLS SNI
