@@ -1,3 +1,10 @@
+DOMAIN,tpstelemetry.tencent.com
+DOMAIN,ylog.huya.com
+DOMAIN,pgdt.gtimg.cn
+DOMAIN,beacon.shazam.com
+DOMAIN,tracking.g2crowd.com
+DOMAIN,zz.bdstatic.com
+DOMAIN,track.lc.quark.cn
 DOMAIN,matomo.openstreetmap.org
 DOMAIN,collector.xhamster.com
 DOMAIN,sstats.adobe.com
@@ -7,7 +14,6 @@ DOMAIN,c.holmesmind.com
 DOMAIN,front.optimonk.com
 DOMAIN,jfapiprod.optimonk.com
 DOMAIN,a.quora.com
-DOMAIN,tr.line.me
 DOMAIN,exp.notion.so
 DOMAIN,analytics.95516.com
 DOMAIN,api.sprig.com
@@ -151,6 +157,10 @@ DOMAIN-KEYWORD,.lkqd
 DOMAIN-WILDCARD,log*-misc-lf.amemv.com
 DOMAIN-WILDCARD,mmfayl-*.appsflyersdk.com
 DOMAIN-WILDCARD,ced*.sascdn.com
+DOMAIN-SUFFIX,hs-scripts.com
+DOMAIN-SUFFIX,concert.io
+DOMAIN-SUFFIX,litix.io
+DOMAIN-SUFFIX,tr.line.me
 DOMAIN-SUFFIX,imrworldwide.com
 DOMAIN-SUFFIX,adtdp.com
 DOMAIN-SUFFIX,xhcdn.com
@@ -342,4 +352,5 @@ DOMAIN-SUFFIX,mdt.qq.com
 DOMAIN-SUFFIX,up-hl.3g.qq.com
 DOMAIN-SUFFIX,yun-hl.3g.qq.com
 DOMAIN-SUFFIX,wxs.qq.com
+DOMAIN-SUFFIX,e.qq.com
 AND,((DOMAIN-KEYWORD,mam), (DOMAIN-KEYWORD,netease))
