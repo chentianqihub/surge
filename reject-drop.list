@@ -1,3 +1,7 @@
+DOMAIN,beacon.sina.com.cn
+DOMAIN,gk.sina.cn
+DOMAIN,log.sina.cn
+DOMAIN,zz.bdstatic.com
 DOMAIN,tpstelemetry.tencent.com
 DOMAIN,ylog.huya.com
 DOMAIN,pgdt.gtimg.cn
@@ -157,6 +161,7 @@ DOMAIN-KEYWORD,.lkqd
 DOMAIN-WILDCARD,log*-misc-lf.amemv.com
 DOMAIN-WILDCARD,mmfayl-*.appsflyersdk.com
 DOMAIN-WILDCARD,ced*.sascdn.com
+DOMAIN-SUFFIX,pub.network
 DOMAIN-SUFFIX,hs-scripts.com
 DOMAIN-SUFFIX,concert.io
 DOMAIN-SUFFIX,litix.io
