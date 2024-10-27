@@ -1,3 +1,4 @@
+DOMAIN,mssdk.volces.com
 DOMAIN,beacon.sina.com.cn
 DOMAIN,gk.sina.cn
 DOMAIN,log.sina.cn
@@ -117,6 +118,7 @@ DOMAIN,app-analytics-services.com
 DOMAIN,survey.survicate.com
 DOMAIN,hm.baidu.com
 DOMAIN,hmma.baidu.com
+DOMAIN,googleads.g.doubleclick-cn.net
 DOMAIN,device-provisioning.googleapis.com
 DOMAIN,safebrowsing.googleapis.com
 DOMAIN,jnn-pa.googleapis.com
@@ -161,6 +163,7 @@ DOMAIN-KEYWORD,.lkqd
 DOMAIN-WILDCARD,log*-misc-lf.amemv.com
 DOMAIN-WILDCARD,mmfayl-*.appsflyersdk.com
 DOMAIN-WILDCARD,ced*.sascdn.com
+DOMAIN-SUFFIX,getui.com
 DOMAIN-SUFFIX,confiant-integrations.net
 DOMAIN-SUFFIX,pub.network
 DOMAIN-SUFFIX,hs-scripts.com
@@ -355,6 +358,8 @@ DOMAIN-SUFFIX,mazu.m.qq.com
 DOMAIN-SUFFIX,toggle.qq.com
 DOMAIN-SUFFIX,aegis.qq.com
 DOMAIN-SUFFIX,mdt.qq.com
+DOMAIN-SUFFIX,mdt.qq.com
+DOMAIN-SUFFIX,btrace.qq.com
 DOMAIN-SUFFIX,up-hl.3g.qq.com
 DOMAIN-SUFFIX,yun-hl.3g.qq.com
 DOMAIN-SUFFIX,wxs.qq.com
