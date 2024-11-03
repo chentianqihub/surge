@@ -2,7 +2,7 @@
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
 export PATH
 
-sh_ver="1.7.7"
+sh_ver="1.7.8"
 filepath=$(cd "$(dirname "$0")" || exit; pwd)
 file_1=$(echo -e "${filepath}"|awk -F "$0" '{print $1}')
 FOLDER="/etc/snell/"
@@ -902,36 +902,36 @@ Uninstall(){
         echo "正在停止 Snell Server 服务..."
         systemctl stop snell-server
         if [[ $? -eq 0 ]]; then
-            echo -e "${Blue_font_prefix}Snell Server 服务已停止${Font_color_suffix}"
+            echo -e "${Info} Snell Server 服务已停止"
         else
-            echo "停止服务失败,请手动检查"
+            echo -e "${Error} 停止服务失败,请手动检查"
         fi
 
         echo "正在禁用 Snell Server 服务..."
         systemctl disable snell-server
         if [[ $? -eq 0 ]]; then
-            echo -e "${Blue_font_prefix}Snell Server 服务已禁用${Font_color_suffix}"
+            echo -e "${Info} Snell Server 服务已禁用"
         else
-            echo "禁用服务失败,请手动检查"
+            echo -e "${Error} 禁用服务失败,请手动检查"
         fi
 
         echo "正在删除 Snell Server 主程序和配置文件..."
         rm -rf "${FILE}"
         if [[ $? -eq 0 ]]; then
-            echo -e "${Blue_font_prefix}Snell Server 主程序删除完成${Font_color_suffix}"
+            echo -e "${Info} Snell Server 主程序删除完成"
         else
-            echo "删除Snell Server 主程序失败,请手动检查"
+            echo -e "${Error} 删除 Snell Server 主程序失败,请手动检查"
         fi
         
         rm -rf "${FOLDER}"
         if [[ $? -eq 0 ]]; then
-            echo -e "${Blue_font_prefix}Snell Server 配置文件删除完成${Font_color_suffix}"
+            echo -e "${Info} Snell Server 配置文件删除完成"
         else
-            echo "删除配置文件失败,请手动检查"
+            echo -e "${Error} 删除配置文件失败,请手动检查"
         fi
 
         echo -e "—————————————————————————"
-	echo -e "${Yellow_font_prefix}Snell Server 卸载完成 !${Font_color_suffix}" && echo
+	echo -e "${Info} ${Yellow_font_prefix}Snell Server 卸载完成 !${Font_color_suffix}"
     else
         echo && echo "卸载已取消..." && echo
     fi
@@ -1425,7 +1425,7 @@ Start_Shadow_TLS(){
 	systemctl start shadow-tls
 	check_Shadow_TLS_status
 	[[ "$shadow_tls_status" == "running" ]] && echo -e "${Info} Shadow-TLS 启动成功 !"
-    sleep 3s
+    sleep 2s
     start_menu
 }
 
