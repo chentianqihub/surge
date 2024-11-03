@@ -2,7 +2,7 @@
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
 export PATH
 
-sh_ver="1.7.6"
+sh_ver="1.7.7"
 filepath=$(cd "$(dirname "$0")" || exit; pwd)
 file_1=$(echo -e "${filepath}"|awk -F "$0" '{print $1}')
 FOLDER="/etc/snell/"
@@ -11,6 +11,7 @@ Shadow_TLS_FILE="/usr/local/bin/shadow-tls"
 CONF="/etc/snell/config.conf"
 Now_ver_File="/etc/snell/ver.txt"
 Local="/etc/sysctl.d/local.conf"
+service_file="/etc/systemd/system/shadow-tls.service"
 
 Green_font_prefix="\033[32m" && Red_font_prefix="\033[31m" && Yellow_font_prefix="\033[0;33m" && Blue_font_prefix="\033[0;36m" && Green_background_prefix="\033[42;37m" && Red_background_prefix="\033[41;37m" && Font_color_suffix="\033[0m"
 Info="${Green_font_prefix}[信息]${Font_color_suffix}"
@@ -41,7 +42,55 @@ check_sys(){
     fi
 }
 
+wait_for_package_manager() {
+    local max_wait=60
+    local waited=0
+    local spin='-\|/'
+    if [[ ${release} == "centos" ]]; then
+    package_manager="yum/rpm"
+    lock_files=("/var/run/yum.pid" "/var/lib/rpm/.rpm.lock")
+    else
+    package_manager="apt/dpkg"
+    lock_files=("/var/lib/dpkg/lock-frontend" "/var/lib/dpkg/lock")
+    fi
+
+while true; do
+        lock_found=0
+        
+    # 检查锁文件是否存在
+    for lock_file in "${lock_files[@]}"; do
+    if [ -e "$lock_file" ]; then
+        if fuser "$lock_file" >/dev/null 2>&1; then
+            lock_found=1
+            break
+        fi
+    fi
+    done
+
+    if [ "$lock_found" -eq 1 ]; then
+        if [ $waited -ge $max_wait ]; then
+            printf "\r\033[K"
+            echo -e "${Error} 等待超时, 无法获取 ${package_manager} 锁, 请稍后再试 !"
+            exit 1
+        fi
+        #printf "\r${Tip} 请等待其他 ${package_manager} 进程完成...(Maximum waiting time: 60s)  ${spin:$((waited % ${#spin})):1} "
+        printf "\r%b 请等待其他 %s 进程完成...(Maximum waiting time: 60s)  %s " "${Tip}" "${package_manager}" "${spin:$((waited % ${#spin})):1}"
+        sleep 1
+        waited=$((waited + 1))
+    else
+        break    
+    fi
+done  
+    printf "\r\033[K"
+
+    if [ $waited -gt 0 ]; then
+        echo -e "${Info}等待完成, 继续执行..."
+    fi
+    
+}
+
 Installation_dependency(){
+        wait_for_package_manager
 	if [[ ${release} == "centos" ]]; then
 		yum update && yum install gzip wget curl unzip jq -y
 	else
@@ -104,7 +153,7 @@ check_installed_status(){
 }
 
 check_status(){
-	#status=`systemctl status snell-server | grep Active | awk '{print $3}' | cut -d "(" -f2 | cut -d ")" -f1`
+	#status=$(systemctl status snell-server | grep Active | awk '{print $3}' | cut -d "(" -f2 | cut -d ")" -f1)
 	status=$(systemctl status shadow-tls.service | grep "Active" | awk -F'[()]' '{print $2}')
 }
 
@@ -218,8 +267,8 @@ ${Green_font_prefix} 2.${Font_color_suffix} v2  ${Green_font_prefix} 3.${Font_co
 		Install_v4
 	else
 	     echo -e "${Red_font_prefix}[Warn]${Font_color_suffix} 无效输入! 将取默认值${Yellow_font_prefix} v4${Font_color_suffix}"
-		ver="4"
-                Install_v4
+	     ver="4"
+             Install_v4
 	fi
 }
 
@@ -453,7 +502,7 @@ Set_dns(){
 	read -e -p "(默认值: 8.8.8.8, 1.1.1.1, 2001:4860:4860::8888): " dns
 	[[ -z "${dns}" ]] && dns="8.8.8.8, 1.1.1.1, 2001:4860:4860::8888"
 	echo && echo "=================================="
-	echo -e "当前 DNS 为：${Red_background_prefix} ${dns} ${Font_color_suffix}"
+	echo -e "当前 DNS 为: ${Red_background_prefix} ${dns} ${Font_color_suffix}"
 	echo "==================================" && echo
 }
 
@@ -952,6 +1001,50 @@ Journal(){
 	start_menu
 }
 
+Manual_Edit_Snell(){
+    echo -e "${Tip} 请谨慎操作 !"
+    echo
+    echo -e "${Info} 获取 Snell Server 配置文件 ..."
+
+    # 检查是否存在 CONF 配置文件
+    if [ ! -f "$CONF" ]; then
+        echo -e "${Error} Snell Server 配置文件不存在: ${CONF}"
+        echo -e "${Tip} 请先安装 Snell Server 创建配置文件后重试 !"
+        return 1
+    fi
+
+    # 检查是否安装了 nano
+    if ! command -v nano &> /dev/null; then
+        echo -e "${Tip} 未检测到 nano 编辑器 !"
+        read -e -p "是否安装 nano ? [y/N]:(默认: y) " install_nano
+        install_nano=${install_nano:-Y}
+        if [[ "$install_nano" =~ ^[Yy]$ ]]; then
+            # 检测系统包管理器并安装 nano
+            if command -v apt &> /dev/null; then
+                sudo apt update && sudo apt install nano -y
+                nano "$CONF"
+                echo -e "${Tip} 本步骤不涉及重启操作, 请自行重载重启服务 ! "
+            elif command -v yum &> /dev/null; then
+                sudo yum install nano -y
+                nano "$CONF"
+                echo -e "${Tip} 本步骤不涉及重启操作, 请自行重载重启服务 ! "
+            else
+                echo -e "${Error} 未知的包管理器! 请手动安装 nano."
+                return 1
+            fi
+        else
+            echo -e "${Info} 已取消安装 nano, 退出编辑配置文件..."
+        fi
+    else
+    nano "$CONF"
+    echo -e "${Tip} 本步骤不涉及重启操作, 请自行重载重启服务 ! "    
+    fi
+
+    sleep 2s
+    # 返回主菜单
+    start_menu
+}
+
 Set_Shadow_TLS_TFO(){
 	echo -e "是否开启 Shadow-TLS TCP Fast Open ?
 ==================================
@@ -973,7 +1066,7 @@ ${Green_font_prefix} 1.${Font_color_suffix} 开启  ${Green_font_prefix} 2.${Fon
 }
 
 Set_Shadow_TLS_MODE(){
-	echo -e "请选择 Shadow-TLS V3 模式, ${Tip} V3 loosy 模式下只有使用 TLS1.3 握手服务器才能防御劫持
+	echo -e "请选择 Shadow-TLS V3 模式, ${Tip} V3 loosy mode is able to defend against hijacking only if using TLS1.3 Handshake Server
 ==================================
 ${Green_font_prefix} 1.${Font_color_suffix} loosy  ${Green_font_prefix} 2.${Font_color_suffix} strict
 =================================="
@@ -1027,21 +1120,29 @@ ${Green_font_prefix} 1.${Font_color_suffix} v4  ${Green_font_prefix} 2.${Font_co
      [[ -z "${SHADOW_TLS_IPVER}" ]] && SHADOW_TLS_IPVER="1"
      if [[ ${SHADOW_TLS_IPVER} == "1" ]]; then
 		SHADOW_TLS_IPVER="0.0.0.0"
-		echo -e "Shadow-TLS 监听地址类型: ${Red_background_prefix} v4 ${Font_color_suffix}" && echo
+		echo && echo "=================================="
+		echo -e "Shadow-TLS 监听地址类型: ${Red_background_prefix} v4 ${Font_color_suffix}"
+		echo "==================================" && echo
      elif  [[ ${SHADOW_TLS_IPVER} == "2" ]]; then 
-		   SHADOW_TLS_IPVER="::0"
-		   echo -e "Shadow-TLS 监听地址类型: ${Red_background_prefix} v6 ${Font_color_suffix}" && echo
+		SHADOW_TLS_IPVER="::0"
+		echo && echo "=================================="
+		echo -e "Shadow-TLS 监听地址类型: ${Red_background_prefix} v6 ${Font_color_suffix}"
+		echo "==================================" && echo
      else 
-          echo -e "${Warn} 无效输入! 将取默认值${Yellow_font_prefix} v4 ${Font_color_suffix}" && echo
-		SHADOW_TLS_IPVER="0.0.0.0"		
+          echo -e "${Warn} 无效输入! 将取默认值${Yellow_font_prefix} v4 ${Font_color_suffix}"
+		SHADOW_TLS_IPVER="0.0.0.0"
+		echo && echo "=================================="
+		echo -e "Shadow-TLS 监听地址类型: ${Red_background_prefix} v4 ${Font_color_suffix}"
+		echo "==================================" && echo		
      fi
 }
 
 Set_Shadow_TLS_PORT(){
+echo -e "请输入 Shadow-TLS 监听端口${Yellow_font_prefix}[1-65535]${Font_color_suffix}"
 # 循环直到用户输入有效的 SHADOW_TLS_PORT 值
 while true; do
     # 提示用户输入 SHADOW_TLS_PORT 值
-    read -e -p "请输入 SHADOW_TLS_PORT 值(1-65535,默认8443): " SHADOW_TLS_PORT
+    read -e -p "(默认: 8443): " SHADOW_TLS_PORT
 
     # 如果用户未输入值,则使用默认值 8443
     [[ -z "${SHADOW_TLS_PORT}" ]] && SHADOW_TLS_PORT="8443"
@@ -1075,8 +1176,9 @@ echo && echo "=============================="
 }
 
 Set_Shadow_TLS_SNI(){
+echo -e "请输入 Shadow-TLS TLS SNI 名称"
 # 提示用户输入 SHADOW_TLS_SNI 值
-read -e -p "请输入 SHADOW_TLS_SNI 值(默认: mensura.cdn-apple.com): " SHADOW_TLS_SNI
+read -e -p "(默认: mensura.cdn-apple.com): " SHADOW_TLS_SNI
 
     # 如果用户未输入值,则使用默认值 mensura.cdn-apple.com
 [[ -z "${SHADOW_TLS_SNI}" ]] && SHADOW_TLS_SNI="mensura.cdn-apple.com"
@@ -1088,8 +1190,9 @@ echo && echo "=============================="
 }
 
 Set_Shadow_TLS_PWD(){
+echo -e "请输入 Shadow-TLS 密码"
 # 提示用户输入 SHADOW_TLS_PWD 值
-read -r -e -p "请输入 SHADOW_TLS_PWD 值(默认: JsJeWtjiUyJ5yeto): " SHADOW_TLS_PWD
+read -r -e -p "(默认: JsJeWtjiUyJ5yeto): " SHADOW_TLS_PWD
 
     # 如果用户未输入值,则使用默认值 JsJeWtjiUyJ5yeto
 [[ -z "${SHADOW_TLS_PWD}" ]] && SHADOW_TLS_PWD="JsJeWtjiUyJ5yeto"
@@ -1121,8 +1224,6 @@ echo -e "${Info} 开始下载/安装..."
 }
 
 Write_Shadow_TLS_Config(){
-service_file="/etc/systemd/system/shadow-tls.service"
-
     if [[ ${SHADOW_TLS_TFO} == true ]]; then
           if [[ ${SHADOW_TLS_MODE} == strict ]]; then
     sudo tee "$service_file" > /dev/null <<-EOF
@@ -1259,7 +1360,7 @@ Uninstall_Shadow_TLS(){
             echo "正在停止 shadow-tls 服务..."
             sudo systemctl stop shadow-tls.service >/dev/null 2>&1
             if [[ $? -eq 0 ]]; then
-            echo -e "${Blue_font_prefix}shadow-tls 服务已停止${Font_color_suffix}"
+            echo -e "${Info} shadow-tls 服务已停止"
             else
             echo -e "${Error} 停止服务失败,请手动检查"
             fi
@@ -1267,7 +1368,7 @@ Uninstall_Shadow_TLS(){
             echo "正在禁用 shadow-tls 服务..."
             sudo systemctl disable shadow-tls.service
             if [[ $? -eq 0 ]]; then
-            echo -e "${Blue_font_prefix}shadow-tls 服务已禁用${Font_color_suffix}"
+            echo -e "${Info} shadow-tls 服务已禁用"
             else
             echo -e "${Error} 禁用服务失败,请手动检查"
             fi
@@ -1276,7 +1377,7 @@ Uninstall_Shadow_TLS(){
             echo "正在停止 shadow-tls 服务..."
             sudo systemctl stop shadow-tls.service
             if [[ $? -eq 0 ]]; then
-            echo -e "${Blue_font_prefix}shadow-tls 服务已停止${Font_color_suffix}"
+            echo -e "${Info} shadow-tls 服务已停止"
             else
             echo -e "${Warn} 停止服务失败,请手动检查"
             fi
@@ -1287,7 +1388,7 @@ Uninstall_Shadow_TLS(){
             echo "正在删除服务文件..."
             sudo rm /etc/systemd/system/shadow-tls.service
             if [[ $? -eq 0 ]]; then
-            echo -e "${Blue_font_prefix}shadow-tls 服务文件已删除${Font_color_suffix}"
+            echo -e "${Info} shadow-tls 服务文件已删除"
             else
             echo -e "${Error} 删除服务文件失败,请手动检查"
             fi
@@ -1303,13 +1404,13 @@ Uninstall_Shadow_TLS(){
             echo "删除 shadow-tls 可执行文件..."
             sudo rm -rf /usr/local/bin/shadow-tls
             if [[ $? -eq 0 ]]; then
-            echo -e "${Blue_font_prefix}shadow-tls 可执行文件删除完成${Font_color_suffix}"
+            echo -e "${Info} shadow-tls 可执行文件删除完成"
             else
             echo -e "${Error} 删除shadow-tls 可执行文件失败,请手动检查"
             fi
         
 	echo -e "—————————————————————————"
-        echo -e "${Yellow_font_prefix}Shadow-TLS 服务已成功卸载 !${Font_color_suffix}"
+        echo -e "${Info} ${Yellow_font_prefix}Shadow-TLS 服务已成功卸载 !${Font_color_suffix}"
     else
         echo && echo "卸载已取消..." && echo
     fi
@@ -1536,10 +1637,11 @@ ReInstall_Shadow_TLS(){
     Set_Shadow_TLS_WILDCARD_SNI
     Set_Shadow_TLS_IPVER
 
+    echo -e "请输入 Shadow-TLS 监听端口${Yellow_font_prefix}[1-65535]${Font_color_suffix}"
     # 循环直到用户输入有效的 SHADOW_TLS_PORT 值
 while true; do
     # 提示用户输入 SHADOW_TLS_PORT 值
-    read -e -p "请输入 SHADOW_TLS_PORT 值(1-65535,默认8443): " SHADOW_TLS_PORT
+    read -e -p "(默认: 8443): " SHADOW_TLS_PORT
 
     # 如果用户未输入值,则使用默认值 8443
     [[ -z "${SHADOW_TLS_PORT}" ]] && SHADOW_TLS_PORT="8443"
@@ -1623,33 +1725,75 @@ Set_Shadow_TLS(){
     start_menu
 }
 
+Manual_Edit_Shadow_TLS(){
+    echo -e "${Tip} 请慎重操作 ! "
+    echo
+    echo -e "${Info} 获取 Shadow-TLS 服务文件 ..."
+
+    # 检查是否存在配置文件
+    if [ ! -f "${service_file}" ]; then
+        echo -e "${Error} Shadow-TLS 配置文件不存在: ${service_file}"
+        echo -e "${Tip} 请先安装 Shadow-TLS 创建服务文件后重试 !"
+        return 1
+    fi
+
+    # 检查是否安装了 nano
+    if ! command -v nano &> /dev/null; then
+        echo -e "${Tip} 未检测到 nano 编辑器 !"
+        read -e -p "是否安装 nano ? [y/N]:(默认: y) " install_nano
+        install_nano=${install_nano:-Y}
+        if [[ "$install_nano" =~ ^[Yy]$ ]]; then
+            # 检测系统包管理器并安装 nano
+            if command -v apt &> /dev/null; then
+                sudo apt update && sudo apt install nano -y
+                nano "${service_file}"
+                echo -e "${Tip} 本步骤不涉及重启操作, 请自行重载重启服务 ! "
+            elif command -v yum &> /dev/null; then
+                sudo yum install nano -y
+                nano "${service_file}"
+                echo -e "${Tip} 本步骤不涉及重启操作, 请自行重载重启服务 ! "
+            else
+                echo -e "${Error} 未知的包管理器! 请手动安装 nano."
+                return 1
+            fi
+        else
+            echo -e "${Info} 已取消安装 nano, 退出编辑配置文件..."
+        fi
+    else
+    nano "${service_file}"
+    echo -e "${Tip} 本步骤不涉及重启操作, 请自行重载重启服务 ! "    
+    fi
+
+    sleep 2s
+    # 返回主菜单
+    start_menu
+}
+
 
 Update_Shell(){
 	echo -e "当前版本为 [ ${sh_ver} ],开始检测最新版本..."
 	sh_new_ver=$(wget --no-check-certificate -qO- "https://raw.githubusercontent.com/chentianqihub/surge/main/scripts/snell%2Bstls_new.sh"|grep 'sh_ver="'|awk -F "=" '{print $NF}'|sed 's/\"//g'|head -1)
 	[[ -z ${sh_new_ver} ]] && echo -e "${Error} 检测最新版本失败 !" && start_menu
 	if [[ ${sh_new_ver} != "${sh_ver}" ]]; then
-		echo -e "发现新版本[ ${sh_new_ver} ],是否更新？[Y/n]"
+		echo -e "发现新版本[ ${sh_new_ver} ],是否更新? [Y/n]"
 		read -p "(默认: y): " yn
 		[[ -z "${yn}" ]] && yn="y"
 		if [[ ${yn} == [Yy] ]]; then
 			wget -O snell+stls_new.sh --no-check-certificate https://raw.githubusercontent.com/chentianqihub/surge/main/scripts/snell%2Bstls_new.sh && chmod +x snell+stls_new.sh
 			echo -e "脚本已更新为最新版本[ ${sh_new_ver} ] !"
 			echo -e "3s后执行新脚本"
-            sleep 3s
-            bash snell+stls_new.sh
+                        sleep 3s
+                        bash snell+stls_new.sh
 		else
-			echo && echo "	已取消..." && echo
-            sleep 3s
-            start_menu
+		    echo && echo " 已取消..." && echo
+                    sleep 3s
+                    start_menu
 		fi
 	else
-		echo -e "${Green_font_prefix}当前已是最新版本[v${sh_new_ver}] !${Font_color_suffix}"
-		sleep 2s
-        start_menu
+	    echo -e "${Green_font_prefix}当前已是最新版本[v${sh_new_ver}] !${Font_color_suffix}"
+	    sleep 2s
+            start_menu
 	fi
-	sleep 3s
-    	bash snell+stls_new.sh
 }
 
 before_start_menu() {
@@ -1680,8 +1824,7 @@ Snell Server 管理脚本 ${Red_font_prefix}[v${sh_ver}]${Font_color_suffix}
  ${Green_font_prefix} 7.${Font_color_suffix} 查看 Snell配置信息
  ${Green_font_prefix} 8.${Font_color_suffix} 查看 Snell运行状态
  ${Green_font_prefix} 9.${Font_color_suffix} 查看 Snell实时日志
-——————————————————————————————
- ${Green_font_prefix} 10.${Font_color_suffix} 退出脚本
+ ${Green_font_prefix} 10.${Font_color_suffix} 手动编辑 Snell配置
 ——————————————————————————————
  ${Green_font_prefix} 11.${Font_color_suffix} 安装 Shadow-TLS
  ${Green_font_prefix} 12.${Font_color_suffix} 卸载 Shadow-TLS
@@ -1694,6 +1837,9 @@ Snell Server 管理脚本 ${Red_font_prefix}[v${sh_ver}]${Font_color_suffix}
  ${Green_font_prefix} 17.${Font_color_suffix} 查看 Shadow-TLS实时日志
  ${Green_font_prefix} 18.${Font_color_suffix} 查看 Shadow-TLS服务文件
  ${Green_font_prefix} 19.${Font_color_suffix} 设置 Shadow-TLS配置信息
+ ${Green_font_prefix} 20.${Font_color_suffix} 手动编辑 Shadow-TLS配置
+ ——————————————————————————————
+ ${Green_font_prefix} 21.${Font_color_suffix} 退出脚本
 ==============================" && echo
 	if [[ -e ${FILE} ]]; then
 	        #check_status
@@ -1729,7 +1875,7 @@ Snell Server 管理脚本 ${Red_font_prefix}[v${sh_ver}]${Font_color_suffix}
 		echo -e " 当前Shadow-TLS状态: ${Red_font_prefix}未安装${Font_color_suffix}"
 	fi
 	echo
-	read -e -p " 请输入数字[0-19]（默认值: 1）: " num
+	read -e -p " 请输入数字[0-21]（默认值: 1）: " num
 	
      # 如果用户未输入值,则使用默认值1
      [[ -z "$num" ]] && num=1
@@ -1766,7 +1912,7 @@ Snell Server 管理脚本 ${Red_font_prefix}[v${sh_ver}]${Font_color_suffix}
 		Journal
 		;;
 		10)
-		exit 1
+		Manual_Edit_Snell
 		;;
                 11)
                 Install_Shadow_TLS
@@ -1795,8 +1941,14 @@ Snell Server 管理脚本 ${Red_font_prefix}[v${sh_ver}]${Font_color_suffix}
                 19)
                 Set_Shadow_TLS
                 ;;
+		20)
+                Manual_Edit_Shadow_TLS
+                ;;
+                21)
+		exit 1
+		;;
 		*)
-		echo -e "${Error} 请输入正确数字${Yellow_font_prefix}[0-19]${Font_color_suffix}"
+		echo -e "${Error} 请输入正确数字${Yellow_font_prefix}[0-21]${Font_color_suffix}"
 		;;
 	esac
 }
