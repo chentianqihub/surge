@@ -2,7 +2,7 @@
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
 export PATH
 
-sh_ver="1.7.8"
+sh_ver="1.7.9"
 filepath=$(cd "$(dirname "$0")" || exit; pwd)
 file_1=$(echo -e "${filepath}"|awk -F "$0" '{print $1}')
 FOLDER="/etc/snell/"
@@ -1809,7 +1809,7 @@ sysArch
 action=$1
 	echo && echo -e "  
 ==============================
-Snell Server 管理脚本 ${Red_font_prefix}[v${sh_ver}]${Font_color_suffix}
+Surge Snell Server (Shadow-TLS) 管理脚本 ${Red_font_prefix}[v${sh_ver}]${Font_color_suffix}
 ==============================
  ${Green_font_prefix} 0.${Font_color_suffix} 更新脚本
 ——————————————————————————————
