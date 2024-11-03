@@ -2,7 +2,7 @@
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
 export PATH
 
-sh_ver="1.7.9"
+sh_ver="1.8.0"
 filepath=$(cd "$(dirname "$0")" || exit; pwd)
 file_1=$(echo -e "${filepath}"|awk -F "$0" '{print $1}')
 FOLDER="/etc/snell/"
@@ -153,8 +153,8 @@ check_installed_status(){
 }
 
 check_status(){
-	#status=$(systemctl status snell-server | grep Active | awk '{print $3}' | cut -d "(" -f2 | cut -d ")" -f1)
-	status=$(systemctl status shadow-tls.service | grep "Active" | awk -F'[()]' '{print $2}')
+        #status=$(systemctl status snell-server | grep Active | awk '{print $3}' | cut -d "(" -f2 | cut -d ")" -f1)
+	status=$(systemctl status snell-server.service | grep "Active" | awk -F'[()]' '{print $2}')
 }
 
 getSnellv4Url(){
@@ -1807,43 +1807,59 @@ check_root
 check_sys
 sysArch
 action=$1
-	echo && echo -e "  
-==============================
-Surge Snell Server (Shadow-TLS) 管理脚本 ${Red_font_prefix}[v${sh_ver}]${Font_color_suffix}
-==============================
- ${Green_font_prefix} 0.${Font_color_suffix} 更新脚本
-——————————————————————————————
- ${Green_font_prefix} 1.${Font_color_suffix} 安装 Snell Server
- ${Green_font_prefix} 2.${Font_color_suffix} 卸载 Snell Server
-——————————————————————————————
- ${Green_font_prefix} 3.${Font_color_suffix} 启动 Snell Server
- ${Green_font_prefix} 4.${Font_color_suffix} 停止 Snell Server
- ${Green_font_prefix} 5.${Font_color_suffix} 重启 Snell Server
-——————————————————————————————
- ${Green_font_prefix} 6.${Font_color_suffix} 设置 Snell配置信息
- ${Green_font_prefix} 7.${Font_color_suffix} 查看 Snell配置信息
- ${Green_font_prefix} 8.${Font_color_suffix} 查看 Snell运行状态
- ${Green_font_prefix} 9.${Font_color_suffix} 查看 Snell实时日志
- ${Green_font_prefix} 10.${Font_color_suffix} 手动编辑 Snell配置
-——————————————————————————————
- ${Green_font_prefix} 11.${Font_color_suffix} 安装 Shadow-TLS
- ${Green_font_prefix} 12.${Font_color_suffix} 卸载 Shadow-TLS
-——————————————————————————————
- ${Green_font_prefix} 13.${Font_color_suffix} 启动 Shadow-TLS
- ${Green_font_prefix} 14.${Font_color_suffix} 停止 Shadow-TLS
- ${Green_font_prefix} 15.${Font_color_suffix} 重启 Shadow-TLS
-——————————————————————————————
- ${Green_font_prefix} 16.${Font_color_suffix} 查看 Shadow-TLS运行状态
- ${Green_font_prefix} 17.${Font_color_suffix} 查看 Shadow-TLS实时日志
- ${Green_font_prefix} 18.${Font_color_suffix} 查看 Shadow-TLS服务文件
- ${Green_font_prefix} 19.${Font_color_suffix} 设置 Shadow-TLS配置信息
- ${Green_font_prefix} 20.${Font_color_suffix} 手动编辑 Shadow-TLS配置
- ——————————————————————————————
- ${Green_font_prefix} 21.${Font_color_suffix} 退出脚本
-==============================" && echo
+
+# 定义菜单项的数组
+menu_items=(
+    "更新脚本"
+    "安装 Snell Server"
+    "卸载 Snell Server"
+    "启动 Snell Server"
+    "停止 Snell Server"
+    "重启 Snell Server"
+    "设置 Snell 配置信息"
+    "查看 Snell 配置信息"
+    "查看 Snell 运行状态"
+    "查看 Snell 实时日志"
+    "手动编辑 Snell 配置"
+    "安装 Shadow-TLS"
+    "卸载 Shadow-TLS"
+    "启动 Shadow-TLS"
+    "停止 Shadow-TLS"
+    "重启 Shadow-TLS"
+    "查看 Shadow-TLS 运行状态"
+    "查看 Shadow-TLS 实时日志"
+    "查看 Shadow-TLS 服务文件"
+    "设置 Shadow-TLS 配置信息"
+    "手动编辑 Shadow-TLS 配置"
+    "退出脚本"
+)
+
+# 输出菜单
+echo
+echo -e "====================================================="
+echo -e "       Surge Snell Server (Shadow-TLS) 管理脚本 ${Red_font_prefix}[v${sh_ver}]${Font_color_suffix}"
+echo -e "====================================================="
+
+# 输出菜单项
+for i in "${!menu_items[@]}"; do
+    index=$(printf "%2d" "$i")  # 格式化序号为两位数字，右对齐
+    item="${menu_items[$i]}"
+
+    # 根据序号判断所属模块，添加分隔符和模块标题
+    case "$i" in
+        1) echo -e " —————— Snell Server 管理 ——————" ;;
+        11) echo -e " —————— Shadow-TLS 管理 ——————" ;;
+        21) echo -e " ———————— 其他 ————————" ;;
+    esac
+    
+    echo -e " ${Green_font_prefix}$index.${Font_color_suffix} ${item}"
+done
+
+echo -e "====================================================="
+echo
+
 	if [[ -e ${FILE} ]]; then
-	        #check_status
-		status=$(systemctl status snell-server | grep Active | awk '{print $3}' | cut -d "(" -f2 | cut -d ")" -f1)
+	        check_status > /dev/null 2>&1
                 version=$(grep 'version = ' "${CONF}" |awk -F 'version = ' '{print $NF}')
                 getVer > /dev/null 2>&1
 		if [[ "$version" == "4" ]]; then
