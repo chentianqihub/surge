@@ -1,3 +1,7 @@
+DOMAIN,logger14.eeo.im
+DOMAIN,prod.fennec.atp.fox
+DOMAIN,perr.h-cdn.com
+DOMAIN,pix.pub
 DOMAIN,mssdk.volces.com
 DOMAIN,beacon.sina.com.cn
 DOMAIN,gk.sina.cn
@@ -163,6 +167,7 @@ DOMAIN-KEYWORD,.lkqd
 DOMAIN-WILDCARD,log*-misc-lf.amemv.com
 DOMAIN-WILDCARD,mmfayl-*.appsflyersdk.com
 DOMAIN-WILDCARD,ced*.sascdn.com
+DOMAIN-SUFFIX,convertexperiments.com
 DOMAIN-SUFFIX,getui.com
 DOMAIN-SUFFIX,confiant-integrations.net
 DOMAIN-SUFFIX,pub.network
