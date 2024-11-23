@@ -2,6 +2,13 @@
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
 export PATH
 
+#=================================================
+#	System Required: Debian/Ubuntu/CentOS
+#	Description: Snell+ShadowTLS 管理脚本 
+#	Author: https://github.com/chentianqihub/surge
+#	Link: https://t.me/m/XIADdsxCNTRl
+#=================================================
+
 sh_ver="1.8.0"
 filepath=$(cd "$(dirname "$0")" || exit; pwd)
 file_1=$(echo -e "${filepath}"|awk -F "$0" '{print $1}')
