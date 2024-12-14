@@ -1,12 +1,12 @@
 #!/bin/bash
 
+sh_ver="1.1"
 red="\033[0;31m"
 green="\033[0;32m"
 yellow="\033[0;33m"
 plain="\033[0m"
 Info="${green}[信息]${plain}"
 Error="${red}[错误]${plain}"
-sh_ver="1.0"
 FOLDER="/root/realm"
 FILE="/root/realm/realm"
 config_file="/root/realm/config.toml"
@@ -172,6 +172,27 @@ uninstall_realm() {
     realm_status_color="\033[0;31m" # 红色
 }
 
+# 添加转发规则
+add_forward() {
+    while true; do
+        read -p "请输入本地监听端口: " local_port
+        read -p "请输入需要转发的远端地址: " ip
+        read -p "请输入需要转发的远端端口: " port
+        read -p "请输入备注(非中文): " remark
+        # 追加到config.toml文件
+        echo "[[endpoints]]
+# 备注: $remark
+listen = \"[::]:$local_port\"
+remote = \"$ip:$port\"" >> ${config_file}
+        
+        read -p "是否继续添加(Y/N)? " answer
+        if [[ $answer != "Y" && $answer != "y" ]]; then
+            break
+        fi
+    done    
+    sudo systemctl restart realm.service
+}
+
 # 删除转发规则的函数
 delete_forward() {
   echo -e "                   当前 Realm 转发规则                   "
@@ -244,7 +265,7 @@ delete_forward() {
   # 检查并删除可能多余的空行
   sed -i '/^\s*$/d' ${config_file}
 
-  echo "转发规则及其备注已删除。"
+  echo -e "${Info} 转发规则及其备注已删除 ！"
 
   # 重启服务
   sudo systemctl restart realm.service
@@ -261,8 +282,8 @@ show_all_conf() {
     local lines=($(grep -n 'listen =' ${config_file}))
     
     if [ ${#lines[@]} -eq 0 ]; then
-  echo -e "没有发现任何转发规则。"
-        return
+    echo -e "没有发现任何转发规则。"
+    return
     fi
 
     local index=1
@@ -279,27 +300,6 @@ show_all_conf() {
     echo -e "--------------------------------------------------------"
         let index+=1
     done
-}
-
-# 添加转发规则
-add_forward() {
-    while true; do
-        read -p "请输入本地监听端口: " local_port
-        read -p "请输入需要转发的IP: " ip
-        read -p "请输入需要转发端口: " port
-        read -p "请输入备注(非中文): " remark
-        # 追加到config.toml文件
-        echo "[[endpoints]]
-# 备注: $remark
-listen = \"[::]:$local_port\"
-remote = \"$ip:$port\"" >> ${config_file}
-        
-        read -p "是否继续添加(Y/N)? " answer
-        if [[ $answer != "Y" && $answer != "y" ]]; then
-            break
-        fi
-    done    
-    sudo systemctl restart realm.service
 }
 
 # 启动服务
