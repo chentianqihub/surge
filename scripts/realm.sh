@@ -175,17 +175,17 @@ uninstall_realm() {
 # 添加转发规则
 add_forward() {
     while true; do
-        read -p "请输入本地监听端口: " local_port
-        read -p "请输入需要转发的远端地址: " ip
-        read -p "请输入需要转发的远端端口: " port
-        read -p "请输入备注(非中文): " remark
+        read -ep "请输入本地监听端口: " local_port
+        read -ep "请输入需要转发的远端地址: " ip
+        read -ep "请输入需要转发的远端端口: " port
+        read -ep "请输入备注(非中文,可选): " remark
         # 追加到config.toml文件
         echo "[[endpoints]]
 # 备注: $remark
 listen = \"[::]:$local_port\"
 remote = \"$ip:$port\"" >> ${config_file}
         
-        read -p "是否继续添加(Y/N)? " answer
+        read -ep "是否继续添加(Y/N)? " answer
         if [[ $answer != "Y" && $answer != "y" ]]; then
             break
         fi
@@ -229,7 +229,7 @@ delete_forward() {
 
 
     echo "请输入要删除的转发规则序号，直接按回车返回主菜单。"
-    read -p "选择: " choice
+    read -ep "选择: " choice
     if [ -z "$choice" ]; then
         echo "返回主菜单。"
         return
@@ -335,7 +335,7 @@ cron_restart() {
   echo -e "[1] 配置realm定时重启任务"
   echo -e "[2] 删除realm定时重启任务"
   echo -e "-----------------------------------"
-  read -p "请选择: " numcron
+  read -ep "请选择: " numcron
   if [ "$numcron" == "1" ]; then
     echo -e "------------------------------------------------------------------"
     echo -e "realm定时重启任务类型: "
@@ -343,15 +343,15 @@ cron_restart() {
     echo -e "[1] 每 ? 小时重启"
     echo -e "[2] 每日？点重启"
     echo -e "-----------------------------------"
-    read -p "请选择: " numcrontype
+    read -ep "请选择: " numcrontype
     if [ "$numcrontype" == "1" ]; then
       echo -e "-----------------------------------"
-      read -p "每 ? 小时重启: " cronhr
+      read -ep "每 ? 小时重启: " cronhr
       echo "0 */$cronhr * * * root /usr/bin/systemctl restart realm" >>/etc/crontab
       echo -e "定时重启设置成功 !"
     elif [ "$numcrontype" == "2" ]; then
       echo -e "-----------------------------------"
-      read -p "每日 ? 点重启: " cronhr
+      read -ep "每日 ? 点重启: " cronhr
       echo "0 $cronhr * * * root /usr/bin/systemctl restart realm" >>/etc/crontab
       echo -e "定时重启设置成功 !"
     else
@@ -383,7 +383,7 @@ Update_Shell() {
 
     # 提示用户是否更新
     echo -e "发现新版本 [ ${sh_new_ver} ]，是否更新? [Y/n]"
-    read -p "(默认: y): " yn
+    read -ep "(默认: y): " yn
     yn=${yn:-y} # 默认值为 'y'
     if [[ ${yn} =~ ^[Yy]$ ]]; then
         wget -N --no-check-certificate https://raw.githubusercontent.com/chentianqihub/surge/main/scripts/realm.sh -O realm.sh
@@ -403,7 +403,7 @@ Update_Shell() {
 # 主循环
 while true; do
     show_menu
-    read -p "请选择一个选项[0-10]（默认值: 1）: " choice
+    read -ep "请选择一个选项[0-10]（默认值: 1）: " choice
     # 去掉输入中的空格
     #choice=$(echo $choice | tr -d '[:space:]')
     [[ -z "$choice" ]] && choice=1
