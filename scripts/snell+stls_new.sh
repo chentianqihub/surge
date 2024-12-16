@@ -9,7 +9,7 @@ export PATH
 #	Link: https://t.me/m/XIADdsxCNTRl
 #=================================================
 
-sh_ver="1.8.1"
+sh_ver="1.8.2"
 filepath=$(cd "$(dirname "$0")" || exit; pwd)
 file_1=$(echo -e "${filepath}"|awk -F "$0" '{print $1}')
 FOLDER="/etc/snell/"
@@ -183,7 +183,7 @@ getVer(){
 # v2 备用源
 v2_Download() {
 	echo -e "${Info} 默认开始下载 ${Yellow_font_prefix}v2 备用源版 ${Font_color_suffix}Snell Server ..."
-	wget --no-check-certificate -N "https://raw.githubusercontent.com/xOS/Others/master/snell/v2.0.6/snell-server-v2.0.6-linux-${arch}.zip"
+	wget --no-check-certificate -N "https://raw.githubusercontent.com/chentianqihub/Others/master/snell/v2.0.6/snell-server-v2.0.6-linux-${arch}.zip"
 	if [[ ! -e "snell-server-v2.0.6-linux-${arch}.zip" ]]; then
 		echo -e "${Error} Snell Server ${Yellow_font_prefix}v2 备用源版${Font_color_suffix} 下载失败 !"
 		return 1 && exit 1
@@ -207,7 +207,7 @@ v2_Download() {
 # v3 备用源
 v3_Download() {
 	echo -e "${Info} 试图请求 ${Yellow_font_prefix}v3 备用源版${Font_color_suffix} Snell Server ..."
-	wget --no-check-certificate -N "https://raw.githubusercontent.com/xOS/Others/master/snell/v3.0.1/snell-server-v3.0.1-linux-${arch}.zip"
+	wget --no-check-certificate -N "https://raw.githubusercontent.com/chentianqihub/Others/master/snell/v3.0.1/snell-server-v3.0.1-linux-${arch}.zip"
 	if [[ ! -e "snell-server-v3.0.1-linux-${arch}.zip" ]]; then
 		echo -e "${Error} Snell Server ${Yellow_font_prefix}v3 备用源版${Font_color_suffix} 下载失败 !"
 		return 1 && exit 1
@@ -264,17 +264,29 @@ Install() {
 ==================================
 ${Green_font_prefix} 2.${Font_color_suffix} v2  ${Green_font_prefix} 3.${Font_color_suffix} v3  ${Green_font_prefix} 4.${Font_color_suffix} v4
 =================================="
-	read -e -p "(默认：4.v4)：" ver
+	read -e -p "(默认: 4.v4): " ver
 	[[ -z "${ver}" ]] && ver="4"
 	if [[ ${ver} == "2" ]]; then
-		Install_v2
+	     echo && echo "=================================="
+	     echo -e "Snell Server 协议版本: ${Red_background_prefix} v${ver} ${Font_color_suffix}"
+	     echo "==================================" && echo
+	     Install_v2
 	elif [[ ${ver} == "3" ]]; then
-		Install_v3
+	     echo && echo "=================================="
+	     echo -e "Snell Server 协议版本: ${Red_background_prefix} v${ver} ${Font_color_suffix}"
+	     echo "==================================" && echo
+	     Install_v3
 	elif [[ ${ver} == "4" ]]; then
-		Install_v4
+	     echo && echo "=================================="
+	     echo -e "Snell Server 协议版本: ${Red_background_prefix} v${ver} ${Font_color_suffix}"
+	     echo "==================================" && echo
+	     Install_v4
 	else
 	     echo -e "${Red_font_prefix}[Warn]${Font_color_suffix} 无效输入! 将取默认值${Yellow_font_prefix} v4${Font_color_suffix}"
 	     ver="4"
+	     echo && echo "=================================="
+	     echo -e "Snell Server 协议版本: ${Red_background_prefix} v${ver} ${Font_color_suffix}"
+	     echo "==================================" && echo
              Install_v4
 	fi
 }
@@ -469,7 +481,7 @@ ${Green_font_prefix} 2.${Font_color_suffix} v2 ${Green_font_prefix} 3.${Font_col
 	     ver=4
 	fi
 	echo && echo "=================================="
-	echo -e "Snell Server 协议版本: ${Red_background_prefix} ${ver} ${Font_color_suffix}"
+	echo -e "Snell Server 协议版本: ${Red_background_prefix} v${ver} ${Font_color_suffix}"
 	echo "==================================" && echo
 }
 
@@ -506,11 +518,25 @@ ${Green_font_prefix} 1.${Font_color_suffix} 开启  ${Green_font_prefix} 2.${Fon
 
 Set_dns(){
 	echo -e "${Tip} 请输入正确格式的的 DNS, 多条记录以英文逗号隔开, 仅支持 ${Yellow_font_prefix}[v4.1.0b1]${Font_color_suffix} 及以上版本"
-	read -e -p "(默认值: 8.8.8.8, 1.1.1.1, 2001:4860:4860::8888): " dns
-	[[ -z "${dns}" ]] && dns="8.8.8.8, 1.1.1.1, 2001:4860:4860::8888"
+	read -e -p "(默认值: 1.1.1.1, 8.8.8.8, 2001:4860:4860::8888): " dns
+	[[ -z "${dns}" ]] && dns="1.1.1.1, 8.8.8.8, 2001:4860:4860::8888"
 	echo && echo "=================================="
 	echo -e "当前 DNS 为: ${Red_background_prefix} ${dns} ${Font_color_suffix}"
 	echo "==================================" && echo
+}
+
+# print snell server info
+Output_Snell(){
+     getipcity
+     getipv4
+     echo -e "—————————————————————————"
+     echo -e "${Green_font_prefix}Please copy the following lines to the Surge [Proxy] section:${Font_color_suffix}" 
+     if [[ "${obfs}" == "off" ]]; then
+            echo "${ip_city} = snell, ${ipv4}, ${port}, psk=${psk}, version=${ver}, reuse=true, tfo=${tfo}"
+     else
+            echo "${ip_city} = snell, ${ipv4}, ${port}, psk=${psk}, obfs=${obfs}, obfs-host=${host}, version=${ver}, reuse=true, tfo=${tfo}"
+     fi
+     echo -e "—————————————————————————"
 }
 
 Set(){
@@ -788,14 +814,13 @@ Install_v2(){
 	Installation_dependency
 	echo -e "${Info} 开始下载/安装..."
 	v2_Download
-	echo -e "${Info} 开始安装 服务脚本..."
-	Service
 	echo -e "${Info} 开始写入 配置文件..."
 	Write_config
+        echo -e "${Info} 开始安装 服务脚本..."
+	Service
 	echo -e "${Info} 所有步骤 安装完毕, 开始启动..."
 	Start
-    sleep 3s
-    start_menu
+        Output_Snell
 }
 
 # 安装 v3
@@ -814,14 +839,13 @@ Install_v3(){
 	Installation_dependency
 	echo -e "${Info} 开始下载/安装..."
 	v3_Download
-	echo -e "${Info} 开始安装 服务脚本..."
-	Service
 	echo -e "${Info} 开始写入 配置文件..."
 	Write_config
+        echo -e "${Info} 开始安装 服务脚本..."
+	Service
 	echo -e "${Info} 所有步骤 安装完毕, 开始启动..."
 	Start
-    sleep 3s
-    start_menu
+        Output_Snell
 }
 
 # 安装 v4
@@ -841,35 +865,32 @@ Install_v4(){
 	Installation_dependency
 	echo -e "${Info} 开始下载/安装..."
 	v4_Download
-	echo -e "${Info} 开始安装 服务脚本..."
-	Service
 	echo -e "${Info} 开始写入 配置文件..."
 	Write_config
+        echo -e "${Info} 开始安装 服务脚本..."
+	Service
 	echo -e "${Info} 所有步骤 安装完毕, 开始启动..."
-	# print snell server info
-     echo -e "—————————————————————————"
-     echo -e "${Green_font_prefix}Please copy the following lines to the Surge [Proxy] section:${Font_color_suffix}" 
-     if [[ "${obfs}" == "off" ]]; then
-            echo "$(curl -s ipinfo.io/city) = snell, $(curl -4s ipinfo.io/ip), ${port}, psk=${psk}, version=${ver}, reuse=true, tfo=${tfo}"
-     else
-            echo "$(curl -s ipinfo.io/city) = snell, $(curl -4s ipinfo.io/ip), ${port}, psk=${psk}, obfs=${obfs}, obfs-host=${host}, version=${ver}, reuse=true, tfo=${tfo}"
-     fi
-     echo -e "—————————————————————————" 
 	Start
-    sleep 3s
-    start_menu
+        Output_Snell
 }
 
 Start(){
 	check_installed_status
-	#check_status
-	status=$(systemctl status snell-server | grep Active | awk '{print $3}' | cut -d "(" -f2 | cut -d ")" -f1)
-	[[ "$status" == "running" ]] && echo -e "${Info} Snell Server 已在运行 !" && exit 1
-	systemctl start snell-server
 	check_status
-	[[ "$status" == "running" ]] && echo -e "${Info} Snell Server 启动成功 !"
-    sleep 3s
-    start_menu
+	if [[ "$status" == "running" ]]; then
+           echo -e "${Info} Snell Server 已在运行 !"
+        else
+           systemctl start snell-server
+           check_status
+           if [[ "$status" == "running" ]]; then
+              echo -e "${Info} Snell Server 启动成功 !"
+              sleep 3s
+              start_menu            
+           else
+              echo -e "${Error} Snell Server 启动失败 !"
+              exit 1
+           fi
+        fi
 }
 
 Stop(){
@@ -946,6 +967,16 @@ Uninstall(){
     start_menu
 }
 
+getipcity(){
+     ip_city=$(curl -s ipinfo.io/city)
+     if [[ -z "${ip_city}" ]]; then
+		ip_city=$(curl -s https://api.myip.la/en?json | jq '.location' | jq -r '.city')
+                if [[ -z "${ipv4}" ]]; then
+		   ipv4=$(uname -n)
+	        fi
+     fi
+}
+
 getipv4(){
 	ipv4=$(wget -qO- -4 -t1 -T2 ipinfo.io/ip)
 	if [[ -z "${ipv4}" ]]; then
@@ -960,9 +991,9 @@ getipv4(){
 }
 
 getipv6(){
-	ip6=$(wget -qO- -6 -t1 -T2 ifconfig.co)
-	if [[ -z "${ip6}" ]]; then
-		ip6="IPv6_Error"
+	ipv6=$(wget -qO- -6 -t1 -T2 ifconfig.co)
+	if [[ -z "${ipv6}" ]]; then
+		ipv6="IPv6_Error"
 	fi
 }
 
@@ -975,7 +1006,7 @@ View(){
 	echo -e "Snell Server 配置信息: "
 	echo -e "—————————————————————————"
 	[[ "${ipv4}" != "IPv4_Error" ]] && echo -e " 地址\t: ${Green_font_prefix}${ipv4}${Font_color_suffix}"
-	[[ "${ip6}" != "IPv6_Error" ]] && echo -e " 地址\t: ${Green_font_prefix}${ip6}${Font_color_suffix}"
+	[[ "${ipv6}" != "IPv6_Error" ]] && echo -e " 地址\t: ${Green_font_prefix}${ipv6}${Font_color_suffix}"
 	echo -e " 端口\t: ${Green_font_prefix}${port}${Font_color_suffix}"
 	echo -e " 密钥\t: ${Green_font_prefix}${psk}${Font_color_suffix}"
 	echo -e " OBFS\t: ${Green_font_prefix}${obfs}${Font_color_suffix}"
@@ -984,7 +1015,7 @@ View(){
         fi
 	echo -e " IPv6\t: ${Green_font_prefix}${ipv6}${Font_color_suffix}"
 	echo -e " TFO\t: ${Green_font_prefix}${tfo}${Font_color_suffix}"
-        if [[ -n "${dns}" ]]; then
+        if [[ -n "${dns}" && "${ver}" == "4" ]]; then
 	echo -e " DNS\t: ${Green_font_prefix}${dns}${Font_color_suffix}"
 	fi
 	echo -e " VER\t: ${Green_font_prefix}${ver}${Font_color_suffix}"
@@ -997,7 +1028,7 @@ Status(){
 	echo -e "${Info} 获取 Snell Server 活动日志 ..."
 	echo -e "${Tip} ${Yellow_font_prefix}返回主菜单请按 q${Font_color_suffix} "
 	systemctl status snell-server
-        #sleep 1s
+        sleep 1s
 	start_menu
 }
 
@@ -1258,7 +1289,7 @@ echo -e "${Info} 开始下载/安装..."
         echo -e "${Error} Shadow-TLS 下载失败 !"
         exit 1
     else chmod +x ${Shadow_TLS_FILE}
-         echo -e "${Info} Shadow-TLS 主程序下载安装完毕！"        
+         echo -e "${Info} Shadow-TLS 主程序下载安装完毕 !"        
     fi
 }
 
