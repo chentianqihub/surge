@@ -9,7 +9,7 @@ export PATH
 #	Link: https://t.me/m/XIADdsxCNTRl
 #=================================================
 
-sh_ver="1.8.0"
+sh_ver="1.8.1"
 filepath=$(cd "$(dirname "$0")" || exit; pwd)
 file_1=$(echo -e "${filepath}"|awk -F "$0" '{print $1}')
 FOLDER="/etc/snell/"
@@ -27,7 +27,7 @@ Tip="${Yellow_font_prefix}[注意]${Font_color_suffix}"
 Warn="${Yellow_font_prefix}[Warn]${Font_color_suffix}"
 
 check_root(){
-	[[ $EUID != 0 ]] && echo -e "${Error} 当前非ROOT账号(或没有ROOT权限),无法继续操作,请更换ROOT账号或使用 ${Green_background_prefix}sudo su${Font_color_suffix} 命令获取临时ROOT权限（执行后可能会提示输入当前账号的密码）。" && exit 1
+	[[ $EUID != 0 ]] && echo -e "${Error} 当前非ROOT账号(或没有ROOT权限),无法继续操作! 请更换ROOT账号或使用 ${Green_background_prefix}sudo su${Font_color_suffix} 命令获取临时ROOT权限(执行后可能会提示输入当前账号的密码)." && exit 1
 }
 
 #检查系统
@@ -1178,7 +1178,7 @@ done
 
 # 输出最终的 SHADOW_TLS_PORT 值
 echo && echo "=============================="
-	echo -e "SHADOW_TLS_PORT: ${Red_background_prefix} ${SHADOW_TLS_PORT} ${Font_color_suffix}"
+	echo -e "Shadow-TLS 监听端口: ${Red_background_prefix} ${SHADOW_TLS_PORT} ${Font_color_suffix}"
 	echo "==============================" && echo
 }
 
@@ -1192,7 +1192,7 @@ read -e -p "(默认: mensura.cdn-apple.com): " SHADOW_TLS_SNI
 
 # 输出最终的 SHADOW_TLS_SNI 值
 echo && echo "=============================="
-	echo -e "SHADOW_TLS_SNI: ${Red_background_prefix} ${SHADOW_TLS_SNI} ${Font_color_suffix}"
+	echo -e "Shadow-TLS TLS 服务器名称: ${Red_background_prefix} ${SHADOW_TLS_SNI} ${Font_color_suffix}"
 	echo "==============================" && echo
 }
 
@@ -1206,8 +1206,39 @@ read -r -e -p "(默认: JsJeWtjiUyJ5yeto): " SHADOW_TLS_PWD
 
 # 输出最终的 SHADOW_TLS_PWD 值
 echo && echo "=============================="
-	echo -e "SHADOW_TLS_PWD: ${Red_background_prefix} ${SHADOW_TLS_PWD} ${Font_color_suffix}"
+	echo -e "Shadow-TLS 密码: ${Red_background_prefix} ${SHADOW_TLS_PWD} ${Font_color_suffix}"
 	echo "==============================" && echo
+}
+
+Sys_edition(){
+    system_arch=$(uname -m)
+    os=$(uname -s | tr '[:upper:]' '[:lower:]')
+    
+    case "$system_arch-$os" in
+        x86_64-linux)
+            EDITION="x86_64-unknown-linux-musl"
+            ;;
+        x86_64-darwin)
+            EDITION="x86_64-apple-darwin"
+            ;;
+        aarch64-linux)
+            EDITION="aarch64-unknown-linux-musl"
+            ;;
+        aarch64-darwin)
+            EDITION="aarch64-apple-darwin"
+            ;;
+        arm-linux)
+            EDITION="arm-unknown-linux-musleabi"
+            ;;
+        armv7-linux)
+            EDITION="armv7-unknown-linux-musleabihf"
+            ;;
+        *)
+            echo -e "${Error} 不支持的架构内核: $system_arch-$os !"
+            return
+            ;;
+    esac
+    echo -e "${Info} 检测到适配的架构内核: ${EDITION}"
 }
 
 Download_Shadow_TLS(){
@@ -1221,9 +1252,10 @@ echo -e "${Info} 开始下载/安装..."
     fi
 
     # 下载 shadow-tls 并检查是否成功
-    url="https://github.com/ihciah/shadow-tls/releases/download/${SHADOW_TLS_VERSION}/shadow-tls-x86_64-unknown-linux-musl"
-    if ! wget "$url" -O ${Shadow_TLS_FILE}; then
-        echo -e "${Error} 下载 Shadow-TLS 失败"
+    Sys_edition
+    SHADOW_TLS_URL="https://github.com/ihciah/shadow-tls/releases/download/${SHADOW_TLS_VERSION}/shadow-tls-${EDITION}"
+    if ! wget "${SHADOW_TLS_URL}" -O ${Shadow_TLS_FILE}; then
+        echo -e "${Error} Shadow-TLS 下载失败 !"
         exit 1
     else chmod +x ${Shadow_TLS_FILE}
          echo -e "${Info} Shadow-TLS 主程序下载安装完毕！"        
@@ -1663,7 +1695,7 @@ while true; do
 done
 # 输出最终的 SHADOW_TLS_PORT 值
     echo && echo "=============================="
-    echo -e "SHADOW_TLS_PORT: ${Red_background_prefix} ${SHADOW_TLS_PORT} ${Font_color_suffix}"
+    echo -e "Shadow-TLS 监听端口: ${Red_background_prefix} ${SHADOW_TLS_PORT} ${Font_color_suffix}"
     echo "==============================" && echo
 
     Set_Shadow_TLS_SNI
