@@ -9,7 +9,7 @@ export PATH
 #	Link: https://t.me/m/XIADdsxCNTRl
 #=================================================
 
-sh_ver="1.8.2"
+sh_ver="1.8.3"
 filepath=$(cd "$(dirname "$0")" || exit; pwd)
 file_1=$(echo -e "${filepath}"|awk -F "$0" '{print $1}')
 FOLDER="/etc/snell/"
@@ -313,6 +313,7 @@ systemctl enable --now snell-server
 
 Write_config(){
 if [[ "${obfs}" != "off" ]]; then
+     if [[ "${ver}" = "4" ]]; then
 	cat > ${CONF}<<-EOF
 [snell-server]
 listen = ::0:${port}
@@ -324,8 +325,21 @@ tfo = ${tfo}
 dns = ${dns}
 version = ${ver}
 EOF
+      else
+      cat > ${CONF}<<-EOF
+[snell-server]
+listen = ::0:${port}
+ipv6 = ${ipv6}
+psk = ${psk}
+obfs = ${obfs}
+obfs-host = ${host}
+tfo = ${tfo}
+version = ${ver}
+EOF
+      fi
 else
-     cat > ${CONF}<<-EOF
+      if [[ "${ver}" = "4" ]]; then
+      cat > ${CONF}<<-EOF
 [snell-server]
 listen = ::0:${port}
 ipv6 = ${ipv6}
@@ -335,6 +349,17 @@ tfo = ${tfo}
 dns = ${dns}
 version = ${ver}
 EOF
+      else
+      cat > ${CONF}<<-EOF
+[snell-server]
+listen = ::0:${port}
+ipv6 = ${ipv6}
+psk = ${psk}
+obfs = ${obfs}
+tfo = ${tfo}
+version = ${ver}
+EOF
+      fi      
 fi
 }
 
@@ -444,8 +469,8 @@ ${Green_font_prefix} 1.${Font_color_suffix} HTTP ${Green_font_prefix} 2.${Font_c
 ==================================
 ${Green_font_prefix} 1.${Font_color_suffix} TLS  ${Green_font_prefix} 2.${Font_color_suffix} HTTP ${Green_font_prefix} 3.${Font_color_suffix} 关闭
 =================================="
-        read -e -p "(默认: 3.关闭): " obfs_input
-        [[ -z "${obfs_input}" ]] && obfs_input="3"
+        read -e -p "(默认: 2.HTTP): " obfs_input
+        [[ -z "${obfs_input}" ]] && obfs_input="2"
         if [[ ${obfs_input} == "1" ]]; then
             obfs="tls"
         elif [[ ${obfs_input} == "2" ]]; then
@@ -457,7 +482,6 @@ ${Green_font_prefix} 1.${Font_color_suffix} TLS  ${Green_font_prefix} 2.${Font_c
             obfs="off"
         fi
     fi
-
     echo && echo "=================================="
     echo -e "OBFS 状态: ${Red_background_prefix} ${obfs} ${Font_color_suffix}"
     echo "==================================" && echo
@@ -655,8 +679,10 @@ if [[ -n "${dns}" ]]; then
 		Set_host=${host}
 		Set_ipv6=${ipv6}
 		Set_tfo=${tfo}
-		Set_dns=${dns}
 		Set_ver
+		if [[ "${ver}" = "4" ]]; then
+		Set_dns
+		fi
 		Write_config
 		Restart
          elif [[ "${modify}" == "9" ]]; then
@@ -1005,15 +1031,14 @@ View(){
 	clear && echo
 	echo -e "Snell Server 配置信息: "
 	echo -e "—————————————————————————"
-	[[ "${ipv4}" != "IPv4_Error" ]] && echo -e " 地址\t: ${Green_font_prefix}${ipv4}${Font_color_suffix}"
-	[[ "${ipv6}" != "IPv6_Error" ]] && echo -e " 地址\t: ${Green_font_prefix}${ipv6}${Font_color_suffix}"
+	[[ "${ipv4}" != "IPv4_Error" ]] && echo -e " IPV4\t: ${Green_font_prefix}${ipv4}${Font_color_suffix}"
+	[[ "${ipv6}" != "IPv6_Error" ]] && echo -e " IPV6\t: ${Green_font_prefix}${ipv6}${Font_color_suffix}"
 	echo -e " 端口\t: ${Green_font_prefix}${port}${Font_color_suffix}"
 	echo -e " 密钥\t: ${Green_font_prefix}${psk}${Font_color_suffix}"
 	echo -e " OBFS\t: ${Green_font_prefix}${obfs}${Font_color_suffix}"
         if [[ -n "${host}" ]]; then
         echo -e " 域名\t: ${Green_font_prefix}${host}${Font_color_suffix}"
         fi
-	echo -e " IPv6\t: ${Green_font_prefix}${ipv6}${Font_color_suffix}"
 	echo -e " TFO\t: ${Green_font_prefix}${tfo}${Font_color_suffix}"
         if [[ -n "${dns}" && "${ver}" == "4" ]]; then
 	echo -e " DNS\t: ${Green_font_prefix}${dns}${Font_color_suffix}"
