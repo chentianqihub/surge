@@ -9,7 +9,7 @@ export PATH
 #	Link: https://t.me/m/XIADdsxCNTRl
 #=================================================
 
-sh_ver="1.8.3"
+sh_ver="1.8.4"
 filepath=$(cd "$(dirname "$0")" || exit; pwd)
 file_1=$(echo -e "${filepath}"|awk -F "$0" '{print $1}')
 FOLDER="/etc/snell/"
@@ -1241,10 +1241,10 @@ echo && echo "=============================="
 Set_Shadow_TLS_SNI(){
 echo -e "请输入 Shadow-TLS TLS SNI 名称"
 # 提示用户输入 SHADOW_TLS_SNI 值
-read -e -p "(默认: mensura.cdn-apple.com): " SHADOW_TLS_SNI
+read -e -p "(默认: swcdn.apple.com): " SHADOW_TLS_SNI
 
-    # 如果用户未输入值,则使用默认值 mensura.cdn-apple.com
-[[ -z "${SHADOW_TLS_SNI}" ]] && SHADOW_TLS_SNI="mensura.cdn-apple.com"
+    # 如果用户未输入值,则使用默认值 swcdn.apple.com
+[[ -z "${SHADOW_TLS_SNI}" ]] && SHADOW_TLS_SNI="swcdn.apple.com"
 
 # 输出最终的 SHADOW_TLS_SNI 值
 echo && echo "=============================="
