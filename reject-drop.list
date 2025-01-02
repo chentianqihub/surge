@@ -167,6 +167,8 @@ DOMAIN-KEYWORD,.lkqd
 DOMAIN-WILDCARD,log*-misc-lf.amemv.com
 DOMAIN-WILDCARD,mmfayl-*.appsflyersdk.com
 DOMAIN-WILDCARD,ced*.sascdn.com
+DOMAIN-SUFFIX,fridaylogger.com
+DOMAIN-SUFFIX,asia-east1-fridaylog.cloudfunctions.net
 DOMAIN-SUFFIX,convertexperiments.com
 DOMAIN-SUFFIX,getui.com
 DOMAIN-SUFFIX,confiant-integrations.net
