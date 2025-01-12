@@ -10,6 +10,7 @@ DOMAIN,checkip.amazonaws.com
 DOMAIN-KEYWORD,z-library.
 DOMAIN-KEYWORD,z-lib.
 DOMAIN-KEYWORD,-zlib.
+DOMAIN-SUFFIX,ghproxy.com
 DOMAIN-SUFFIX,gigafile.nu
 DOMAIN-SUFFIX,my.com
 DOMAIN-SUFFIX,1x.com
