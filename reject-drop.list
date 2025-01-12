@@ -169,6 +169,7 @@ DOMAIN-KEYWORD,.lkqd
 DOMAIN-WILDCARD,log*-misc-lf.amemv.com
 DOMAIN-WILDCARD,mmfayl-*.appsflyersdk.com
 DOMAIN-WILDCARD,ced*.sascdn.com
+DOMAIN-SUFFIX,analytics.immersivetranslate.com
 DOMAIN-SUFFIX,mixpanel.com
 DOMAIN-SUFFIX,miaozhen.com
 DOMAIN-SUFFIX,log.mgtv.com
