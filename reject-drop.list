@@ -1,3 +1,4 @@
+DOMAIN,mobileanalytics.us-east-1.amazonaws.com
 DOMAIN,events.prd.api.discomax.com
 DOMAIN,logger14.eeo.im
 DOMAIN,prod.fennec.atp.fox
@@ -169,6 +170,9 @@ DOMAIN-KEYWORD,.lkqd
 DOMAIN-WILDCARD,log*-misc-lf.amemv.com
 DOMAIN-WILDCARD,mmfayl-*.appsflyersdk.com
 DOMAIN-WILDCARD,ced*.sascdn.com
+DOMAIN-SUFFIX,
+DOMAIN-SUFFIX,adcolony.com
+DOMAIN-SUFFIX,clevertap-prod.com
 DOMAIN-SUFFIX,analytics.immersivetranslate.com
 DOMAIN-SUFFIX,mixpanel.com
 DOMAIN-SUFFIX,miaozhen.com
