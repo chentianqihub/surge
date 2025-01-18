@@ -1,3 +1,6 @@
+DOMAIN,sensors.cloud.tencent.com
+DOMAIN,ad.holmesmind.com
+DOMAIN,ssp.hinet.net
 DOMAIN,mobileanalytics.us-east-1.amazonaws.com
 DOMAIN,events.prd.api.discomax.com
 DOMAIN,logger14.eeo.im
@@ -170,6 +173,8 @@ DOMAIN-KEYWORD,.lkqd
 DOMAIN-WILDCARD,log*-misc-lf.amemv.com
 DOMAIN-WILDCARD,mmfayl-*.appsflyersdk.com
 DOMAIN-WILDCARD,ced*.sascdn.com
+DOMAIN-SUFFIX,trvdp.com
+DOMAIN-SUFFIX,vm5apis.com
 DOMAIN-SUFFIX,adcolony.com
 DOMAIN-SUFFIX,clevertap-prod.com
 DOMAIN-SUFFIX,analytics.immersivetranslate.com
