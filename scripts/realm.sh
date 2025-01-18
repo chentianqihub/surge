@@ -1,6 +1,6 @@
 #!/bin/bash
 
-sh_ver="1.1"
+sh_ver="1.2"
 red="\033[0;31m"
 green="\033[0;32m"
 yellow="\033[0;33m"
@@ -180,7 +180,8 @@ add_forward() {
         read -ep "请输入需要转发的远端端口: " port
         read -ep "请输入备注(非中文,可选): " remark
         # 追加到config.toml文件
-        echo "[[endpoints]]
+        echo "
+[[endpoints]]
 # 备注: $remark
 listen = \"[::]:$local_port\"
 remote = \"$ip:$port\"" >> ${config_file}
