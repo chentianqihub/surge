@@ -1,3 +1,4 @@
+DOMAIN,metricreceiver.cellrebel.com
 DOMAIN,log.snssdk.com
 DOMAIN,line1-log.biligame.net
 DOMAIN,sensors.cloud.tencent.com
@@ -175,6 +176,8 @@ DOMAIN-KEYWORD,.lkqd
 DOMAIN-WILDCARD,log*-misc-lf.amemv.com
 DOMAIN-WILDCARD,mmfayl-*.appsflyersdk.com
 DOMAIN-WILDCARD,ced*.sascdn.com
+DOMAIN-SUFFIX,dev.visualwebsiteoptimizer.com
+DOMAIN-SUFFIX,worldssl.net
 DOMAIN-SUFFIX,minerva.devices.a2z.com
 DOMAIN-SUFFIX,trvdp.com
 DOMAIN-SUFFIX,vm5apis.com
