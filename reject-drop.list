@@ -173,9 +173,14 @@ DOMAIN,ac.dun.163yun.com
 DOMAIN,ac.dun.163.com
 DOMAIN,ntb.lanjie100.com
 DOMAIN-KEYWORD,.lkqd
-DOMAIN-WILDCARD,log*-misc-lf.amemv.com
+#DOMAIN-WILDCARD,log*-misc-lf.amemv.com
 DOMAIN-WILDCARD,mmfayl-*.appsflyersdk.com
 DOMAIN-WILDCARD,ced*.sascdn.com
+DOMAIN-SUFFIX,track.uc.cn
+DOMAIN-SUFFIX,ucweb.com
+DOMAIN-SUFFIX,yandexadexchange.net
+DOMAIN-SUFFIX,vortex.hulu.com
+DOMAIN-SUFFIX,tiqcdn.com
 DOMAIN-SUFFIX,dev.visualwebsiteoptimizer.com
 DOMAIN-SUFFIX,worldssl.net
 DOMAIN-SUFFIX,minerva.devices.a2z.com
