@@ -1,3 +1,8 @@
+DOMAIN,slb-p2p.vcloud.ks-live.com
+DOMAIN,polaris.zijieapi.com
+DOMAIN,vcs.zijieapi.com
+DOMAIN,mon.snssdk.com
+DOMAIN,mssdk.bytedance.com
 DOMAIN,metricreceiver.cellrebel.com
 DOMAIN,log.snssdk.com
 DOMAIN,line1-log.biligame.net
@@ -176,6 +181,7 @@ DOMAIN-KEYWORD,.lkqd
 #DOMAIN-WILDCARD,log*-misc-lf.amemv.com
 DOMAIN-WILDCARD,mmfayl-*.appsflyersdk.com
 DOMAIN-WILDCARD,ced*.sascdn.com
+DOMAIN-SUFFIX,fivecdm.com
 DOMAIN-SUFFIX,track.uc.cn
 DOMAIN-SUFFIX,ucweb.com
 DOMAIN-SUFFIX,yandexadexchange.net
