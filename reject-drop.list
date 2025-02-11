@@ -181,6 +181,8 @@ DOMAIN-KEYWORD,.lkqd
 #DOMAIN-WILDCARD,log*-misc-lf.amemv.com
 DOMAIN-WILDCARD,mmfayl-*.appsflyersdk.com
 DOMAIN-WILDCARD,ced*.sascdn.com
+DOMAIN-SUFFIX,xycdn.com
+DOMAIN-SUFFIX,iad-06.braze.com
 DOMAIN-SUFFIX,fivecdm.com
 DOMAIN-SUFFIX,track.uc.cn
 DOMAIN-SUFFIX,ucweb.com
@@ -389,6 +391,7 @@ DOMAIN-SUFFIX,nsclick.baidu.com
 DOMAIN-SUFFIX,ada.baidu.com
 DOMAIN-SUFFIX,baidustatic.com
 DOMAIN-SUFFIX,pos.baidu.com
+DOMAIN-SUFFIX,sp3.baidu.com
 DOMAIN-SUFFIX,rumt-zh.com
 DOMAIN-SUFFIX,bugsnag.com
 DOMAIN-SUFFIX,umeng.com
