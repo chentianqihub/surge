@@ -1,0 +1,9 @@
+#!name= nodeseek增强
+#!desc= Nodesek 屏蔽外链跳转 & 清除链接中的 AFF
+
+[Body Rewrite]
+# > Nodesek 屏蔽外链跳转 & 清除链接中的 AFF
+http-response ^https?:\/\/(?:\w+\.)*?(hostloc|nodeseek)\.com\/(thread|post)-(.*) '%3F' '?' '%3D' '=' '%2F' '/' '%3A' ':' '%26' '&' '&amp;' '&' '\/aff\.php\?aff=(\d+)&pid=(\d+)?' '/cart.php?a=add&pid=$2' '<a href="/jump\?to=(.*?)" target="_blank">(.*?)</a>' '<a href="$1" target="_blank">$2</a>' 'affid=(.*?)&id=(.*?)' 'id=$2'
+
+[MITM]
+hostname= *.nodeseek.com
