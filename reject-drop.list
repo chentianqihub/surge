@@ -1,3 +1,10 @@
+DOMAIN,
+DOMAIN,
+DOMAIN,umdc.aliapp.org
+DOMAIN,srv.tunefindforfans.com
+DOMAIN,go.sohu.com
+DOMAIN,pv.sohu.com
+DOMAIN,trk.pinterest.com
 DOMAIN,slb-p2p.vcloud.ks-live.com
 DOMAIN,polaris.zijieapi.com
 DOMAIN,vcs.zijieapi.com
@@ -42,6 +49,7 @@ DOMAIN,api.sprig.com
 DOMAIN,hartattenuate.com
 DOMAIN,creative.myavlive.com
 DOMAIN,jspassport.ssl.qhimg.com
+DOMAIN,hotchat-im.iqiyi.com
 DOMAIN,cards-css.iqiyi.com
 DOMAIN,static-s.iqiyi.com
 DOMAIN,cr.adsappier.com
@@ -87,6 +95,7 @@ DOMAIN,in.appcenter.ms
 DOMAIN,pixel.ipinfo.io
 DOMAIN,geo.yahoo.com
 DOMAIN,iyes.youku.com
+DOMAIN,ad.youku.com
 DOMAIN,improving.duckduckgo.com
 DOMAIN,open.kuaishouzt.com
 DOMAIN,maplocatesdksnapshot.d.meituan.net
@@ -111,6 +120,7 @@ DOMAIN,mcs.zijieapi.com
 DOMAIN,mon.zijieapi.com
 DOMAIN,dig.bdurl.net
 DOMAIN,sensors.ibreader.com
+DOMAIN,w3-reporting-nel.reddit.com
 DOMAIN,w3-reporting.reddit.com
 DOMAIN,alb.reddit.com
 DOMAIN,metrics.icloud.com
@@ -134,6 +144,7 @@ DOMAIN,amdc.alipay.com
 DOMAIN,dad-api.dcard.tw
 DOMAIN,app-analytics-services.com
 DOMAIN,survey.survicate.com
+DOMAIN,tcbox.baidu.com
 DOMAIN,hm.baidu.com
 DOMAIN,hmma.baidu.com
 DOMAIN,googleads.g.doubleclick-cn.net
@@ -151,6 +162,7 @@ DOMAIN,h-adashx.ut.ele.me
 DOMAIN,app-monitor.ele.me
 DOMAIN,loggw-ex.alipay.com
 DOMAIN,loggw.alipay.com.cn
+DOMAIN,nbsdk-baichuan.taobao.com
 DOMAIN,fourier.taobao.com
 DOMAIN,sjarvis.taobao.com
 DOMAIN,audid-api.taobao.com
@@ -173,14 +185,23 @@ DOMAIN,metrics-logger.spot.im
 DOMAIN,direct-events-collector.spot.im
 DOMAIN,api-2-0.spot.im
 DOMAIN,stats.wp.com
+DOMAIN,netapm.music.163.com
+DOMAIN,clientlogdep.music.163.com
+DOMAIN,clientlogsf.music.163.com
 DOMAIN,clientlog3.music.163.com
 DOMAIN,ac.dun.163yun.com
 DOMAIN,ac.dun.163.com
 DOMAIN,ntb.lanjie100.com
 DOMAIN-KEYWORD,.lkqd
-#DOMAIN-WILDCARD,log*-misc-lf.amemv.com
+DOMAIN-KEYWORD,analytics.adjust
+DOMAIN-WILDCARD,log*-misc-lf.amemv.com
 DOMAIN-WILDCARD,mmfayl-*.appsflyersdk.com
 DOMAIN-WILDCARD,ced*.sascdn.com
+DOMAIN-SUFFIX,intergient.com
+DOMAIN-SUFFIX,instabug.com
+DOMAIN-SUFFIX,hiaiabc.com
+DOMAIN-SUFFIX,featureassets.org
+DOMAIN-SUFFIX,ads-pixiv.net
 DOMAIN-SUFFIX,xycdn.com
 DOMAIN-SUFFIX,iad-06.braze.com
 DOMAIN-SUFFIX,fivecdm.com
@@ -397,6 +418,7 @@ DOMAIN-SUFFIX,bugsnag.com
 DOMAIN-SUFFIX,umeng.com
 DOMAIN-SUFFIX,umengcloud.com
 DOMAIN-SUFFIX,tanx.com
+DOMAIN-SUFFIX,mtrace.qq.com
 DOMAIN-SUFFIX,pingma.qq.com
 DOMAIN-SUFFIX,bugly.qq.com
 DOMAIN-SUFFIX,ssp.qq.com
