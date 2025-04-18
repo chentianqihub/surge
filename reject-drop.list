@@ -140,9 +140,6 @@ DOMAIN,amdc.alipay.com
 DOMAIN,dad-api.dcard.tw
 DOMAIN,app-analytics-services.com
 DOMAIN,survey.survicate.com
-DOMAIN,tcbox.baidu.com
-DOMAIN,hm.baidu.com
-DOMAIN,hmma.baidu.com
 DOMAIN,googleads.g.doubleclick-cn.net
 DOMAIN,device-provisioning.googleapis.com
 DOMAIN,safebrowsing.googleapis.com
@@ -408,6 +405,7 @@ DOMAIN-SUFFIX,criteo.com
 DOMAIN-SUFFIX,uimserv.net
 DOMAIN-SUFFIX,ui-portal.de
 DOMAIN-SUFFIX,da.mgtv.com
+DOMAIN-SUFFIX,mobads.baidu.com
 DOMAIN-SUFFIX,sofire.baidu.com
 DOMAIN-SUFFIX,sp1.baidu.com
 DOMAIN-SUFFIX,mime.baidu.com
@@ -420,6 +418,9 @@ DOMAIN-SUFFIX,ada.baidu.com
 DOMAIN-SUFFIX,baidustatic.com
 DOMAIN-SUFFIX,pos.baidu.com
 DOMAIN-SUFFIX,sp3.baidu.com
+DOMAIN-SUFFIX,tcbox.baidu.com
+DOMAIN-SUFFIX,hm.baidu.com
+DOMAIN-SUFFIX,hmma.baidu.com
 DOMAIN-SUFFIX,rumt-zh.com
 DOMAIN-SUFFIX,bugsnag.com
 DOMAIN-SUFFIX,umeng.com
