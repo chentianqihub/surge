@@ -92,8 +92,6 @@ DOMAIN,tms.fmm.io
 DOMAIN,in.appcenter.ms
 DOMAIN,pixel.ipinfo.io
 DOMAIN,geo.yahoo.com
-DOMAIN,iyes.youku.com
-DOMAIN,ad.youku.com
 DOMAIN,improving.duckduckgo.com
 DOMAIN,open.kuaishouzt.com
 DOMAIN,maplocatesdksnapshot.d.meituan.net
@@ -195,6 +193,13 @@ DOMAIN-KEYWORD,analytics.adjust
 DOMAIN-WILDCARD,log*-misc-lf.amemv.com
 DOMAIN-WILDCARD,mmfayl-*.appsflyersdk.com
 DOMAIN-WILDCARD,ced*.sascdn.com
+DOMAIN-SUFFIX,atm.youku.com
+DOMAIN-SUFFIX,ykad-data.youku.com
+DOMAIN-SUFFIX,un-acs.youku.com
+DOMAIN-SUFFIX,cad.youku,com
+DOMAIN-SUFFIX,ad.youku.com
+DOMAIN-SUFFIX,iyes.youku.com
+DOMAIN-SUFFIX,reachmax.cn
 DOMAIN-SUFFIX,intergient.com
 DOMAIN-SUFFIX,instabug.com
 DOMAIN-SUFFIX,hiaiabc.com
