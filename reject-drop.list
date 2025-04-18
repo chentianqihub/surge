@@ -193,6 +193,7 @@ DOMAIN-KEYWORD,analytics.adjust
 DOMAIN-WILDCARD,log*-misc-lf.amemv.com
 DOMAIN-WILDCARD,mmfayl-*.appsflyersdk.com
 DOMAIN-WILDCARD,ced*.sascdn.com
+DOMAIN-SUFFIX,orange-dc.youku.com
 DOMAIN-SUFFIX,youku-acs.m.taobao.com
 DOMAIN-SUFFIX,adashx.ut.youku.com
 DOMAIN-SUFFIX,atm.youku.com
@@ -397,6 +398,7 @@ DOMAIN-SUFFIX,notes-analytics-events.apple.com
 DOMAIN-SUFFIX,books-analytics-events.apple.com
 DOMAIN-SUFFIX,iadsdk.apple.com
 DOMAIN-SUFFIX,browser-intake-datadoghq.com
+DOMAIN-SUFFIX,nbsdk-baichuan.alicdn.com
 DOMAIN-SUFFIX,dorangesource.alicdn.com
 DOMAIN-SUFFIX,ilce.alicdn.com
 DOMAIN-SUFFIX,alimama.alicdn.com
