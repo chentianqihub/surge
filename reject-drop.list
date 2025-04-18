@@ -193,10 +193,12 @@ DOMAIN-KEYWORD,analytics.adjust
 DOMAIN-WILDCARD,log*-misc-lf.amemv.com
 DOMAIN-WILDCARD,mmfayl-*.appsflyersdk.com
 DOMAIN-WILDCARD,ced*.sascdn.com
+DOMAIN-SUFFIX,youku-acs.m.taobao.com
+DOMAIN-SUFFIX,adashx.ut.youku.com
 DOMAIN-SUFFIX,atm.youku.com
 DOMAIN-SUFFIX,ykad-data.youku.com
 DOMAIN-SUFFIX,un-acs.youku.com
-DOMAIN-SUFFIX,cad.youku,com
+DOMAIN-SUFFIX,cad.youku.com
 DOMAIN-SUFFIX,ad.youku.com
 DOMAIN-SUFFIX,iyes.youku.com
 DOMAIN-SUFFIX,reachmax.cn
