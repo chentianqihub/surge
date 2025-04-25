@@ -190,6 +190,7 @@ DOMAIN-KEYWORD,analytics.adjust
 DOMAIN-WILDCARD,log*-misc-lf.amemv.com
 DOMAIN-WILDCARD,mmfayl-*.appsflyersdk.com
 DOMAIN-WILDCARD,ced*.sascdn.com
+DOMAIN-SUFFIX,data.microsoft.com
 DOMAIN-SUFFIX,orange-dc.youku.com
 DOMAIN-SUFFIX,youku-acs.m.taobao.com
 DOMAIN-SUFFIX,adashx.ut.youku.com
