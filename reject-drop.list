@@ -1,3 +1,5 @@
+DOMAIN,ad.setn.com
+DOMAIN,event.tagtoo.co
 DOMAIN,s.w-x.co
 DOMAIN,umdc.aliapp.org
 DOMAIN,srv.tunefindforfans.com
@@ -142,6 +144,7 @@ DOMAIN,dad-api.dcard.tw
 DOMAIN,app-analytics-services.com
 DOMAIN,survey.survicate.com
 DOMAIN,googleads.g.doubleclick-cn.net
+DOMAIN,clouderrorreporting.googleapis.com
 DOMAIN,device-provisioning.googleapis.com
 DOMAIN,safebrowsing.googleapis.com
 DOMAIN,jnn-pa.googleapis.com
@@ -191,6 +194,8 @@ DOMAIN-KEYWORD,analytics.adjust
 DOMAIN-WILDCARD,log*-misc-lf.amemv.com
 DOMAIN-WILDCARD,mmfayl-*.appsflyersdk.com
 DOMAIN-WILDCARD,ced*.sascdn.com
+DOMAIN-SUFFIX,googletagservices.com
+DOMAIN-SUFFIX,im-apps.net
 DOMAIN-SUFFIX,data.microsoft.com
 DOMAIN-SUFFIX,orange-dc.youku.com
 DOMAIN-SUFFIX,youku-acs.m.taobao.com
