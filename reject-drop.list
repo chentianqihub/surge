@@ -16,13 +16,11 @@ DOMAIN,log.snssdk.com
 DOMAIN,line1-log.biligame.net
 DOMAIN,sensors.cloud.tencent.com
 DOMAIN,ad.holmesmind.com
-DOMAIN,ssp.hinet.net
 DOMAIN,mobileanalytics.us-east-1.amazonaws.com
 DOMAIN,events.prd.api.discomax.com
 DOMAIN,logger14.eeo.im
 DOMAIN,prod.fennec.atp.fox
 DOMAIN,perr.h-cdn.com
-DOMAIN,pix.pub
 DOMAIN,mssdk.volces.com
 DOMAIN,beacon.sina.com.cn
 DOMAIN,gk.sina.cn
@@ -78,7 +76,6 @@ DOMAIN,mc.yandex.ru
 DOMAIN,startup.mobile.yandex.net
 DOMAIN,startup-mobile.ap.yandex-net.ru
 DOMAIN,counter.yadro.ru
-DOMAIN,prvc.io
 DOMAIN,api.onesignal.com
 DOMAIN,yads.c.yimg.jp
 DOMAIN,dsb.yahoo.co.jp
@@ -194,6 +191,9 @@ DOMAIN-KEYWORD,analytics.adjust
 DOMAIN-WILDCARD,log*-misc-lf.amemv.com
 DOMAIN-WILDCARD,mmfayl-*.appsflyersdk.com
 DOMAIN-WILDCARD,ced*.sascdn.com
+DOMAIN-SUFFIX,ssp.hinet.net
+DOMAIN-SUFFIX,pix.pub
+DOMAIN-SUFFIX,prvc.io
 DOMAIN-SUFFIX,googletagservices.com
 DOMAIN-SUFFIX,im-apps.net
 DOMAIN-SUFFIX,data.microsoft.com
