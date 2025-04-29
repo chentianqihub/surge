@@ -1,0 +1,15 @@
+#!name=Github 429
+#!desc=解决 Github 速率限制返回429问题
+#!date=2025-04-29
+#!author=
+#!repo=h
+#!category=
+#!url=
+
+[Header Rewrite]
+http-request ^https:\/\/github\.com\/ header-replace Accept-Language en-us
+#http-request ^https:\/\/(raw|gist)\.githubusercontent\.com\/ header-replace Accept-Language en-us
+http-request ^https://.*\.githubusercontent\.com\/ header-replace Accept-Language en-us
+
+[MITM]
+hostname = %APPEND% *.githubusercontent.com,github.com
