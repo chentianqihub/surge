@@ -1,3 +1,4 @@
+
 DOMAIN,umini.shujupie.com
 DOMAIN,ad.setn.com
 DOMAIN,event.tagtoo.co
@@ -61,6 +62,8 @@ DOMAIN,supportmetrics.apple.com
 DOMAIN,recs-api.conde.digital
 DOMAIN,globalservices.conde.digital
 DOMAIN,cdn.amplitude.com
+DOMAIN,ads-api.twitter.com
+DOMAIN,analytics.twitter.com
 DOMAIN,syndication.twitter.com
 DOMAIN,data.media-lab.ai
 DOMAIN,mixer.sina.cn
@@ -125,6 +128,7 @@ DOMAIN,analytics.cnblogs.com
 DOMAIN,zhihu-web-analytics.zhihu.com
 DOMAIN,analytics.query.yahoo.com
 DOMAIN,intake-analytics.wikimedia.org
+DOMAIN,uranus.jd.com
 DOMAIN,jdqd.jd.com
 DOMAIN,shouji.sougou.com
 DOMAIN,waapdg.jd.com
