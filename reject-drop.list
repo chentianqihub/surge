@@ -1,4 +1,8 @@
-
+DOMAIN,adbehavior.ximalaya.com
+DOMAIN,adse.ximalaya.com
+DOMAIN,xdcs-collector.ximalaya.com
+DOMAIN,hhapk777.getehu.com
+DOMAIN,api.iterable.com
 DOMAIN,umini.shujupie.com
 DOMAIN,ad.setn.com
 DOMAIN,event.tagtoo.co
@@ -16,6 +20,7 @@ DOMAIN,mssdk.bytedance.com
 DOMAIN,metricreceiver.cellrebel.com
 DOMAIN,log.snssdk.com
 DOMAIN,line1-log.biligame.net
+DOMAIN,apd-pcdnwxlogin.teg.tencent-cloud.net
 DOMAIN,sensors.cloud.tencent.com
 DOMAIN,ad.holmesmind.com
 DOMAIN,mobileanalytics.us-east-1.amazonaws.com
@@ -197,6 +202,9 @@ DOMAIN-KEYWORD,analytics.adjust
 DOMAIN-WILDCARD,log*-misc-lf.amemv.com
 DOMAIN-WILDCARD,mmfayl-*.appsflyersdk.com
 DOMAIN-WILDCARD,ced*.sascdn.com
+DOMAIN-SUFFIX,appsflyer.com
+DOMAIN-SUFFIX,ecmb.bdimg.com
+DOMAIN-SUFFIX,pcdn.xmcdn.com
 DOMAIN-SUFFIX,ssp.hinet.net
 DOMAIN-SUFFIX,pix.pub
 DOMAIN-SUFFIX,prvc.io
@@ -320,6 +328,7 @@ DOMAIN-SUFFIX,yieldmo.com
 DOMAIN-SUFFIX,sharethrough.com
 DOMAIN-SUFFIX,servedbyadbutler.com
 DOMAIN-SUFFIX,getclicky.com
+DOMAIN-SUFFIX,segment.com
 DOMAIN-SUFFIX,segment.io
 DOMAIN-SUFFIX,uidapi.com
 DOMAIN-SUFFIX,zqkxlf.com
@@ -418,6 +427,8 @@ DOMAIN-SUFFIX,criteo.com
 DOMAIN-SUFFIX,uimserv.net
 DOMAIN-SUFFIX,ui-portal.de
 DOMAIN-SUFFIX,da.mgtv.com
+DOMAIN-SUFFIX,tuisong.baidu.com
+DOMAIN-SUFFIX,dxp.baidu.com
 DOMAIN-SUFFIX,pimlog.baidu.com
 DOMAIN-SUFFIX,mobads.baidu.com
 DOMAIN-SUFFIX,sofire.baidu.com
