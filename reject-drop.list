@@ -168,6 +168,7 @@ DOMAIN,h-adashx.ut.ele.me
 DOMAIN,app-monitor.ele.me
 DOMAIN,loggw-ex.alipay.com
 DOMAIN,loggw.alipay.com.cn
+DOMAIN,toblog.ctobsnssdk.com
 DOMAIN,nbsdk-baichuan.taobao.com
 DOMAIN,fourier.taobao.com
 DOMAIN,sjarvis.taobao.com
@@ -194,6 +195,7 @@ DOMAIN,stats.wp.com
 DOMAIN,netapm.music.163.com
 DOMAIN,clientlogdep.music.163.com
 DOMAIN,clientlogsf.music.163.com
+DOMAIN,clientlog.music.163.com
 DOMAIN,clientlog3.music.163.com
 DOMAIN,ac.dun.163yun.com
 DOMAIN,ac.dun.163.com
@@ -203,6 +205,7 @@ DOMAIN-KEYWORD,analytics.adjust
 DOMAIN-WILDCARD,log*-misc-lf.amemv.com
 DOMAIN-WILDCARD,mmfayl-*.appsflyersdk.com
 DOMAIN-WILDCARD,ced*.sascdn.com
+DOMAIN-SUFFIX,wanproxy.127.net
 DOMAIN-SUFFIX,appsflyer.com
 DOMAIN-SUFFIX,ecmb.bdimg.com
 DOMAIN-SUFFIX,pcdn.xmcdn.com
