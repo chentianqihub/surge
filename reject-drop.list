@@ -206,6 +206,7 @@ DOMAIN-KEYWORD,analytics.adjust
 DOMAIN-WILDCARD,log*-misc-lf.amemv.com
 DOMAIN-WILDCARD,mmfayl-*.appsflyersdk.com
 DOMAIN-WILDCARD,ced*.sascdn.com
+DOMAIN-SUFFIX,srtb.msn.com
 DOMAIN-SUFFIX,wanproxy.127.net
 DOMAIN-SUFFIX,appsflyer.com
 DOMAIN-SUFFIX,ecmb.bdimg.com
