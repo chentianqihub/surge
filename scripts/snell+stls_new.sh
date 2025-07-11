@@ -9,7 +9,7 @@ export PATH
 #	Link: https://t.me/m/XIADdsxCNTRl
 #=================================================
 
-sh_ver="1.8.5"
+sh_ver="1.8.6"
 snell_v4_version="4.1.1"
 snell_v5_version="5.0.0b3"
 filepath=$(cd "$(dirname "$0")" || exit; pwd)
@@ -255,24 +255,46 @@ getVer(){
     echo -e "${Info} 检测到 Snell v${ver} 最新版本为 [ ${new_ver} ]"
 }
 
+# 下载并安装 Snell v1（备用源）
+v1_Download() {
+	echo -e "${Info} 默认开始下载 Snell Server ${Yellow_font_prefix}v1 备用源版 ${Font_color_suffix} ..."
+	wget --no-check-certificate -N "https://raw.githubusercontent.com/chentianqihub/Others/master/snell/v1/snell-server-v1-linux-${arch}.zip"
+	if [[ $? -ne 0 ]]; then
+		echo -e "${Error} Snell Server ${Yellow_font_prefix}v1 备用源版${Font_color_suffix} 下载失败 !"
+		exit 1
+	fi	 
+		unzip -o "snell-server-v1-linux-${arch}.zip"
+	if [[ $? -ne 0 ]]; then
+		echo -e "${Error} Snell Server ${Yellow_font_prefix}v1 备用源版${Font_color_suffix} 解压失败 !"
+		echo -e "${Error} Snell Server ${Yellow_font_prefix}v1 备用源版${Font_color_suffix} 安装失败 !"
+		exit 1
+	fi	
+		rm -rf "snell-server-v1-linux-${arch}.zip"
+		chmod +x snell-server
+		mv -f snell-server "${FILE}"
+		echo "v1" > "${Snell_ver_File}"
+		echo -e "${Info} Snell Server v1 下载安装完毕 !"
+		return 0
+}
+
 # 下载并安装 Snell v2（备用源）
 v2_Download() {
 	echo -e "${Info} 默认开始下载 Snell Server ${Yellow_font_prefix}v2 备用源版 ${Font_color_suffix} ..."
 	wget --no-check-certificate -N "https://raw.githubusercontent.com/chentianqihub/Others/master/snell/v2.0.6/snell-server-v2.0.6-linux-${arch}.zip"
 	if [[ $? -ne 0 ]]; then
 		echo -e "${Error} Snell Server ${Yellow_font_prefix}v2 备用源版${Font_color_suffix} 下载失败 !"
-		return 1 && exit 1
+		exit 1
 	fi	 
 		unzip -o "snell-server-v2.0.6-linux-${arch}.zip"
 	if [[ $? -ne 0 ]]; then
 		echo -e "${Error} Snell Server ${Yellow_font_prefix}v2 备用源版${Font_color_suffix} 解压失败 !"
 		echo -e "${Error} Snell Server ${Yellow_font_prefix}v2 备用源版${Font_color_suffix} 安装失败 !"
-		return 1 && exit 1
+		exit 1
 	fi	
 		rm -rf "snell-server-v2.0.6-linux-${arch}.zip"
 		chmod +x snell-server
 		mv -f snell-server "${FILE}"
-		echo "v2.0.6" > ${Now_ver_File}
+		echo "v2.0.6" > ${Snell_ver_File}
 		echo -e "${Info} Snell Server v2 下载安装完毕 !"
 		return 0
 }
@@ -283,18 +305,18 @@ v3_Download() {
 	wget --no-check-certificate -N "https://raw.githubusercontent.com/chentianqihub/Others/master/snell/v3.0.1/snell-server-v3.0.1-linux-${arch}.zip"
 	if [[ $? -ne 0 ]]; then
 		echo -e "${Error} Snell Server ${Yellow_font_prefix}v3 备用源版${Font_color_suffix} 下载失败 !"
-		return 1 && exit 1
+		exit 1
 	fi
 		unzip -o "snell-server-v3.0.1-linux-${arch}.zip"
 	if [[ $? -ne 0 ]]; then
 		echo -e "${Error} Snell Server ${Yellow_font_prefix}v3 备用源版${Font_color_suffix} 解压失败 !"
 		echo -e "${Error} Snell Server ${Yellow_font_prefix}v3 备用源版${Font_color_suffix} 安装失败 !"
-		return 1 && exit 1
+		exit 1
 	fi	
 		rm -rf "snell-server-v3.0.1-linux-${arch}.zip"
 		chmod +x snell-server
 		mv -f snell-server "${FILE}"
-		echo "v3.0.1" > ${Now_ver_File}
+		echo "v3.0.1" > ${Snell_ver_File}
 		echo -e "${Info} Snell Server v3 下载安装完毕 !"
 		return 0
 }
@@ -319,14 +341,14 @@ Snell_Download(){
 	getSnellDownloadUrl "${version}"
 	wget --no-check-certificate -N "${snell_url}"
 	if [[ ! -e "snell-server-v${version}-linux-${arch}.zip" ]]; then
-		echo -e "${Error} Snell Server ${Yellow_font_prefix}${version_type}${Font_color_suffix} 下载失败！"
-		return 1 && exit 1
+		echo -e "${Error} Snell Server ${Yellow_font_prefix}${version_type}${Font_color_suffix} 下载失败 !"
+		exit 1
 	else
 		unzip -o "snell-server-v${version}-linux-${arch}.zip"
 	fi
 	if [[ ! -e "snell-server" ]]; then
-		echo -e "${Error} Snell Server ${Yellow_font_prefix}${version_type}${Font_color_suffix} 解压失败！"
-		return 1 && exit 1
+		echo -e "${Error} Snell Server ${Yellow_font_prefix}${version_type}${Font_color_suffix} 解压失败 !"
+		exit 1
 	else
 		rm -rf "snell-server-v${version}-linux-${arch}.zip"
 		chmod +x snell-server
@@ -343,13 +365,18 @@ Install() {
 		mkdir "${FOLDER}"
 	fi
     [[ -e ${FILE} ]] && echo -e "${Error} 检测到 Snell Server 已安装,请先卸载再进行安装 !" && exit 1
-		echo -e "选择安装版本${Yellow_font_prefix}[2-5]${Font_color_suffix} 
+		echo -e "选择安装版本${Yellow_font_prefix}[1-5]${Font_color_suffix} 
 ==================================
-${Green_font_prefix} 2.${Font_color_suffix} v2  ${Green_font_prefix} 3.${Font_color_suffix} v3  ${Green_font_prefix} 4.${Font_color_suffix} v4 ${Green_font_prefix} 5.${Font_color_suffix} v5${Yellow_font_prefix}(beta)${Font_color_suffix}
+${Green_font_prefix} 1.${Font_color_suffix} v1 ${Green_font_prefix} 2.${Font_color_suffix} v2  ${Green_font_prefix} 3.${Font_color_suffix} v3  ${Green_font_prefix} 4.${Font_color_suffix} v4 ${Green_font_prefix} 5.${Font_color_suffix} v5${Yellow_font_prefix}(beta)${Font_color_suffix}
 =================================="
 	read -e -p "(默认: 4.v4): " ver
 	[[ -z "${ver}" ]] && ver="4"
-	if [[ ${ver} == "2" ]]; then
+	if [[ ${ver} == "1" ]]; then
+	     echo && echo "=================================="
+	     echo -e "Snell Server 协议版本: ${Red_background_prefix} v${ver} ${Font_color_suffix}"
+	     echo "==================================" && echo
+	     Install_v1
+	elif [[ ${ver} == "2" ]]; then
 	     echo && echo "=================================="
 	     echo -e "Snell Server 协议版本: ${Red_background_prefix} v${ver} ${Font_color_suffix}"
 	     echo "==================================" && echo
@@ -370,7 +397,7 @@ ${Green_font_prefix} 2.${Font_color_suffix} v2  ${Green_font_prefix} 3.${Font_co
 	     echo "==================================" && echo
 	     Install_v5     
 	else
-	     echo -e "${Red_font_prefix}[Warn]${Font_color_suffix} 无效输入! 将取默认值${Yellow_font_prefix} v4${Font_color_suffix}"
+	     echo -e "${Warn} 无效输入! 将取默认值${Yellow_font_prefix} v4${Font_color_suffix}"
 	     ver="4"
 	     echo && echo "=================================="
 	     echo -e "Snell Server 协议版本: ${Red_background_prefix} v${ver} ${Font_color_suffix}"
@@ -428,7 +455,7 @@ Read_config(){
 	obfs=$(grep 'obfs = ' "${Snell_conf}" |awk -F 'obfs = ' '{print $NF}')
 	host=$(grep 'obfs-host = ' "${Snell_conf}" |awk -F 'obfs-host = ' '{print $NF}')
 	tfo=$(grep 'tfo = ' "${Snell_conf}" |awk -F 'tfo = ' '{print $NF}')
-     dns=$(grep 'dns = ' "${Snell_conf}" |awk -F 'dns = ' '{print $NF}')
+        dns=$(grep 'dns = ' "${Snell_conf}" |awk -F 'dns = ' '{print $NF}')
 	ver=$(grep 'version = ' "${Snell_conf}" |awk -F 'version = ' '{print $NF}')
 }
 
@@ -561,13 +588,15 @@ Set_host(){
 
 # 设置协议版本
 Set_ver(){
-	echo -e "配置 Snell Server 协议版本${Yellow_font_prefix}[2-5]${Font_color_suffix} 
+	echo -e "配置 Snell Server 协议版本${Yellow_font_prefix}[1-5]${Font_color_suffix} 
 ==================================
-${Green_font_prefix} 2.${Font_color_suffix} v2 ${Green_font_prefix} 3.${Font_color_suffix} v3 ${Green_font_prefix} 4.${Font_color_suffix} v4 ${Green_font_prefix} 5.${Font_color_suffix} v5${Yellow_font_prefix}(beta)${Font_color_suffix} 
+${Green_font_prefix} 1.${Font_color_suffix} v1 ${Green_font_prefix} ${Green_font_prefix} 2.${Font_color_suffix} v2 ${Green_font_prefix} 3.${Font_color_suffix} v3 ${Green_font_prefix} 4.${Font_color_suffix} v4 ${Green_font_prefix} 5.${Font_color_suffix} v5${Yellow_font_prefix}(beta)${Font_color_suffix} 
 =================================="
 	read -e -p "(默认: 4.v4): " ver
 	[[ -z "${ver}" ]] && ver="4"
-	if [[ ${ver} == "2" ]]; then
+	if [[ ${ver} == "1" ]]; then
+		ver=1
+	elif [[ ${ver} == "2" ]]; then
 		ver=2
 	elif [[ ${ver} == "3" ]]; then
 		ver=3
@@ -645,7 +674,7 @@ Set(){
  ${Green_font_prefix}6.${Font_color_suffix}  开关 TCP Fast Open"
 
 Read_config
-if [[ -n "${dns}" ]]; then
+if [[ "${ver}" = "4" || "${ver}" = "5" ]]; then
     echo -e " ${Green_font_prefix}7.${Font_color_suffix}  配置 DNS"
     echo -e " ${Green_font_prefix}8.${Font_color_suffix}  配置 Snell Server 协议版本
 ==============================
@@ -697,9 +726,6 @@ if [[ -n "${dns}" ]]; then
 	elif [[ "${modify}" == "8" ]]; then
 		Read_config
 		Set_ver
-		if [[ "${ver}" = "4" || "${ver}" = "5" ]]; then
-		Set_dns
-		fi
 		Write_config
 		Restart
      elif [[ "${modify}" == "9" ]]; then
@@ -769,10 +795,10 @@ else
 		Set_ver
 		if [[ "${ver}" = "4" || "${ver}" = "5" ]]; then
 		Set_dns
-		fi
+          fi
 		Write_config
 		Restart
-        elif [[ "${modify}" == "8" ]]; then
+     elif [[ "${modify}" == "8" ]]; then
                 Read_config
 		Set_ver
 		Edit_port
@@ -780,124 +806,59 @@ else
 		Set_obfs
 		if [[ "${obfs}" != "off" ]]; then
                 Set_host  
-        fi
+          fi
 		Set_ipv6
 		Set_tfo
-                if [[ "${ver}" = "4" || "${ver}" = "5" ]]; then
+          if [[ "${ver}" = "4" || "${ver}" = "5" ]]; then
 		Set_dns
-                fi
+          fi
 		Write_config
 		Restart
-        else
+     else
 		echo -e "${Error} 请输入正确的数字${Yellow_font_prefix}[1-8]${Font_color_suffix}" && exit 1
-        fi
+     fi
 fi
     sleep 3s
     start_menu
 }
 
-# 安装 Snell v2
-Install_v2(){
-	check_root
-	echo -e "${Info} 开始设置 配置..." && echo
-	Set_port
-	Set_psk
-	Set_obfs  
-     if [[ "${obfs}" != "off" ]]; then
-        Set_host  
-     fi
-	Set_ipv6
-	Set_tfo
-	echo -e "${Info} 开始安装/配置 依赖..."
-	Check_dependencies
-	Install_dependencies
-	echo -e "${Info} 开始下载/安装..."
-	v2_Download
-	echo -e "${Info} 开始写入 配置文件..."
-	Write_config
-        echo -e "${Info} 开始安装 服务脚本..."
-	Service
-	echo -e "${Info} 所有步骤 安装完毕, 开始启动..."
-	Start
-        Output_Snell
+# 统一的安装函数
+Install_Snell(){
+    local version=$1            # 版本号，如 1/2/3/4/5
+    check_root  
+    echo -e "${Info} 开始设置 配置..." && echo
+    Set_port
+    Set_psk
+    Set_obfs
+    [[ "$obfs" != "off" ]] && Set_host        # 只在开启 obfs 时询问 host
+    Set_ipv6
+    Set_tfo
+    (( ver >= 4 )) && Set_dns                 # v4 及以上才支持 DNS 设置
+    
+    echo -e "${Info} 开始安装/配置 依赖..."
+    Install_dependencies
+    
+    echo -e "${Info} 开始下载/安装..."
+    # 动态调用对应版本的下载函数
+    "v${version}_Download"
+    
+    echo -e "${Info} 开始写入 配置文件..."
+    Write_config
+    
+    echo -e "${Info} 开始安装 服务脚本..."
+    Service
+    
+    echo -e "${Info} 所有步骤 安装完毕, 开始启动..."
+    Start
+    Output_Snell
 }
 
-# 安装 Snell v3
-Install_v3(){
-	check_root
-	echo -e "${Info} 开始设置 配置..." && echo
-	Set_port
-	Set_psk
-	Set_obfs  
-     if [[ "${obfs}" != "off" ]]; then
-        Set_host  
-     fi
-	Set_ipv6
-	Set_tfo
-	echo -e "${Info} 开始安装/配置 依赖..."
-	Install_dependencies
-	echo -e "${Info} 开始下载/安装..."
-	v3_Download
-	echo -e "${Info} 开始写入 配置文件..."
-	Write_config
-        echo -e "${Info} 开始安装 服务脚本..."
-	Service
-	echo -e "${Info} 所有步骤 安装完毕, 开始启动..."
-	Start
-        Output_Snell
-}
-
-# 安装 Snell v4
-Install_v4(){
-	check_root
-	echo -e "${Info} 开始设置 配置..." && echo
-	Set_port
-	Set_psk
-	Set_obfs  
-     if [[ "${obfs}" != "off" ]]; then
-        Set_host  # 只有当 obfs 不是 "off" 时才调用
-     fi
-	Set_ipv6
-	Set_tfo
-        Set_dns
-	echo -e "${Info} 开始安装/配置 依赖..."
-	Install_dependencies
-	echo -e "${Info} 开始下载/安装..."
-	v4_Download
-	echo -e "${Info} 开始写入 配置文件..."
-	Write_config
-        echo -e "${Info} 开始安装 服务脚本..."
-	Service
-	echo -e "${Info} 所有步骤 安装完毕, 开始启动..."
-	Start
-        Output_Snell
-}
-
-# 安装 Snell v5
-Install_v5(){
-	check_root
-	echo -e "${Info} 开始设置 配置..." && echo
-	Set_port
-	Set_psk
-	Set_obfs  
-     if [[ "${obfs}" != "off" ]]; then
-        Set_host  # 只有当 obfs 不是 "off" 时才调用
-     fi
-	Set_ipv6
-	Set_tfo
-        Set_dns
-	echo -e "${Info} 开始安装/配置 依赖..."
-	Install_dependencies
-	echo -e "${Info} 开始下载/安装..."
-	v5_Download
-	echo -e "${Info} 开始写入 配置文件..."
-	Write_config
-        echo -e "${Info} 开始安装 服务脚本..."
-	Service
-	echo -e "${Info} 所有步骤 安装完毕, 开始启动..."
-	Start
-        Output_Snell
-}
+# 为了兼容性，保留原函数名作为包装器
+Install_v1(){ Install_Snell 1; }
+Install_v2(){ Install_Snell 2; }
+Install_v3(){ Install_Snell 3; }
+Install_v4(){ Install_Snell 4; }
+Install_v5(){ Install_Snell 5; }
 
 # 启动 Snell
 Start(){
@@ -933,7 +894,7 @@ Stop(){
 # 重启 Snell
 Restart(){
 	check_installed_status
-        systemctl daemon-reload
+     systemctl daemon-reload
 	systemctl restart snell-server
 	echo -e "${Info} Snell Server 重启完毕 !"
 	sleep 3s
@@ -1044,12 +1005,12 @@ View(){
 	echo -e " 端口\t: ${Green_font_prefix}${port}${Font_color_suffix}"
 	echo -e " 密钥\t: ${Green_font_prefix}${psk}${Font_color_suffix}"
 	echo -e " OBFS\t: ${Green_font_prefix}${obfs}${Font_color_suffix}"
-        if [[ -n "${host}" ]]; then
-        echo -e " 域名\t: ${Green_font_prefix}${host}${Font_color_suffix}"
-        fi
+     if [[ -n "${host}" ]]; then
+          echo -e " 域名\t: ${Green_font_prefix}${host}${Font_color_suffix}"
+     fi
 	echo -e " TFO\t: ${Green_font_prefix}${tfo}${Font_color_suffix}"
-        if [[ -n "${dns}" && "${ver}" == "4" ]]; then
-	echo -e " DNS\t: ${Green_font_prefix}${dns}${Font_color_suffix}"
+     if [[ -n "${dns}" && "${ver}" -ge 4 ]]; then
+	     echo -e " DNS\t: ${Green_font_prefix}${dns}${Font_color_suffix}"
 	fi
 	echo -e " VER\t: ${Green_font_prefix}${ver}${Font_color_suffix}"
 	echo -e "—————————————————————————"
@@ -1062,15 +1023,16 @@ Status(){
 	echo -e "${Info} 获取 Snell Server 运行状态 ..."
 	echo -e "${Tip} ${Yellow_font_prefix}返回主菜单请按 q${Font_color_suffix} "
 	systemctl status snell-server
-        sleep 1s
-	start_menu
+     sleep 1s
+	before_start_menu
 }
+
 # 查看 Snell 服务日志
 Journal(){
-        echo -e "${Info} 获取 Snell Server 服务日志 ..."
+     echo -e "${Info} 获取 Snell Server 服务日志 ..."
 	journalctl -u snell
-	sleep 2s 
-	start_menu
+	sleep 1s 
+	before_start_menu
 }
 
 # 手动编辑 Snell 配置文件
@@ -1116,6 +1078,27 @@ Manual_Edit_Snell(){
     sleep 2s
     # 返回主菜单
     start_menu
+}
+
+Set_Shadow_TLS_VER(){
+echo -e "配置 Shadow-TLS 协议版本${Yellow_font_prefix}[2-3]${Font_color_suffix} 
+==================================
+${Green_font_prefix} 2.${Font_color_suffix} v2    ${Green_font_prefix} 3.${Font_color_suffix} v3 
+=================================="
+	read -e -p "(默认: 3.v3): " SHADOW_TLS_VER
+	[[ -z "${SHADOW_TLS_VER}" ]] && SHADOW_TLS_VER="3"
+	if [[ ${SHADOW_TLS_VER} == "2" ]]; then
+		SHADOW_TLS_VER=2	
+	elif
+	     [[ ${SHADOW_TLS_VER} == "3" ]]; then
+		SHADOW_TLS_VER=3
+	else	
+	     echo -e "${Warn} 无效输入! 将取默认值${Yellow_font_prefix} v3${Font_color_suffix}"
+	     SHADOW_TLS_VER=3
+	fi
+	echo && echo "=================================="
+	echo -e "Shadow-TLS 协议版本: ${Red_background_prefix} v${SHADOW_TLS_VER} ${Font_color_suffix}"
+	echo "==================================" && echo
 }
 
 Set_Shadow_TLS_TFO(){
@@ -1211,7 +1194,7 @@ ${Green_font_prefix} 1.${Font_color_suffix} v4  ${Green_font_prefix} 2.${Font_co
 }
 
 Set_Shadow_TLS_PORT(){
-echo -e "请输入 Shadow-TLS 监听端口${Yellow_font_prefix}[1-65535]${Font_color_suffix}"
+    echo -e "请输入 Shadow-TLS 监听端口${Yellow_font_prefix}[1-65535]${Font_color_suffix}"
 # 循环直到用户输入有效的 SHADOW_TLS_PORT 值
 while true; do
     # 提示用户输入 SHADOW_TLS_PORT 值
@@ -1248,32 +1231,130 @@ echo && echo "=============================="
 	echo "==============================" && echo
 }
 
-Set_Shadow_TLS_SNI(){
-echo -e "请输入 Shadow-TLS TLS SNI 名称"
-# 提示用户输入 SHADOW_TLS_SNI 值
-read -e -p "(默认: swcdn.apple.com): " SHADOW_TLS_SNI
+Edit_Shadow_TLS_PORT(){
+    echo -e "请输入 Shadow-TLS 监听端口${Yellow_font_prefix}[1-65535]${Font_color_suffix}"
+    # 循环直到用户输入有效的 SHADOW_TLS_PORT 值
+while true; do
+    # 提示用户输入 SHADOW_TLS_PORT 值
+    read -e -p "(默认: 8443): " SHADOW_TLS_PORT
 
-    # 如果用户未输入值,则使用默认值 swcdn.apple.com
-[[ -z "${SHADOW_TLS_SNI}" ]] && SHADOW_TLS_SNI="swcdn.apple.com"
+    # 如果用户未输入值,则使用默认值 8443
+    [[ -z "${SHADOW_TLS_PORT}" ]] && SHADOW_TLS_PORT="8443"
 
-# 输出最终的 SHADOW_TLS_SNI 值
-echo && echo "=============================="
-	echo -e "Shadow-TLS TLS 服务器名称: ${Red_background_prefix} ${SHADOW_TLS_SNI} ${Font_color_suffix}"
-	echo "==============================" && echo
+    # 检查用户输入的值是否有效
+    if ! [[ "$SHADOW_TLS_PORT" =~ ^[0-9]+$ ]] || [ "$SHADOW_TLS_PORT" -lt 1 ] || [ "$SHADOW_TLS_PORT" -gt 65535 ]; then
+        echo -e "${Error} SHADOW_TLS_PORT值必须是1到65535之间的数字" && echo
+        continue
+    fi
+    # 如果输入有效，退出循环
+    break
+done
+# 输出最终的 SHADOW_TLS_PORT 值
+    echo && echo "=============================="
+    echo -e "Shadow-TLS 监听端口: ${Red_background_prefix} ${SHADOW_TLS_PORT} ${Font_color_suffix}"
+    echo "==============================" && echo
 }
 
-Set_Shadow_TLS_PWD(){
-echo -e "请输入 Shadow-TLS 密码"
-# 提示用户输入 SHADOW_TLS_PWD 值
-read -r -e -p "(默认: JsJeWtjiUyJ5yeto): " SHADOW_TLS_PWD
+Set_Shadow_TLS_SNI() {
+    local default_domain="swcdn.apple.com"
+    local choices=(
+        "swcdn.apple.com"
+        "mensura.cdn-apple.com"
+        "gateway.icloud.com"
+    )
 
-    # 如果用户未输入值,则使用默认值 JsJeWtjiUyJ5yeto
-[[ -z "${SHADOW_TLS_PWD}" ]] && SHADOW_TLS_PWD="JsJeWtjiUyJ5yeto"
+    echo -e "请选择 Shadow-TLS TLS SNI 名称: "
+    echo "=============================="
+    # -------- 左对齐显示菜单（数字绿色） --------
+    printf "  ${Green_font_prefix}1${Font_color_suffix}) %-24s\n" "${choices[0]}"
+    printf "  ${Green_font_prefix}2${Font_color_suffix}) %-24s\n" "${choices[1]}"
+    printf "  ${Green_font_prefix}3${Font_color_suffix}) %-24s\n" "${choices[2]}"
+    printf "  ${Green_font_prefix}4${Font_color_suffix}) %-24s\n" "Custom domain"
+    echo "=============================="
+    # ---------- 读取菜单选项 ----------
+    local sel
+    while true; do
+        read -rep "请输入选项 [1-4] (默认 1): " sel
+        sel=${sel:-1}                     # 回车等同于 1
+        case "$sel" in
+            1|2|3)                        # 直接使用预设域名
+                SHADOW_TLS_SNI="${choices[$((sel-1))]}"
+                break
+                ;;
+            4)                            # 进入自定义
+                read -rep "请输入自定义域名 (默认: $default_domain): " custom
+                SHADOW_TLS_SNI="${custom:-$default_domain}"
+                break
+                ;;
+            *)  echo "${Error} 请输入正确的数字 [1-4]" ;;
+        esac
+    done
 
-# 输出最终的 SHADOW_TLS_PWD 值
-echo && echo "=============================="
-	echo -e "Shadow-TLS 密码: ${Red_background_prefix} ${SHADOW_TLS_PWD} ${Font_color_suffix}"
-	echo "==============================" && echo
+    # ---------- 输出结果 ----------
+    echo
+    echo "=============================="
+    echo -e "Shadow-TLS TLS 服务器名称: ${Red_background_prefix} ${SHADOW_TLS_SNI} ${Font_color_suffix}"
+    echo "=============================="
+    echo
+}
+
+Set_Shadow_TLS_PWD() {
+    local default_pwd="JsJeWtjiUyJ5yeto"
+
+    echo -e "请选择 Shadow-TLS 密码: "
+    echo "=============================="
+    printf "  ${Green_font_prefix}1${Font_color_suffix}) %-24s\n" "$default_pwd"
+    printf "  ${Green_font_prefix}2${Font_color_suffix}) %-24s\n" "Generate a random string"
+    printf "  ${Green_font_prefix}3${Font_color_suffix}) %-24s\n" "Enter a custom password"
+    echo "=============================="
+
+    # ---------- 读取菜单选项 ----------
+    local sel
+    while true; do
+        read -rep "请输入选项 [1-3] (默认 1): " sel
+        sel=${sel:-1}               # 直接回车 = 1
+        case "$sel" in
+            1)
+                SHADOW_TLS_PWD="$default_pwd"
+                break
+                ;;
+            2)
+                # 生成 16 位 [A-Z a-z 0-9] 随机串
+                SHADOW_TLS_PWD="$(tr -dc 'A-Za-z0-9' </dev/urandom | head -c 16)"
+                # 理论上极少数情况下长度可能不足，再兜底一次
+                while [[ ${#SHADOW_TLS_PWD} -lt 16 ]]; do
+                    SHADOW_TLS_PWD+=$(tr -dc 'A-Za-z0-9' </dev/urandom | head -c $((16-${#SHADOW_TLS_PWD})))
+                done
+                break
+                ;;
+            3)
+                # ---------- 自定义密码 ----------
+                local custom_pwd
+                while true; do
+                    read -rep "请输入自定义密码(至少 6 位, 回车重新输入): " custom_pwd
+                    if [[ -z "$custom_pwd" ]]; then
+                        echo -e "${Error} 密码不能为空, 请重新输入 !"
+                    elif [[ ${#custom_pwd} -lt 6 ]]; then
+                        echo -e "${Error} 长度不足 6 位, 请重新输入 !"
+                    else
+                        SHADOW_TLS_PWD="$custom_pwd"
+                        break
+                    fi
+                done
+                break
+                ;;
+            *)
+                echo "${Error} 请输入正确的数字 [1-3]"
+                ;;
+        esac
+    done
+
+    # ---------- 输出结果 ----------
+    echo
+    echo "=============================="
+    echo -e "Shadow-TLS 密码: ${Red_background_prefix} ${SHADOW_TLS_PWD} ${Font_color_suffix}"
+    echo "=============================="
+    echo
 }
 
 Sys_edition(){
@@ -1308,111 +1389,79 @@ Sys_edition(){
 }
 
 Download_Shadow_TLS(){
-echo -e "${Info} 开始下载/安装..."
-    # 获取最新的 SHADOW_TLS_VERSION
-    SHADOW_TLS_VERSION=$(curl -s "https://api.github.com/repos/ihciah/shadow-tls/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
-    if [ -z "$SHADOW_TLS_VERSION" ]; then
-        echo "${Error} 获取 SHADOW_TLS_VERSION 失败"   
-        exit 1
-    else echo -e "${Info} 检测到 Shadow-TLS 最新版本为 [ ${SHADOW_TLS_VERSION} ]"    
-    fi
+    echo -e "${Info} 开始下载/安装..."
+   
+    # 获取最新的版本
+        SHADOW_TLS_LATEST_VER=$(curl -s "https://api.github.com/repos/ihciah/shadow-tls/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+        if [ -z "$SHADOW_TLS_LATEST_VER" ]; then
+            echo "${Error} 获取 Shadow-TLS 最新版本失败 !"   
+            exit 1
+        else 
+            echo -e "${Info} 检测到 Shadow-TLS 最新版本为 [ ${SHADOW_TLS_LATEST_VER} ]"    
+        fi
 
     # 下载 shadow-tls 并检查是否成功
     Sys_edition
-    SHADOW_TLS_URL="https://github.com/ihciah/shadow-tls/releases/download/${SHADOW_TLS_VERSION}/shadow-tls-${EDITION}"
-    if ! wget "${SHADOW_TLS_URL}" -O ${Shadow_TLS_FILE}; then
-        echo -e "${Error} Shadow-TLS 下载失败 !"
+    SHADOW_TLS_URL="https://github.com/ihciah/shadow-tls/releases/download/${SHADOW_TLS_LATEST_VER}/shadow-tls-${EDITION}"
+    if wget -q --show-progress "${SHADOW_TLS_URL}" -O "${Shadow_TLS_FILE}"; then
+        chmod +x "${Shadow_TLS_FILE}"
+        echo -e "${Info} Shadow-TLS 主程序下载安装完毕!"
+    else
+        echo -e "${Error} Shadow-TLS 下载失败!"
         exit 1
-    else chmod +x ${Shadow_TLS_FILE}
-         echo -e "${Info} Shadow-TLS 主程序下载安装完毕 !"        
     fi
 }
 
-Write_Shadow_TLS_Config(){
-    if [[ ${SHADOW_TLS_TFO} == true ]]; then
-          if [[ ${SHADOW_TLS_MODE} == strict ]]; then
-    sudo tee "$service_file" > /dev/null <<-EOF
-	[Unit]
-	Description=Shadow-TLS Server Service
-	Documentation=man:sstls-server
-	After=network-online.target
-	Wants=network-online.target
+Write_Shadow_TLS_Config() {
+    # -------- 拼接 ExecStart 参数 --------
+    local args=()
 
-	[Service]
-	Type=simple
-	ExecStart=${Shadow_TLS_FILE} --fastopen --strict --v3 server --wildcard-sni=${SHADOW_TLS_WILDCARD_SNI} --listen ${SHADOW_TLS_IPVER}:${SHADOW_TLS_PORT} --server 127.0.0.1:${port} --tls ${SHADOW_TLS_SNI} --password ${SHADOW_TLS_PWD}
-	StandardOutput=syslog
-	StandardError=syslog
-	SyslogIdentifier=shadow-tls
+    [[ ${SHADOW_TLS_TFO}   == true  ]] && args+=(--fastopen)
+    if [[ ${SHADOW_TLS_VER} -ge 3 && ${SHADOW_TLS_MODE} == strict ]]; then
+        args+=(--strict)
+    fi
 
-	[Install]
-	WantedBy=multi-user.target
+    # ≥3 才需要显式指定版本号
+    if [[ ${SHADOW_TLS_VER} -ge 3 ]]; then
+        args+=(--v"${SHADOW_TLS_VER}")
+    fi
+
+    args+=(server)
+    args+=(--wildcard-sni="${SHADOW_TLS_WILDCARD_SNI}")
+
+    args+=(--listen "${SHADOW_TLS_IPVER}:${SHADOW_TLS_PORT}"
+          --server  "127.0.0.1:${port}"
+          --tls     "${SHADOW_TLS_SNI}"
+          --password "${SHADOW_TLS_PWD}" )
+
+    # 把数组展平成字符串
+    local exec_start="${Shadow_TLS_FILE} ${args[*]}"
+
+    # -------- 写入 systemd 单元 --------
+    sudo tee "${service_file}" >/dev/null <<EOF
+[Unit]
+Description=Shadow-TLS Server Service
+Documentation=man:sstls-server
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=${exec_start}
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=shadow-tls
+
+[Install]
+WantedBy=multi-user.target
 EOF
-          else
-       sudo tee "$service_file" > /dev/null <<-EOF
-	[Unit]
-	Description=Shadow-TLS Server Service
-	Documentation=man:sstls-server
-	After=network-online.target
-	Wants=network-online.target
-
-	[Service]
-	Type=simple
-	ExecStart=${Shadow_TLS_FILE} --fastopen --v3 server --wildcard-sni=${SHADOW_TLS_WILDCARD_SNI} --listen ${SHADOW_TLS_IPVER}:${SHADOW_TLS_PORT} --server 127.0.0.1:${port} --tls ${SHADOW_TLS_SNI} --password ${SHADOW_TLS_PWD}
-	StandardOutput=syslog
-	StandardError=syslog
-	SyslogIdentifier=shadow-tls
-
-	[Install]
-	WantedBy=multi-user.target
-EOF
-          fi
-    else
-          if [[ ${SHADOW_TLS_MODE} == strict ]]; then
-    sudo tee "$service_file" > /dev/null <<-EOF
-	[Unit]
-	Description=Shadow-TLS Server Service
-	Documentation=man:sstls-server
-	After=network-online.target
-	Wants=network-online.target
-
-	[Service]
-	Type=simple
-	ExecStart=${Shadow_TLS_FILE} --strict --v3 server --wildcard-sni=${SHADOW_TLS_WILDCARD_SNI} --listen ${SHADOW_TLS_IPVER}:${SHADOW_TLS_PORT} --server 127.0.0.1:${port} --tls ${SHADOW_TLS_SNI} --password ${SHADOW_TLS_PWD}
-	StandardOutput=syslog
-	StandardError=syslog
-	SyslogIdentifier=shadow-tls
-
-	[Install]
-	WantedBy=multi-user.target
-EOF
-          else
-       sudo tee "$service_file" > /dev/null <<-EOF
-	[Unit]
-	Description=Shadow-TLS Server Service
-	Documentation=man:sstls-server
-	After=network-online.target
-	Wants=network-online.target
-
-	[Service]
-	Type=simple
-	ExecStart=${Shadow_TLS_FILE} --v3 server --wildcard-sni=${SHADOW_TLS_WILDCARD_SNI} --listen ${SHADOW_TLS_IPVER}:${SHADOW_TLS_PORT} --server 127.0.0.1:${port} --tls ${SHADOW_TLS_SNI} --password ${SHADOW_TLS_PWD}
-	StandardOutput=syslog
-	StandardError=syslog
-	SyslogIdentifier=shadow-tls
-
-	[Install]
-	WantedBy=multi-user.target
-EOF
-          fi 
-     fi   
 }
 
 Install_Shadow_TLS(){
     [[ -e ${Shadow_TLS_FILE} ]] && echo -e "${Error} 检测到 Shadow-TLS 已安装 ,请先卸载再执行安装!" && exit 1
-
+    Set_Shadow_TLS_VER
     Set_Shadow_TLS_TFO
-    Set_Shadow_TLS_MODE
+    (( SHADOW_TLS_VER >= 3 )) && Set_Shadow_TLS_MODE
     Set_Shadow_TLS_WILDCARD_SNI
     Set_Shadow_TLS_IPVER
     Set_Shadow_TLS_PORT
@@ -1489,9 +1538,9 @@ Uninstall_Shadow_TLS(){
         fi
 
         # 检查服务文件是否存在并删除
-        if [ -f /etc/systemd/system/shadow-tls.service ]; then
+        if [ -f "${service_file}" ]; then
             echo "正在删除服务文件..."
-            sudo rm /etc/systemd/system/shadow-tls.service
+            sudo rm "${service_file}"
             if [[ $? -eq 0 ]]; then
             echo -e "${Info} shadow-tls 服务文件已删除"
             else
@@ -1543,7 +1592,7 @@ Restart_Check_Shadow_TLS(){
         # 提取服务状态
         check_Shadow_TLS_status
         if [ "$shadow_tls_status" == "running" ]; then
-            echo -e "${Info} ${Green_font_prefix}服务已成功重启并且正在运行 !${Font_color_suffix}"
+            echo -e "${Info} 服务已成功重启并且正在运行 !"
             Output_Shadow_TLS
         else
             echo -e "${Error} 服务未在运行状态,请手动检查"
@@ -1584,15 +1633,15 @@ Status_Shadow_TLS(){
             echo -e "${Error} ${Red_font_prefix}shadow-tls 服务未安装${Font_color_suffix}"
 	fi
 	systemctl status shadow-tls
-        #sleep 1s
-	start_menu
+     sleep 1s
+	before_start_menu
 }
 
 Journal_Shadow_TLS(){
-        echo -e "${Info} 获取 Shadow-TLS 服务日志 ..."
-        echo -e "${Tip} ${Yellow_font_prefix}返回主菜单请按 q${Font_color_suffix} "
+     echo -e "${Info} 获取 Shadow-TLS 服务日志 ..."
 	journalctl -u shadow-tls
-	start_menu
+	sleep 1s
+	before_start_menu
 }
 
 Output_Shadow_TLS(){
@@ -1606,30 +1655,30 @@ echo -e "———————————————————————�
     if [[ "${SHADOW_TLS_IPVER}" == "::0" ]]; then
             if [[ "${obfs}" == "off" ]]; then
                  if [[ -n "$ipv6_addr" ]]; then
-                 echo "${ip_city} = snell, ${ipv6_addr}, ${SHADOW_TLS_PORT}, psk=${psk}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=${SHADOW_TLS_PWD}, shadow-tls-sni=${SHADOW_TLS_SNI}, shadow-tls-version=3"
+                 echo "${ip_city} = snell, ${ipv6_addr}, ${SHADOW_TLS_PORT}, psk=${psk}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=${SHADOW_TLS_PWD}, shadow-tls-sni=${SHADOW_TLS_SNI}, shadow-tls-version=${SHADOW_TLS_VER}"
                  echo -e "—————————————————————————"
-                 echo "${ip_city} = snell, ${ipv4_addr}, ${SHADOW_TLS_PORT}, psk=${psk}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=${SHADOW_TLS_PWD}, shadow-tls-sni=${SHADOW_TLS_SNI}, shadow-tls-version=3"
+                 echo "${ip_city} = snell, ${ipv4_addr}, ${SHADOW_TLS_PORT}, psk=${psk}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=${SHADOW_TLS_PWD}, shadow-tls-sni=${SHADOW_TLS_SNI}, shadow-tls-version=${SHADOW_TLS_VER}"
                  else
                  echo "IPv6 is not available."
                  echo -e "—————————————————————————"
-                 echo "${ip_city} = snell, ${ipv4_addr}, ${SHADOW_TLS_PORT}, psk=${psk}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=${SHADOW_TLS_PWD}, shadow-tls-sni=${SHADOW_TLS_SNI}, shadow-tls-version=3"
+                 echo "${ip_city} = snell, ${ipv4_addr}, ${SHADOW_TLS_PORT}, psk=${psk}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=${SHADOW_TLS_PWD}, shadow-tls-sni=${SHADOW_TLS_SNI}, shadow-tls-version=${SHADOW_TLS_VER}"
                  fi
             else
                  if [[ -n "$ipv6_addr" ]]; then
-                 echo "${ip_city} = snell, ${ipv6_addr}, ${SHADOW_TLS_PORT}, psk=${psk}, obfs=${obfs}, obfs-host=${host}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=${SHADOW_TLS_PWD}, shadow-tls-sni=${SHADOW_TLS_SNI}, shadow-tls-version=3"
+                 echo "${ip_city} = snell, ${ipv6_addr}, ${SHADOW_TLS_PORT}, psk=${psk}, obfs=${obfs}, obfs-host=${host}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=${SHADOW_TLS_PWD}, shadow-tls-sni=${SHADOW_TLS_SNI}, shadow-tls-version=${SHADOW_TLS_VER}"
                  echo -e "—————————————————————————"
-                 echo "${ip_city} = snell, ${ipv4_addr}, ${SHADOW_TLS_PORT}, psk=${psk}, obfs=${obfs}, obfs-host=${host}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=${SHADOW_TLS_PWD}, shadow-tls-sni=${SHADOW_TLS_SNI}, shadow-tls-version=3"
+                 echo "${ip_city} = snell, ${ipv4_addr}, ${SHADOW_TLS_PORT}, psk=${psk}, obfs=${obfs}, obfs-host=${host}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=${SHADOW_TLS_PWD}, shadow-tls-sni=${SHADOW_TLS_SNI}, shadow-tls-version=${SHADOW_TLS_VER}"
                  else
                  echo "IPv6 is not available."
                  echo -e "—————————————————————————"
-                 echo "${ip_city} = snell, ${ipv4_addr}, ${SHADOW_TLS_PORT}, psk=${psk}, obfs=${obfs}, obfs-host=${host}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=${SHADOW_TLS_PWD}, shadow-tls-sni=${SHADOW_TLS_SNI}, shadow-tls-version=3"
+                 echo "${ip_city} = snell, ${ipv4_addr}, ${SHADOW_TLS_PORT}, psk=${psk}, obfs=${obfs}, obfs-host=${host}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=${SHADOW_TLS_PWD}, shadow-tls-sni=${SHADOW_TLS_SNI}, shadow-tls-version=${SHADOW_TLS_VER}"
                  fi                 
             fi
     else
             if [[ "${obfs}" == "off" ]]; then
-            echo "$(curl -s ipinfo.io/city) = snell, ${ipv4_addr}, ${SHADOW_TLS_PORT}, psk=${psk}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=${SHADOW_TLS_PWD}, shadow-tls-sni=${SHADOW_TLS_SNI}, shadow-tls-version=3"
+            echo "$(curl -s ipinfo.io/city) = snell, ${ipv4_addr}, ${SHADOW_TLS_PORT}, psk=${psk}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=${SHADOW_TLS_PWD}, shadow-tls-sni=${SHADOW_TLS_SNI}, shadow-tls-version=${SHADOW_TLS_VER}"
             else
-            echo "$(curl -s ipinfo.io/city) = snell, ${ipv4_addr}, ${SHADOW_TLS_PORT}, psk=${psk}, obfs=${obfs}, obfs-host=${host}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=${SHADOW_TLS_PWD}, shadow-tls-sni=${SHADOW_TLS_SNI}, shadow-tls-version=3"
+            echo "$(curl -s ipinfo.io/city) = snell, ${ipv4_addr}, ${SHADOW_TLS_PORT}, psk=${psk}, obfs=${obfs}, obfs-host=${host}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=${SHADOW_TLS_PWD}, shadow-tls-sni=${SHADOW_TLS_SNI}, shadow-tls-version=${SHADOW_TLS_VER}"
             fi
     fi
             echo -e "—————————————————————————" && exit 1
@@ -1649,7 +1698,7 @@ View_Shadow_TLS(){
      clear && echo
 	echo -e "Shadow TLS 服务文件："
 	echo -e "—————————————————————————"
-	cat /etc/systemd/system/shadow-tls.service
+	cat "${service_file}"
 	echo -e "—————————————————————————"
 	echo
 	before_start_menu
@@ -1657,13 +1706,20 @@ View_Shadow_TLS(){
 
 Read_Shadow_TLS_config() {
     # 检查 /etc/systemd/system/shadow-tls.service 文件是否存在
-    if [[ ! -e "/etc/systemd/system/shadow-tls.service" ]]; then
+    if [[ ! -e "${service_file}" ]]; then
         echo -e "${Error} Shadow TLS 服务文件不存在!"
         exit 1
     fi
 
     # 从 shadow-tls.service 文件中提取 ExecStart 行
-    ExecStartLine=$(grep -E "^ExecStart=" /etc/systemd/system/shadow-tls.service)
+    ExecStartLine=$(grep -E "^ExecStart=" "${service_file}")
+
+    # 判断版本：出现 --v3 ⇒ 3，否则 ⇒ 2
+    if [[ $ExecStartLine =~ --v3 ]]; then
+    SHADOW_TLS_VER=3
+    else
+    SHADOW_TLS_VER=2
+    fi
 
     # 检查是否包含 "fastopen"
     if [[ "$ExecStartLine" == *"fastopen"* ]]; then
@@ -1679,7 +1735,8 @@ Read_Shadow_TLS_config() {
     SHADOW_TLS_MODE="loosy"
     fi
 
-    SHADOW_TLS_WILDCARD_SNI=$(echo "$ExecStartLine" | grep -oP '(?<=--wildcard-sni=)[^ ]+')
+    #SHADOW_TLS_WILDCARD_SNI=$(echo "$ExecStartLine" | awk -F'--wildcard-sni=' '{print $2}' | awk '{print $1}')
+    SHADOW_TLS_WILDCARD_SNI=$(echo "$ExecStartLine" | sed -n 's/.*--wildcard-sni=\([^ ]*\).*/\1/p')
    
     # 提取监听地址 (SHADOW_TLS_IPVER)
     SHADOW_TLS_IPVER=$(echo "$ExecStartLine" | awk -F '--listen ' '{print $2}' | awk -F ' --' '{print $1}' | awk -F ':' '{OFS=":"; NF--; print}')
@@ -1736,96 +1793,111 @@ Edit_Shadow_TLS_WILDCARD_SNI(){
     Restart_Check_Shadow_TLS
 }
 
-ReInstall_Shadow_TLS(){
-    Set_Shadow_TLS_TFO
+Edit_Shadow_TLS_VER(){
+    Set_Shadow_TLS_VER
     Set_Shadow_TLS_MODE
+    Write_Shadow_TLS_Config
+    Restart_Check_Shadow_TLS
+}
+
+ReInstall_Shadow_TLS(){
+    Set_Shadow_TLS_VER
+    Set_Shadow_TLS_TFO
+    (( SHADOW_TLS_VER >= 3 )) && Set_Shadow_TLS_MODE
     Set_Shadow_TLS_WILDCARD_SNI
     Set_Shadow_TLS_IPVER
-
-    echo -e "请输入 Shadow-TLS 监听端口${Yellow_font_prefix}[1-65535]${Font_color_suffix}"
-    # 循环直到用户输入有效的 SHADOW_TLS_PORT 值
-while true; do
-    # 提示用户输入 SHADOW_TLS_PORT 值
-    read -e -p "(默认: 8443): " SHADOW_TLS_PORT
-
-    # 如果用户未输入值,则使用默认值 8443
-    [[ -z "${SHADOW_TLS_PORT}" ]] && SHADOW_TLS_PORT="8443"
-
-    # 检查用户输入的值是否有效
-    if ! [[ "$SHADOW_TLS_PORT" =~ ^[0-9]+$ ]] || [ "$SHADOW_TLS_PORT" -lt 1 ] || [ "$SHADOW_TLS_PORT" -gt 65535 ]; then
-        echo -e "${Error} SHADOW_TLS_PORT值必须是1到65535之间的数字" && echo
-        continue
-    fi
-    # 如果输入有效，退出循环
-    break
-done
-# 输出最终的 SHADOW_TLS_PORT 值
-    echo && echo "=============================="
-    echo -e "Shadow-TLS 监听端口: ${Red_background_prefix} ${SHADOW_TLS_PORT} ${Font_color_suffix}"
-    echo "==============================" && echo
-
+    Edit_Shadow_TLS_PORT
     Set_Shadow_TLS_SNI
     Set_Shadow_TLS_PWD
-
+    
     # 查看Snell Server配置信息
     Read_config
-
+    
     # 创建systemd服务文件
     Write_Shadow_TLS_Config
-
+    
     Restart_Check_Shadow_TLS
     sleep 2s
     start_menu
 }
 
-Set_Shadow_TLS(){
-	check_Shadow_TLS_installed_status
-	echo && echo -e "请输入要操作配置项的序号, 然后回车
-==============================
- ${Green_font_prefix}1.${Font_color_suffix}  修改Shadow-TLS LISTEN PORT
- ${Green_font_prefix}2.${Font_color_suffix}  修改Shadow-TLS TLS-SNI
- ${Green_font_prefix}3.${Font_color_suffix}  修改Shadow-TLS PASSWORD
- ${Green_font_prefix}4.${Font_color_suffix}  修改Shadow-TLS LISTEN TYPE 
- ${Green_font_prefix}5.${Font_color_suffix}  开关Shadow-TLS TCP Fast Open
- ${Green_font_prefix}6.${Font_color_suffix}  修改Shadow-TLS MODE
- ${Green_font_prefix}7.${Font_color_suffix}  修改Shadow-TLS WILDCARD-SNI
- ==============================
- ${Green_font_prefix}8.${Font_color_suffix}  修改Shadow-TLS ALL CONFIG"  && echo
-	read -e -p "(默认: 取消): " modify
-	[[ -z "${modify}" ]] && echo "已取消..." && exit 1
-	if [[ "${modify}" == "1" ]]; then
-	Read_config
-	Read_Shadow_TLS_config
-	Edit_Shadow_TLS_PORT
-	elif [[ "${modify}" == "2" ]]; then
-	Read_config
-	Read_Shadow_TLS_config
-	Edit_Shadow_TLS_SNI
-	elif [[ "${modify}" == "3" ]]; then
-	Read_config
-	Read_Shadow_TLS_config
-	Edit_Shadow_TLS_PWD
-        elif [[ "${modify}" == "4" ]]; then
-	Read_config
-	Read_Shadow_TLS_config
-	Edit_Shadow_TLS_IPVER
-        elif [[ "${modify}" == "5" ]]; then
-	Read_config
-	Read_Shadow_TLS_config
-	Edit_Shadow_TLS_TFO
-	elif [[ "${modify}" == "6" ]]; then
-	Read_config
-	Read_Shadow_TLS_config
-	Edit_Shadow_TLS_MODE
-	elif [[ "${modify}" == "7" ]]; then
-	Read_config
-	Read_Shadow_TLS_config
-	Edit_Shadow_TLS_WILDCARD_SNI
-        elif [[ "${modify}" == "8" ]]; then
-        ReInstall_Shadow_TLS
-	else
-	echo -e "${Error} 请输入正确的数字${Yellow_font_prefix}[1-8]${Font_color_suffix}" && exit 1
-	fi
+Set_Shadow_TLS() {
+    check_Shadow_TLS_installed_status
+
+    # 先读取当前配置，才能知道版本号
+    Read_config
+    Read_Shadow_TLS_config
+
+    echo
+    echo -e "请输入要操作配置项的序号，然后回车"
+    echo -e "=============================="
+    echo -e " ${Green_font_prefix}1.${Font_color_suffix}  修改 Shadow-TLS LISTEN PORT"
+    echo -e " ${Green_font_prefix}2.${Font_color_suffix}  修改 Shadow-TLS TLS-SNI"
+    echo -e " ${Green_font_prefix}3.${Font_color_suffix}  修改 Shadow-TLS PASSWORD"
+    echo -e " ${Green_font_prefix}4.${Font_color_suffix}  修改 Shadow-TLS LISTEN TYPE"
+    echo -e " ${Green_font_prefix}5.${Font_color_suffix}  开关 Shadow-TLS TCP Fast Open"
+
+    if [[ ${SHADOW_TLS_VER} -ge 3 ]]; then
+        echo -e " ${Green_font_prefix}6.${Font_color_suffix}  修改 Shadow-TLS MODE"
+        echo -e " ${Green_font_prefix}7.${Font_color_suffix}  修改 Shadow-TLS WILDCARD-SNI"
+        echo -e " ${Green_font_prefix}8.${Font_color_suffix}  修改 Shadow-TLS VER"
+        echo -e "=============================="
+        echo -e " ${Green_font_prefix}9.${Font_color_suffix}  修改 Shadow-TLS ALL CONFIG"
+        local max_opt=9
+    else
+        echo -e " ${Green_font_prefix}6.${Font_color_suffix}  修改 Shadow-TLS WILDCARD-SNI"
+        echo -e " ${Green_font_prefix}7.${Font_color_suffix}  修改 Shadow-TLS VER"
+        echo -e "=============================="
+        echo -e " ${Green_font_prefix}8.${Font_color_suffix}  修改 Shadow-TLS ALL CONFIG"
+        local max_opt=8
+    fi
+    echo
+
+    read -rep "(默认: 取消): " modify
+    [[ -z $modify ]] && echo "已取消..." && exit 1
+
+    case "$modify" in
+        1) Edit_Shadow_TLS_PORT   ;;
+        2) Edit_Shadow_TLS_SNI    ;;
+        3) Edit_Shadow_TLS_PWD    ;;
+        4) Edit_Shadow_TLS_IPVER  ;;
+        5) Edit_Shadow_TLS_TFO    ;;
+
+        6)
+            if [[ ${SHADOW_TLS_VER} -ge 3 ]]; then
+                Edit_Shadow_TLS_MODE          # v≥3: 6 = MODE
+            else
+                Edit_Shadow_TLS_WILDCARD_SNI  # v2 : 6 = WILDCARD-SNI
+            fi
+            ;;
+        7)
+            if [[ ${SHADOW_TLS_VER} -ge 3 ]]; then
+                Edit_Shadow_TLS_WILDCARD_SNI  # v≥3: 7 = WILDCARD-SNI
+            else
+                Edit_Shadow_TLS_VER           # v2 : 7 = VER
+            fi
+            ;;
+        8)
+            if [[ ${SHADOW_TLS_VER} -ge 3 ]]; then
+                Edit_Shadow_TLS_VER           # v≥3: 8 = VER
+            else
+                ReInstall_Shadow_TLS          # v2 : 8 = ALL CONFIG
+            fi
+            ;;
+        9)
+            if [[ ${SHADOW_TLS_VER} -ge 3 ]]; then
+                ReInstall_Shadow_TLS          # v≥3: 9 = ALL CONFIG
+            else
+                echo -e "${Error} 请输入正确的数字${Yellow_font_prefix}[1-${max_opt}]${Font_color_suffix}"
+                exit 1
+            fi
+            ;;
+        *)
+            echo -e "${Error} 请输入正确的数字${Yellow_font_prefix}[1-${max_opt}]${Font_color_suffix}"
+            exit 1
+            ;;
+    esac
+
     sleep 3s
     start_menu
 }
@@ -1988,8 +2060,8 @@ echo
 	if [[ -e ${FILE} ]]; then
 	        check_status > /dev/null 2>&1
                 ver=$(grep 'version = ' "${Snell_conf}" |awk -F 'version = ' '{print $NF}')
-                getVer > /dev/null 2>&1
 		if [[ "${ver}" = "4" || "${ver}" = "5" ]]; then
+		         getVer > /dev/null 2>&1
                    if [[ "$status" == "running" ]]; then
                        echo -e " 当前Snell状态: ${Green_font_prefix}已安装${Yellow_font_prefix}[v${new_ver}]${Font_color_suffix}并${Green_font_prefix}已启动${Font_color_suffix}"
                    else
@@ -1997,9 +2069,9 @@ echo
                    fi
                 else
                    if [[ "$status" == "running" ]]; then
-                       echo -e " 当前Snell状态: ${Green_font_prefix}已安装${Yellow_font_prefix}[v${version}]${Font_color_suffix}并${Green_font_prefix}已启动${Font_color_suffix}"
+                       echo -e " 当前Snell状态: ${Green_font_prefix}已安装${Yellow_font_prefix}[v${ver}]${Font_color_suffix}并${Green_font_prefix}已启动${Font_color_suffix}"
                    else
-                       echo -e " 当前Snell状态: ${Green_font_prefix}已安装${Yellow_font_prefix}[v${version}]${Font_color_suffix}但${Red_font_prefix}未启动${Font_color_suffix}"
+                       echo -e " 当前Snell状态: ${Green_font_prefix}已安装${Yellow_font_prefix}[v${ver}]${Font_color_suffix}但${Red_font_prefix}未启动${Font_color_suffix}"
                    fi
                 fi
 	else
@@ -2096,4 +2168,6 @@ echo
 	esac
 }
 start_menu
+
+
 
