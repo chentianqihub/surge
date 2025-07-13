@@ -9,9 +9,12 @@ export PATH
 #	Link: https://t.me/m/XIADdsxCNTRl
 #=================================================
 
-sh_ver="1.8.6"
+sh_ver="1.8.7"
+snell_v1_version="1"
+snell_v2_version="2.0.6"
+snell_v3_version="3.0.1"
 snell_v4_version="4.1.1"
-snell_v5_version="5.0.0b3"
+snell_v5_version="5.0.0"
 filepath=$(cd "$(dirname "$0")" || exit; pwd)
 file_1=$(echo -e "${filepath}"|awk -F "$0" '{print $1}')
 FOLDER="/etc/snell/"
@@ -240,7 +243,11 @@ check_status(){
 getSnellDownloadUrl(){
 	sysArch
 	local version=$1
+	if [[ "$ver" -ge 4 ]] ; then
 	snell_url="https://dl.nssurge.com/snell/snell-server-v${version}-linux-${arch}.zip"
+	else
+	snell_url="https://raw.githubusercontent.com/chentianqihub/Others/master/snell/v${version}/snell-server-v${version}-linux-${arch}.zip"
+	fi
 }
 
 # 获取最新版本信息
@@ -255,70 +262,22 @@ getVer(){
     echo -e "${Info} 检测到 Snell v${ver} 最新版本为 [ ${new_ver} ]"
 }
 
-# 下载并安装 Snell v1（备用源）
-v1_Download() {
-	echo -e "${Info} 默认开始下载 Snell Server ${Yellow_font_prefix}v1 备用源版 ${Font_color_suffix} ..."
-	wget --no-check-certificate -N "https://raw.githubusercontent.com/chentianqihub/Others/master/snell/v1/snell-server-v1-linux-${arch}.zip"
-	if [[ $? -ne 0 ]]; then
-		echo -e "${Error} Snell Server ${Yellow_font_prefix}v1 备用源版${Font_color_suffix} 下载失败 !"
-		exit 1
-	fi	 
-		unzip -o "snell-server-v1-linux-${arch}.zip"
-	if [[ $? -ne 0 ]]; then
-		echo -e "${Error} Snell Server ${Yellow_font_prefix}v1 备用源版${Font_color_suffix} 解压失败 !"
-		echo -e "${Error} Snell Server ${Yellow_font_prefix}v1 备用源版${Font_color_suffix} 安装失败 !"
-		exit 1
-	fi	
-		rm -rf "snell-server-v1-linux-${arch}.zip"
-		chmod +x snell-server
-		mv -f snell-server "${FILE}"
-		echo "v1" > "${Snell_ver_File}"
-		echo -e "${Info} Snell Server v1 下载安装完毕 !"
-		return 0
+# 下载并安装 Snell v1（GitHub 备份源）
+v1_Download(){
+     getVer
+	Snell_Download "${snell_v1_version}" "v1 GitHub备份源版"
 }
 
-# 下载并安装 Snell v2（备用源）
-v2_Download() {
-	echo -e "${Info} 默认开始下载 Snell Server ${Yellow_font_prefix}v2 备用源版 ${Font_color_suffix} ..."
-	wget --no-check-certificate -N "https://raw.githubusercontent.com/chentianqihub/Others/master/snell/v2.0.6/snell-server-v2.0.6-linux-${arch}.zip"
-	if [[ $? -ne 0 ]]; then
-		echo -e "${Error} Snell Server ${Yellow_font_prefix}v2 备用源版${Font_color_suffix} 下载失败 !"
-		exit 1
-	fi	 
-		unzip -o "snell-server-v2.0.6-linux-${arch}.zip"
-	if [[ $? -ne 0 ]]; then
-		echo -e "${Error} Snell Server ${Yellow_font_prefix}v2 备用源版${Font_color_suffix} 解压失败 !"
-		echo -e "${Error} Snell Server ${Yellow_font_prefix}v2 备用源版${Font_color_suffix} 安装失败 !"
-		exit 1
-	fi	
-		rm -rf "snell-server-v2.0.6-linux-${arch}.zip"
-		chmod +x snell-server
-		mv -f snell-server "${FILE}"
-		echo "v2.0.6" > ${Snell_ver_File}
-		echo -e "${Info} Snell Server v2 下载安装完毕 !"
-		return 0
+# 下载并安装 Snell v2（GitHub 备份源）
+v2_Download(){
+     getVer
+	Snell_Download "${snell_v2_version}" "v2 GitHub备份源版"
 }
 
-# 下载并安装 Snell v3（备用源）
-v3_Download() {
-	echo -e "${Info} 试图请求 Snell Server ${Yellow_font_prefix}v3 备用源版${Font_color_suffix} ..."
-	wget --no-check-certificate -N "https://raw.githubusercontent.com/chentianqihub/Others/master/snell/v3.0.1/snell-server-v3.0.1-linux-${arch}.zip"
-	if [[ $? -ne 0 ]]; then
-		echo -e "${Error} Snell Server ${Yellow_font_prefix}v3 备用源版${Font_color_suffix} 下载失败 !"
-		exit 1
-	fi
-		unzip -o "snell-server-v3.0.1-linux-${arch}.zip"
-	if [[ $? -ne 0 ]]; then
-		echo -e "${Error} Snell Server ${Yellow_font_prefix}v3 备用源版${Font_color_suffix} 解压失败 !"
-		echo -e "${Error} Snell Server ${Yellow_font_prefix}v3 备用源版${Font_color_suffix} 安装失败 !"
-		exit 1
-	fi	
-		rm -rf "snell-server-v3.0.1-linux-${arch}.zip"
-		chmod +x snell-server
-		mv -f snell-server "${FILE}"
-		echo "v3.0.1" > ${Snell_ver_File}
-		echo -e "${Info} Snell Server v3 下载安装完毕 !"
-		return 0
+# 下载并安装 Snell v3（GitHub 备份源）
+v3_Download(){
+     getVer
+	Snell_Download "${snell_v3_version}" "v3 GitHub备份源版"
 }
 
 # 下载并安装 Snell v4（官方源）
@@ -330,7 +289,7 @@ v4_Download(){
 # 下载并安装 Snell v5（官方源）
 v5_Download(){
      getVer
-	Snell_Download "${snell_v5_version}" "v5 Beta 官网源版"
+	Snell_Download "${snell_v5_version}" "v5 官网源版"
 }
 
 # 通用下载并安装 Snell 函数
@@ -367,10 +326,10 @@ Install() {
     [[ -e ${FILE} ]] && echo -e "${Error} 检测到 Snell Server 已安装,请先卸载再进行安装 !" && exit 1
 		echo -e "选择安装版本${Yellow_font_prefix}[1-5]${Font_color_suffix} 
 ==================================
-${Green_font_prefix} 1.${Font_color_suffix} v1 ${Green_font_prefix} 2.${Font_color_suffix} v2  ${Green_font_prefix} 3.${Font_color_suffix} v3  ${Green_font_prefix} 4.${Font_color_suffix} v4 ${Green_font_prefix} 5.${Font_color_suffix} v5${Yellow_font_prefix}(beta)${Font_color_suffix}
+${Green_font_prefix} 1.${Font_color_suffix} v1 ${Green_font_prefix} 2.${Font_color_suffix} v2  ${Green_font_prefix} 3.${Font_color_suffix} v3  ${Green_font_prefix} 4.${Font_color_suffix} v4 ${Green_font_prefix} 5.${Font_color_suffix} v5
 =================================="
-	read -e -p "(默认: 4.v4): " ver
-	[[ -z "${ver}" ]] && ver="4"
+	read -e -p "(默认: 5.v5): " ver
+	[[ -z "${ver}" ]] && ver="5"
 	if [[ ${ver} == "1" ]]; then
 	     echo && echo "=================================="
 	     echo -e "Snell Server 协议版本: ${Red_background_prefix} v${ver} ${Font_color_suffix}"
@@ -397,12 +356,12 @@ ${Green_font_prefix} 1.${Font_color_suffix} v1 ${Green_font_prefix} 2.${Font_col
 	     echo "==================================" && echo
 	     Install_v5     
 	else
-	     echo -e "${Warn} 无效输入! 将取默认值${Yellow_font_prefix} v4${Font_color_suffix}"
-	     ver="4"
+	     echo -e "${Warn} 无效输入! 将取默认值${Yellow_font_prefix} v5${Font_color_suffix}"
+	     ver="5"
 	     echo && echo "=================================="
 	     echo -e "Snell Server 协议版本: ${Red_background_prefix} v${ver} ${Font_color_suffix}"
 	     echo "==================================" && echo
-          Install_v4
+          Install_v5
 	fi
 }
 
@@ -455,7 +414,7 @@ Read_config(){
 	obfs=$(grep 'obfs = ' "${Snell_conf}" |awk -F 'obfs = ' '{print $NF}')
 	host=$(grep 'obfs-host = ' "${Snell_conf}" |awk -F 'obfs-host = ' '{print $NF}')
 	tfo=$(grep 'tfo = ' "${Snell_conf}" |awk -F 'tfo = ' '{print $NF}')
-        dns=$(grep 'dns = ' "${Snell_conf}" |awk -F 'dns = ' '{print $NF}')
+     dns=$(grep 'dns = ' "${Snell_conf}" |awk -F 'dns = ' '{print $NF}')
 	ver=$(grep 'version = ' "${Snell_conf}" |awk -F 'version = ' '{print $NF}')
 }
 
@@ -590,10 +549,10 @@ Set_host(){
 Set_ver(){
 	echo -e "配置 Snell Server 协议版本${Yellow_font_prefix}[1-5]${Font_color_suffix} 
 ==================================
-${Green_font_prefix} 1.${Font_color_suffix} v1 ${Green_font_prefix} ${Green_font_prefix} 2.${Font_color_suffix} v2 ${Green_font_prefix} 3.${Font_color_suffix} v3 ${Green_font_prefix} 4.${Font_color_suffix} v4 ${Green_font_prefix} 5.${Font_color_suffix} v5${Yellow_font_prefix}(beta)${Font_color_suffix} 
+${Green_font_prefix} 1.${Font_color_suffix} v1 ${Green_font_prefix} ${Green_font_prefix} 2.${Font_color_suffix} v2 ${Green_font_prefix} 3.${Font_color_suffix} v3 ${Green_font_prefix} 4.${Font_color_suffix} v4 ${Green_font_prefix} 5.${Font_color_suffix} v5 
 =================================="
-	read -e -p "(默认: 4.v4): " ver
-	[[ -z "${ver}" ]] && ver="4"
+	read -e -p "(默认: 5.v5): " ver
+	[[ -z "${ver}" ]] && ver="5"
 	if [[ ${ver} == "1" ]]; then
 		ver=1
 	elif [[ ${ver} == "2" ]]; then
@@ -605,8 +564,8 @@ ${Green_font_prefix} 1.${Font_color_suffix} v1 ${Green_font_prefix} ${Green_font
 	elif [[ ${ver} == "5" ]]; then
 		ver=5	
 	else
-	     echo -e "${Warn} 无效输入! 将取默认值${Yellow_font_prefix} v4${Font_color_suffix}"
-	     ver=4
+	     echo -e "${Warn} 无效输入! 将取默认值${Yellow_font_prefix} v5${Font_color_suffix}"
+	     ver=5
 	fi
 	echo && echo "=================================="
 	echo -e "Snell Server 协议版本: ${Red_background_prefix} v${ver} ${Font_color_suffix}"
@@ -646,7 +605,7 @@ Set_dns(){
 	echo "==================================" && echo
 }
 
-# print snell server info
+# 输出 snell 配置信息
 Output_Snell(){
      getipcity
      getipv4
@@ -2168,6 +2127,3 @@ echo
 	esac
 }
 start_menu
-
-
-
