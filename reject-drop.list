@@ -1,3 +1,4 @@
+DOMAIN,pixel.gliacloud.com
 DOMAIN,p.typekit.net
 DOMAIN,adbehavior.ximalaya.com
 DOMAIN,adse.ximalaya.com
@@ -207,6 +208,11 @@ DOMAIN-KEYWORD,analytics.adjust
 DOMAIN-WILDCARD,log*-misc-lf.amemv.com
 DOMAIN-WILDCARD,mmfayl-*.appsflyersdk.com
 DOMAIN-WILDCARD,ced*.sascdn.com
+DOMAIN-SUFFIX,fourier.alibaba.com
+DOMAIN-SUFFIX,adpai.thepaper.cn
+DOMAIN-SUFFIX,cxense.com
+DOMAIN-SUFFIX,omtrdc.net
+DOMAIN-SUFFIX,oms.dowjoneson.com
 DOMAIN-SUFFIX,i.posthog.com
 DOMAIN-SUFFIX,cedexis.com
 DOMAIN-SUFFIX,srtb.msn.com
