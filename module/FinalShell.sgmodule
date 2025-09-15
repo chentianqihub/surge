@@ -12,3 +12,15 @@ www.wn1998.com = 127.0.0.1
 wn1998.com = 127.0.0.1
 pwlt.wn1998.com = 127.0.0.1
 backup.www.hostbuf.com = 127.0.0.1
+
+[Rule]
+DOMAIN-SUFFIX,www.hostbuf.com,REJECT,pre-matching
+DOMAIN-SUFFIX,backup.www.hostbuf.com,REJECT,pre-matching
+DOMAIN-SUFFIX,www.youtusoft.com,REJECT,pre-matching
+DOMAIN-SUFFIX,youtusoft.com,REJECT,pre-matching
+DOMAIN-SUFFIX,hostbuf.com,REJECT,pre-matching
+DOMAIN-SUFFIX,dkys.org,REJECT,pre-matching
+DOMAIN-SUFFIX,tcpspeed.com,REJECT,pre-matching
+DOMAIN-SUFFIX,www.wn1998.com,REJECT,pre-matching
+DOMAIN-SUFFIX,wn1998.com,REJECT,pre-matching
+DOMAIN-SUFFIX,pwlt.wn1998.com,REJECT,pre-matching
