@@ -9,12 +9,12 @@ export PATH
 #	Link: https://t.me/m/XIADdsxCNTRl
 #=================================================
 
-sh_ver="1.8.7"
+sh_ver="1.8.8"
 snell_v1_version="1"
 snell_v2_version="2.0.6"
 snell_v3_version="3.0.1"
 snell_v4_version="4.1.1"
-snell_v5_version="5.0.0"
+snell_v5_version="5.0.1"
 filepath=$(cd "$(dirname "$0")" || exit; pwd)
 file_1=$(echo -e "${filepath}"|awk -F "$0" '{print $1}')
 FOLDER="/etc/snell/"
