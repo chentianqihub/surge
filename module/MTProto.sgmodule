@@ -1,3 +1,6 @@
+#!name= 开启 Surge TG MTProto
+#!desc= 
+
 [MTProto]
 interface = 127.0.0.1
 port = 2887
