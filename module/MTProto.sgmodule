@@ -1,5 +1,5 @@
 #!name= 开启 Surge TG MTProto
-#!desc= 
+#!desc= Surge as MTProto Server
 
 [MTProto]
 interface = 127.0.0.1
