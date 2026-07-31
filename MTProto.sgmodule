@@ -1,0 +1,5 @@
+[MTProto]
+interface = 127.0.0.1
+port = 2887
+secret = dd26d1e7523936deb5c47ad16b31fb0719
+ipv6 = false
