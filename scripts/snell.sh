@@ -951,17 +951,22 @@ Set(){
 
 # 统一的安装函数
 Install_Snell(){
-    local version=$1            # 版本号，如 1/2/3/4/5
+    local version=$1            # 版本号，如 1/2/3/4/5/6
     check_root  
     echo -e "${Info} 开始设置 配置..." && echo
     Set_port
     Set_psk
-    Set_obfs
-    [[ "$obfs" != "off" ]] && Set_host        # 只在开启 obfs 时询问 host
-    Set_ipv6
+    
+    # 当 ver 不为 6 时，才执行 obfs、host 和 ipv6 的设置
+    if [[ "${ver}" != "6" ]]; then
+        Set_obfs
+        [[ "${obfs}" != "off" ]] && Set_host        # 只在开启 obfs 时询问 host
+        Set_ipv6
+    fi
+    
     Set_tfo
     (( ver >= 4 )) && Set_dns                 # v4 及以上才支持 DNS 设置
-    (( ver >= 6 )) && Set_dnsippref
+    (( ver >= 6 )) && Set_dnsippref           # v6 才支持 DNS IP 偏好设置
     
     echo -e "${Info} 开始安装/配置 依赖..."
     Install_dependencies
@@ -1133,14 +1138,20 @@ View(){
 	[[ "${ipv6}" != "IPv6_Error" ]] && echo -e " IPV6\t: ${Green_font_prefix}${ipv6}${Font_color_suffix}"
 	echo -e " 端口\t: ${Green_font_prefix}${port}${Font_color_suffix}"
 	echo -e " 密钥\t: ${Green_font_prefix}${psk}${Font_color_suffix}"
-	echo -e " OBFS\t: ${Green_font_prefix}${obfs}${Font_color_suffix}"
-     if [[ -n "${host}" ]]; then
-          echo -e " 域名\t: ${Green_font_prefix}${host}${Font_color_suffix}"
-     fi
+	if [[ "$ver" != "6" ]]; then
+        echo -e " OBFS\t\t: ${Green_font_prefix}${obfs}${Font_color_suffix}"
+        if [[ "$obfs" != "off" && -n "$host" ]]; then
+            echo -e " 域名\t\t: ${Green_font_prefix}${host}${Font_color_suffix}"
+        fi
+        echo -e " IPv6\t\t: ${Green_font_prefix}${ipv6}${Font_color_suffix}"
+    fi
 	echo -e " TFO\t: ${Green_font_prefix}${tfo}${Font_color_suffix}"
      if [[ -n "${dns}" && "${ver}" -ge 4 ]]; then
 	     echo -e " DNS\t: ${Green_font_prefix}${dns}${Font_color_suffix}"
 	fi
+	if [[ "$ver" == "6" && -n "$dns_ip_pref" ]]; then
+        echo -e " DNS IP 偏好\t: ${Green_font_prefix}${dns_ip_pref}${Font_color_suffix}"
+    fi
 	echo -e " VER\t: ${Green_font_prefix}${ver}${Font_color_suffix}"
 	echo -e "—————————————————————————"
 	echo
@@ -2225,75 +2236,29 @@ echo
      [[ -z "$num" ]] && num=1
 	
 	case "$num" in
-		0)
-		Update_Shell
-		;;
-		1)
-		Install
-		;;
-		2)
-		Uninstall
-		;;
-		3)
-		Start
-		;;
-		4)
-		Stop
-		;;
-		5)
-		Restart
-		;;
-		6)
-		Set
-		;;
-		7)
-		View
-		;;
-		8)
-		Status
-		;;
-		9)
-		Journal
-		;;
-		10)
-		Manual_Edit_Snell
-		;;
-                11)
-                Install_Shadow_TLS
-                ;;
-                12)
-                Uninstall_Shadow_TLS
-                ;;
-                13)
-                Start_Shadow_TLS
-                ;;
-                14)
-                Stop_Shadow_TLS
-                ;;
-                15)
-                Restart_Shadow_TLS
-                ;;
-                16)
-                Status_Shadow_TLS
-                ;;
-                17)
-                Journal_Shadow_TLS
-                ;;
-                18)
-                View_Shadow_TLS
-                ;;
-                19)
-                Set_Shadow_TLS
-                ;;
-		20)
-                Manual_Edit_Shadow_TLS
-                ;;
-                21)
-		exit 1
-		;;
-		*)
-		echo -e "${Error} 请输入正确数字${Yellow_font_prefix}[0-21]${Font_color_suffix}"
-		;;
+		0) Update_Shell ;;
+1) Install ;;
+2) Uninstall ;;
+3) Start ;;
+4) Stop ;;
+5) Restart ;;
+6) Set ;;
+7) View ;;
+8) Status ;;
+9) Journal ;;
+10) Manual_Edit_Snell ;;
+11) Install_Shadow_TLS ;;
+12) Uninstall_Shadow_TLS ;;
+13) Start_Shadow_TLS ;;
+14) Stop_Shadow_TLS ;;
+15) Restart_Shadow_TLS ;;
+16) Status_Shadow_TLS ;;
+17) Journal_Shadow_TLS ;;
+18) View_Shadow_TLS ;;
+19) Set_Shadow_TLS ;;
+20) Manual_Edit_Shadow_TLS ;;
+21) exit 1 ;;
+*) echo -e "${Error} 请输入正确数字${Yellow_font_prefix}[0-21]${Font_color_suffix}" ;;
 	esac
 }
 start_menu
