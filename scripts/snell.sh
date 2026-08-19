@@ -9,7 +9,7 @@ export PATH
 #	Link: https://t.me/m/XIADdsxCNTRl
 #=================================================
 
-sh_ver="1.8.8"
+sh_ver="1.9.0"
 snell_v1_version="1"
 snell_v2_version="2.0.6"
 snell_v3_version="3.0.1"
@@ -28,6 +28,7 @@ service_file="/etc/systemd/system/shadow-tls.service"
 
 Green_font_prefix="\033[32m" && Red_font_prefix="\033[31m" && Yellow_font_prefix="\033[0;33m" && Blue_font_prefix="\033[0;36m" && Green_background_prefix="\033[42;37m" && Red_background_prefix="\033[41;37m" && Font_color_suffix="\033[0m"
 Blue_italic="\033[36m\033[3m"  # 青蓝色+斜体
+Bold_text="\033[1m"   #加粗
 Info="${Green_font_prefix}[信息]${Font_color_suffix}"
 Error="${Red_font_prefix}[错误]${Font_color_suffix}"
 Tip="${Yellow_font_prefix}[注意]${Font_color_suffix}"
@@ -198,7 +199,7 @@ enable_systfo() {
 	kernel=$(uname -r | awk -F . '{print $1}')
 	if [ "$kernel" -ge 3 ]; then
 		echo 3 >/proc/sys/net/ipv4/tcp_fastopen
-		[[ ! -e $sysctl_conf ]] && echo "
+		echo "
 # Snell Server 网络优化配置
 # 由 Snell 管理脚本自动生成
 
@@ -384,7 +385,7 @@ elif [[ ${ver} == "6" ]]; then
 	fi
 }
 
-针对 Snell v6 检查密钥长度
+# 针对 Snell v6 检查密钥长度
 checkPskForV6(){
     if [[ ${#psk} -lt 16 ]] || [[ ${#psk} -gt 255 ]]; then
         echo -e "${Error} 检测到当前密钥 (${psk}) 长度不符合 16-255 位要求, Snell v6 要求升级密钥 !"
@@ -483,6 +484,7 @@ Set_port(){
         echo -e -n "${p_prompt}"
         read -e input_port
         [[ -z "${input_port}" ]] && input_port="2345"
+		port=$input_port
 
         # 检查输入的端口是否为数字并在有效范围内
         if [[ ${port} =~ ^[0-9]+$ ]] && [[ ${port} -ge 1 ]] && [[ ${port} -le 65535 ]]; then
@@ -604,9 +606,9 @@ ${Green_font_prefix} 1.${Font_color_suffix} HTTP ${Green_font_prefix} 2.${Font_c
         read -e input_obfs
         [[ -z "${input_obfs}" ]] && input_obfs="2"
         obfs=$input_obfs
-        if [[ ${obfs_input} == "1" ]]; then
+        if [[ ${obfs} == "1" ]]; then
             obfs="http"
-        elif [[ ${obfs_input} == "2" ]]; then
+        elif [[ ${obfs} == "2" ]]; then
             obfs="off"
         else
             echo -e "${Warn} 无效输入! 将取默认值${Yellow_font_prefix} 2.关闭 ${Font_color_suffix}"
@@ -625,11 +627,11 @@ ${Green_font_prefix} 1.${Font_color_suffix} TLS  ${Green_font_prefix} 2.${Font_c
         read -e input_obfs
         [[ -z "${input_obfs}" ]] && input_obfs="3"
         obfs=$input_obfs
-        if [[ ${obfs_input} == "1" ]]; then
+        if [[ ${obfs} == "1" ]]; then
             obfs="tls"
-        elif [[ ${obfs_input} == "2" ]]; then
+        elif [[ ${obfs} == "2" ]]; then
             obfs="http"
-        elif [[ ${obfs_input} == "3" ]]; then
+        elif [[ ${obfs} == "3" ]]; then
             obfs="off"
         else
             echo -e "${Warn} 无效输入! 将取默认值${Yellow_font_prefix} 3.关闭 ${Font_color_suffix}"
@@ -704,13 +706,11 @@ ${Green_font_prefix} 1.${Font_color_suffix} 开启  ${Green_font_prefix} 2.${Fon
 	tfo=$input_tfo
 	if [[ ${tfo} == "1" ]]; then
 		tfo=true
-		enable_systfo
 	elif [[ ${tfo} == "2" ]]; then 
 	     tfo=false
 	else
 	     echo -e "${Warn} 无效输入! 将取默认值${Yellow_font_prefix} 1.开启 ${Font_color_suffix}"
 	     tfo=true
-	     enable_systfo
 	fi
 	echo && echo "=================================="
 	echo -e "TCP Fast Open 开启状态: ${Red_background_prefix} ${tfo} ${Font_color_suffix}"
@@ -762,11 +762,13 @@ ${Green_font_prefix} 1.${Font_color_suffix} default  ${Green_font_prefix} 2.${Fo
 	echo "==================================" && echo
 }
 
-# 设置混淆模式 (Snell v6 专属)
+# 设置传输模式 (Snell v6 专属)
 Set_mode(){
-	echo -e "配置 混淆模式
+	echo -e "配置 流量传输模式
 ==================================
-${Green_font_prefix} 1.${Font_color_suffix} default  ${Green_font_prefix} 2.${Font_color_suffix} unshaped ${Green_font_prefix} 3.${Font_color_suffix} unsafe-raw
+${Green_font_prefix} 1.${Font_color_suffix} ${Bold_text}default${Font_color_suffix}:   The standard mode with encryption and PSK-derived traffic shaping. Use it for normal deployments. 
+${Green_font_prefix} 2.${Font_color_suffix} ${Bold_text}unshaped${Font_color_suffix}:   Keep encryption but disable traffic shaping.
+${Green_font_prefix} 3.${Font_color_suffix} ${Bold_text}unsafe-raw${Font_color_suffix}:   Disable both traffic shaping and encryption. As the name suggests, this mode provides no confidentiality; only use it for debugging or inside an already-secured tunnel.
 =================================="
 	local current_opt="1"
 	if [[ "$mode" == "unshaped" ]]; then current_opt="2"; elif [[ "$mode" == "unsafe-raw" ]]; then current_opt="3"; fi
@@ -785,7 +787,7 @@ ${Green_font_prefix} 1.${Font_color_suffix} default  ${Green_font_prefix} 2.${Fo
 		mode="default"
 	fi
 	echo && echo "=================================="
-	echo -e "混淆模式：${Red_background_prefix} ${mode} ${Font_color_suffix}"
+	echo -e "传输模式：${Red_background_prefix} ${mode} ${Font_color_suffix}"
 	echo "==================================" && echo
 }
 
@@ -840,7 +842,7 @@ Set(){
         echo -e " ${Green_font_prefix}3.${Font_color_suffix}  开关 TCP Fast Open"
         echo -e " ${Green_font_prefix}4.${Font_color_suffix}  配置 DNS"
         echo -e " ${Green_font_prefix}5.${Font_color_suffix}  配置 DNS IP 偏好"
-		echo -e "${Green_font_prefix}6.${Font_color_suffix}  配置 混淆模式"
+		echo -e "${Green_font_prefix}6.${Font_color_suffix}   配置 传输模式"
         echo -e " ${Green_font_prefix}7.${Font_color_suffix}  配置 Snell Server 协议版本"
         echo -e "=============================="
         echo -e " ${Green_font_prefix}8.${Font_color_suffix}  修改 全部配置\n"
@@ -1066,12 +1068,17 @@ Install_Snell(){
     fi
     
     Set_tfo
-    (( ver >= 4 )) && Set_dns                 # v4 及以上才支持 DNS 设置
-    (( ver >= 6 )) && Set_dnsippref           # v6 才支持 DNS IP 偏好设置
+	
+    (( ver >= 4 )) && Set_dns                             # v4 及以上才支持 DNS 设置
+    (( ver >= 6 )) && Set_dnsippref && Set_mode           # v6 才支持 DNS IP 偏好设置
     
     echo -e "${Info} 开始安装/配置 依赖..."
     Install_dependencies
-    
+	
+    if [[ ${tfo} == "true" ]]; then
+	enable_systfo
+	fi
+	
     echo -e "${Info} 开始下载/安装..."
     # 动态调用对应版本的下载函数
     "v${version}_Download"
@@ -1084,7 +1091,6 @@ Install_Snell(){
     
     echo -e "${Info} 所有步骤 安装完毕, 开始启动..."
     Start
-	View
     Output_Snell
 }
 
@@ -1240,25 +1246,25 @@ View(){
 	clear && echo
 	echo -e "Snell Server 配置信息: "
 	echo -e "—————————————————————————"
-	[[ "${ipv4}" != "IPv4_Error" ]] && echo -e " IPV4\t: ${Green_font_prefix}${ipv4}${Font_color_suffix}"
-	echo -e " 端口\t: ${Green_font_prefix}${port}${Font_color_suffix}"
-	echo -e " 密钥\t: ${Green_font_prefix}${psk}${Font_color_suffix}"
+	[[ "${ipv4}" != "IPv4_Error" ]] && echo -e " IPV4\t\t: ${Green_font_prefix}${ipv4}${Font_color_suffix}"
+	echo -e " 端口\t\t: ${Green_font_prefix}${port}${Font_color_suffix}"
+	echo -e " 密钥\t\t: ${Green_font_prefix}${psk}${Font_color_suffix}"
 	if [[ "$ver" != "6" ]]; then
-        echo -e " OBFS\t: ${Green_font_prefix}${obfs}${Font_color_suffix}"
+        echo -e " OBFS\t\t: ${Green_font_prefix}${obfs}${Font_color_suffix}"
         if [[ "$obfs" != "off" && -n "$host" ]]; then
-            echo -e " 域名\t: ${Green_font_prefix}${host}${Font_color_suffix}"
+            echo -e " 域名\t\t: ${Green_font_prefix}${host}${Font_color_suffix}"
         fi
-        [[ "${ipv6}" != "IPv6_Error" ]] && echo -e " IPV6\t: ${Green_font_prefix}${ipv6}${Font_color_suffix}"
+        [[ "${ipv6}" != "IPv6_Error" ]] && echo -e " IPV6\t\t: ${Green_font_prefix}${ipv6}${Font_color_suffix}"
     fi
-	echo -e " TFO\t: ${Green_font_prefix}${tfo}${Font_color_suffix}"
+	echo -e " TFO\t\t: ${Green_font_prefix}${tfo}${Font_color_suffix}"
      if [[ -n "${dns}" && "${ver}" -ge 4 ]]; then
-	     echo -e " DNS\t: ${Green_font_prefix}${dns}${Font_color_suffix}"
+	     echo -e " DNS\t\t: ${Green_font_prefix}${dns}${Font_color_suffix}"
 	fi
 	if [[ "$ver" == "6" && -n "$dns_ip_pref" ]]; then
         echo -e " DNS IP 偏好\t: ${Green_font_prefix}${dns_ip_pref}${Font_color_suffix}"
     fi
 	if [[ "$ver" == "6" && -n "$mode" ]]; then
-        echo -e " 混淆模式\t: ${Green_font_prefix}${mode}${Font_color_suffix}"
+        echo -e " 传输模式\t\t: ${Green_font_prefix}${mode}${Font_color_suffix}"
     fi
 	echo -e " VER\t: ${Green_font_prefix}${ver}${Font_color_suffix}"
 	echo -e "—————————————————————————"
@@ -2235,9 +2241,9 @@ geo_check() {
 Update_Shell(){
      geo_check
      if [ ! -z "$isCN" ]; then
-        shell_url="https://ghproxy.net/https://raw.githubusercontent.com/chentianqihub/surge/main/scripts/snell%2Bstls_new.sh"
+        shell_url="https://ghproxy.net/https://raw.githubusercontent.com/chentianqihub/surge/main/scripts/snell.sh"
      else
-        shell_url="https://raw.githubusercontent.com/chentianqihub/surge/main/scripts/snell%2Bstls_new.sh"
+        shell_url="https://raw.githubusercontent.com/chentianqihub/surge/main/scripts/snell.sh"
      fi
 
 	echo -e "当前版本为 [ ${sh_ver} ],开始检测最新版本..."
@@ -2248,11 +2254,11 @@ Update_Shell(){
 		read -p "(默认: y): " yn
 		[[ -z "${yn}" ]] && yn="y"
 		if [[ ${yn} == [Yy] ]]; then
-			wget -O snell+stls_new.sh --no-check-certificate "$shell_url" && chmod +x snell+stls_new.sh
+			wget -O snell.sh --no-check-certificate "$shell_url" && chmod +x snell.sh
 			echo -e "脚本已更新为最新版本[ ${sh_new_ver} ] !"
 			echo -e "3s后执行新脚本"
                sleep 3s
-               exec bash snell+stls_new.sh
+               exec bash snell.sh
 		else
 		    echo && echo " 已取消..." && echo
               sleep 3s
