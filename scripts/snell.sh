@@ -198,13 +198,18 @@ enable_systfo() {
 	kernel=$(uname -r | awk -F . '{print $1}')
 	if [ "$kernel" -ge 3 ]; then
 		echo 3 >/proc/sys/net/ipv4/tcp_fastopen
-		[[ ! -e $sysctl_conf ]] && echo "fs.file-max = 51200
+		[[ ! -e $sysctl_conf ]] && echo "
+# Snell Server 网络优化配置
+# 由 Snell 管理脚本自动生成
+
+fs.file-max = 51200
 net.core.rmem_max = 67108864
 net.core.wmem_max = 67108864
 net.core.rmem_default = 65536
 net.core.wmem_default = 65536
 net.core.netdev_max_backlog = 4096
 net.core.somaxconn = 4096
+
 net.ipv4.tcp_syncookies = 1
 net.ipv4.tcp_tw_reuse = 1
 net.ipv4.tcp_tw_recycle = 0
@@ -217,9 +222,11 @@ net.ipv4.tcp_fastopen = 3
 net.ipv4.tcp_rmem = 4096 87380 67108864
 net.ipv4.tcp_wmem = 4096 65536 67108864
 net.ipv4.tcp_mtu_probing = 1
-net.ipv4.tcp_ecn=1
-net.core.default_qdisc=fq
-net.ipv4.tcp_congestion_control = bbr" >>/etc/sysctl.d/local.conf && sysctl --system >/dev/null 2>&1
+net.ipv4.tcp_ecn = 1
+
+# BBR 拥塞控制
+net.core.default_qdisc = fq
+net.ipv4.tcp_congestion_control = bbr" >>/etc/sysctl.d/local.conf && sysctl --system >/dev/null 2>&1 && echo -e "${Info} TCP Fast Open 和网络优化配置已启用 !"
 	else
 		echo -e "${Error} 系统内核版本过低,无法支持 TCP Fast Open !"
                 tfo=false
@@ -293,6 +300,12 @@ v5_Download(){
 	Snell_Download "${snell_v5_version}" "v5 官网源版"
 }
 
+# 下载并安装 Snell v6（官方源）
+v6_Download(){
+     getVer
+	Snell_Download "${snell_v6_version}" "v6 官网源版"
+}
+
 # 通用下载并安装 Snell 函数
 Snell_Download(){
 	local version=$1
@@ -321,8 +334,8 @@ Snell_Download(){
 
 # 安装
 Install() {
-	if [[ ! -e "${}" ]]; then
-		mkdir "${}"
+	if [[ ! -e "${FOLDER}" ]]; then
+		mkdir "${FOLDER}"
 	fi
     [[ -e ${FILE} ]] && echo -e "${Error} 检测到 Snell Server 已安装,请先卸载再进行安装 !" && exit 1
 		echo -e "选择安装版本${Yellow_font_prefix}[1-6]${Font_color_suffix} 
@@ -371,29 +384,29 @@ elif [[ ${ver} == "6" ]]; then
 	fi
 }
 
-# 针对 v6 检查 PSK 长度
+针对 Snell v6 检查密钥长度
 checkPskForV6(){
-    if [[ ${#psk} -lt 10 ]]; then
-        echo -e "${Error} 检测到当前 PSK (${psk}) 长度不足 10 位，Snell v6 拒绝短密码启动！"
-        echo -e "请选择处理方式："
-        echo -e " 1. 自动生成安全的随机长密码（推荐）"
-        echo -e " 2. 手动输入新的长密码"
+    if [[ ${#psk} -lt 16 ]] || [[ ${#psk} -gt 255 ]]; then
+        echo -e "${Error} 检测到当前密钥 (${psk}) 长度不符合 16-255 位要求, Snell v6 要求升级密钥 !"
+        echo -e "请选择处理方式: "
+        echo -e " 1. 自动生成安全的随机长密钥（推荐）"
+        echo -e " 2. 手动输入新的长密钥"
         read -e -p "(默认: 1):" psk_choice
         [[ -z "${psk_choice}" ]] && psk_choice="1"
 
         if [[ "${psk_choice}" == "2" ]]; then
             while true; do
-                read -e -p "请输入新的 PSK (至少10位): " new_psk
-                if [[ ${#new_psk} -ge 10 ]]; then
+                read -e -p "请输入新的密钥(16-255位): " new_psk
+                if [[ ${#new_psk} -ge 16 ]] && [[ ${#new_psk} -le 255 ]]; then
                     psk=$new_psk
                     break
                 else
-                    echo -e "${Error} 密码长度不能小于 10 位！"
+                    echo -e "${Error} 密钥长度必须在 16 到 255 位之间 !"
                 fi
             done
         else
             psk=$(tr -dc A-Za-z0-9 </dev/urandom | head -c 20)
-            echo -e "${Info} 已自动生成新 PSK: ${Green_font_prefix}${psk}${Font_color_suffix}"
+            echo -e "${Info} 已自动生成新密钥: ${Green_font_prefix}${psk}${Font_color_suffix}"
         fi
     fi
 }
@@ -438,6 +451,7 @@ tfo = ${tfo}
 dns = ${dns}
 $(if [[ ${ver} == "6" ]]; then 
     if [[ -n "${dns_ip_pref}" ]]; then echo "dns-ip-preference = ${dns_ip_pref}"; else echo "dns-ip-preference = default"; fi 
+	if [[ -n "${mode}" ]]; then echo "mode = ${mode}"; else echo "mode = default"; fi
   fi)
 version = ${ver}
 EOF
@@ -446,15 +460,16 @@ EOF
 # 读取配置文件
 Read_config(){
 	[[ ! -e ${Snell_conf} ]] && echo -e "${Error} Snell Server 配置文件不存在 !" && exit 1
-	ipv6=$(grep 'ipv6 = ' "${Snell_conf}" | awk -F 'ipv6 = ' '{print $NF}')
-	port=$(grep -E '^listen\s*=' ${Snell_conf} | awk -F ':' '{print $NF}' | xargs)
-	psk=$(grep 'psk = ' "${Snell_conf}" |awk -F 'psk = ' '{print $NF}')
-	obfs=$(grep 'obfs = ' "${Snell_conf}" |awk -F 'obfs = ' '{print $NF}')
-	host=$(grep 'obfs-host = ' "${Snell_conf}" |awk -F 'obfs-host = ' '{print $NF}')
-	tfo=$(grep 'tfo = ' "${Snell_conf}" |awk -F 'tfo = ' '{print $NF}')
-  dns=$(grep 'dns = ' "${Snell_conf}" |awk -F 'dns = ' '{print $NF}')
-  dns_ip_pref=$(cat ${snell_conf}|grep 'dns-ip-preference = '|awk -F 'dns-ip-preference = ' '{print $NF}')
-	ver=$(grep 'version = ' "${Snell_conf}" |awk -F 'version = ' '{print $NF}')
+	ipv6=$(grep -m 1 'ipv6 = ' "${Snell_conf}" | awk -F 'ipv6 = ' '{print $NF}')
+	port=$(grep -m 1 -E '^listen\s*=' ${Snell_conf} | awk -F ':' '{print $NF}' | xargs)
+	psk=$(grep -m 1 'psk = ' "${Snell_conf}" |awk -F 'psk = ' '{print $NF}')
+	obfs=$(grep -m 1 'obfs = ' "${Snell_conf}" |awk -F 'obfs = ' '{print $NF}')
+	host=$(grep -m 1 'obfs-host = ' "${Snell_conf}" |awk -F 'obfs-host = ' '{print $NF}')
+	tfo=$(grep -m 1 'tfo = ' "${Snell_conf}" |awk -F 'tfo = ' '{print $NF}')
+    dns=$(grep -m 1 'dns = ' "${Snell_conf}" |awk -F 'dns = ' '{print $NF}')
+    dns_ip_pref=$(grep -m 1 'dns-ip-preference = ' "${Snell_conf}" |awk -F 'dns-ip-preference = ' '{print $NF}')
+	mode=$(grep -m 1 'mode = ' "${Snell_conf}" |awk -F 'mode = ' '{print $NF}')
+	ver=$(grep -m 1 'version = ' "${Snell_conf}" |awk -F 'version = ' '{print $NF}')
 }
 
 # 设置端口
@@ -463,11 +478,11 @@ Set_port(){
     while true; do
         echo -e "${Tip} 本步骤不涉及系统防火墙端口操作, 请手动放行相应端口 !"
         echo -e "请输入 Snell Server 端口${Yellow_font_prefix}[1-65535]${Font_color_suffix}"
-        local p_prompt="(默认: 2345):"
-        [[ -n "$port" ]] && p_prompt="(当前: ${port} | 默认: 2345):"
-        read -e -p "${p_prompt}" input_port
-        [[ -z "${input_port}" ]] && input_port=${port:-"2345"}
-        port=$input_port
+        local p_prompt="(${Green_font_prefix}默认${Font_color_suffix}: 2345):"
+        [[ -n "$port" ]] && p_prompt="(${Yellow_font_prefix}当前${Font_color_suffix}: ${port} | ${Green_font_prefix}默认${Font_color_suffix}: 2345):"
+        echo -e -n "${p_prompt}"
+        read -e input_port
+        [[ -z "${input_port}" ]] && input_port="2345"
 
         # 检查输入的端口是否为数字并在有效范围内
         if [[ ${port} =~ ^[0-9]+$ ]] && [[ ${port} -ge 1 ]] && [[ ${port} -le 65535 ]]; then
@@ -491,10 +506,11 @@ Edit_port(){
     # 循环直到用户输入有效且未被占用的端口值
     while true; do
         echo -e "请输入 Snell Server 端口${Yellow_font_prefix}[1-65535]${Font_color_suffix}"
-        local p_prompt="(默认: 2345):"
-        [[ -n "$port" ]] && p_prompt="(当前: ${port} | 默认: 2345):"
-        read -e -p "${p_prompt}" input_port
-        [[ -z "${input_port}" ]] && input_port=${port:-"2345"}
+        local p_prompt="(${Green_font_prefix}默认${Font_color_suffix}: 2345):"
+        [[ -n "$port" ]] && p_prompt="(${Yellow_font_prefix}当前${Font_color_suffix}: ${port} | ${Green_font_prefix}默认${Font_color_suffix}: 2345):"
+        echo -e -n "${p_prompt}"
+        read -e input_port
+        [[ -z "${input_port}" ]] && input_port="2345"
         port=$input_port
 
         # 检查输入的端口是否为数字并在有效范围内
@@ -517,10 +533,11 @@ ${Green_font_prefix} 1.${Font_color_suffix} 开启  ${Green_font_prefix} 2.${Fon
 =================================="
 	local current_opt="2"
 	[[ "$ipv6" == "true" ]] && current_opt="1"
-	local p_prompt="(默认：2.关闭)："
-	[[ -n "$ipv6" ]] && p_prompt="(当前: ${current_opt}.${ipv6} | 默认：2.关闭)："
-	read -e -p "${p_prompt}" input_ipv6
-	[[ -z "${input_ipv6}" ]] && input_ipv6=${current_opt:-"2"}
+	local p_prompt="(${Green_font_prefix}默认${Font_color_suffix}：2.关闭)："
+	[[ -n "$ipv6" ]] && p_prompt="(${Yellow_font_prefix}当前${Font_color_suffix}: ${current_opt}.${ipv6} | ${Green_font_prefix}默认${Font_color_suffix}：2.关闭)："
+	echo -e -n "${p_prompt}"
+	read -e input_ipv6
+	[[ -z "${input_ipv6}" ]] && input_ipv6="2"
 	if [[ ${input_ipv6} == "1" ]]; then
 		ipv6=true
 	elif [[ ${input_ipv6} == "2" ]]; then
@@ -537,35 +554,31 @@ ${Green_font_prefix} 1.${Font_color_suffix} 开启  ${Green_font_prefix} 2.${Fon
 # 设置密钥
 Set_psk(){
 	echo -e "请输入 Snell Server 密钥 [0-9][a-z][A-Z]"
-  local p_prompt="(默认: 随机生成):"
-	[[ -n "$psk" ]] && p_prompt="(当前: ${psk} | 默认: 随机生成):"
+  local p_prompt="(${Green_font_prefix}默认${Font_color_suffix}: 随机生成):"
+	[[ -n "$psk" ]] && p_prompt="(${Yellow_font_prefix}当前${Font_color_suffix}: ${psk} | ${Green_font_prefix}默认${Font_color_suffix}: 随机生成):"
 
 	if [[ "$ver" == "6" ]]; then
-	    echo -e "${Tip} 当前目标协议为 v6, 密码长度不能少于 10 位"
+	    echo -e "${Tip} 当前目标协议为 Snell v6，密钥长度要求在 16-255 位之间"
 	    while true; do
-	        read -e -p "${p_prompt}" input_psk
+	        echo -e -n "${p_prompt}"
+	        read -e input_psk
 	        if [[ -z "${input_psk}" ]]; then
-	            if [[ -n "$psk" && ${#psk} -ge 10 ]]; then
-	                break
-	            else
-	                psk=$(tr -dc A-Za-z0-9 </dev/urandom | head -c 20)
-	                break
-	            fi
+	            psk=$(tr -dc A-Za-z0-9 </dev/urandom | head -c 20)
+	            break
 	        else
-	            if [[ ${#input_psk} -ge 10 ]]; then
+	            if [[ ${#input_psk} -ge 16 ]] && [[ ${#input_psk} -le 255 ]]; then
 	                psk=$input_psk
 	                break
 	            else
-	                echo -e "${Error} Snell v6 密码长度不能少于 10 位，请重新输入！"
+	                echo -e "${Error} Snell v6 密钥长度必须在 16 到 255 位之间，请重新输入！"
 	            fi
 	        fi
 	    done
 	else
-	    read -e -p "${p_prompt}" input_psk
+	    echo -e -n "${p_prompt}"
+	    read -e input_psk
 	    if [[ -z "${input_psk}" ]]; then
-	        if [[ -z "$psk" ]]; then
-	            psk=$(tr -dc A-Za-z0-9 </dev/urandom | head -c 16)
-	        fi
+	        psk=$(tr -dc A-Za-z0-9 </dev/urandom | head -c 16)
 	    else
 	        psk=$input_psk
 	    fi
@@ -585,10 +598,11 @@ ${Green_font_prefix} 1.${Font_color_suffix} HTTP ${Green_font_prefix} 2.${Font_c
 =================================="
         local current_opt="2"
         if [[ "$obfs" == "http" ]]; then current_opt="1"; fi
-        local p_prompt="(默认：2.关闭)："
-        [[ -n "$obfs" ]] && p_prompt="(当前: ${current_opt}.${obfs} | 默认：2.关闭)："
-        read -e -p "${p_prompt}" input_obfs
-        [[ -z "${input_obfs}" ]] && input_obfs=${current_opt:-"2"}
+        local p_prompt="(${Green_font_prefix}默认${Font_color_suffix}：2.关闭)："
+        [[ -n "$obfs" ]] && p_prompt="(${Yellow_font_prefix}当前${Font_color_suffix}: ${current_opt}.${obfs} | ${Green_font_prefix}默认${Font_color_suffix}：2.关闭)："
+        echo -e -n "${p_prompt}"
+        read -e input_obfs
+        [[ -z "${input_obfs}" ]] && input_obfs="2"
         obfs=$input_obfs
         if [[ ${obfs_input} == "1" ]]; then
             obfs="http"
@@ -605,10 +619,11 @@ ${Green_font_prefix} 1.${Font_color_suffix} TLS  ${Green_font_prefix} 2.${Font_c
 =================================="
         local current_opt="3"
         if [[ "$obfs" == "tls" ]]; then current_opt="1"; elif [[ "$obfs" == "http" ]]; then current_opt="2"; fi
-        local p_prompt="(默认：3.关闭)："
-        [[ -n "$obfs" ]] && p_prompt="(当前: ${current_opt}.${obfs} | 默认：3.关闭)："
-        read -e -p "${p_prompt}" input_obfs
-        [[ -z "${input_obfs}" ]] && input_obfs=${current_opt:-"3"}
+        local p_prompt="(${Green_font_prefix}默认${Font_color_suffix}：3.关闭)："
+        [[ -n "$obfs" ]] && p_prompt="(${Yellow_font_prefix}当前${Font_color_suffix}: ${current_opt}.${obfs} | ${Green_font_prefix}默认${Font_color_suffix}：3.关闭)："
+        echo -e -n "${p_prompt}"
+        read -e input_obfs
+        [[ -z "${input_obfs}" ]] && input_obfs="3"
         obfs=$input_obfs
         if [[ ${obfs_input} == "1" ]]; then
             obfs="tls"
@@ -628,11 +643,12 @@ ${Green_font_prefix} 1.${Font_color_suffix} TLS  ${Green_font_prefix} 2.${Font_c
 
 # 设置 OBFS 域名
 Set_host(){
-	echo -e "请输入 Snell Server 域名, ${Tip} v4 版本及以上如无特别需求可忽略"
-	local p_prompt="(默认: icloud.com):"
-	[[ -n "$host" ]] && p_prompt="(当前: ${host} | 默认: icloud.com):"
-	read -e -p "${p_prompt}" input_host
-	[[ -z "${input_host}" ]] && input_host=${host:-"icloud.com"}
+	echo -e "请输入 Snell Server 域名, ${Tip} Snell v4 版本及以上如无特别需求可忽略"
+	local p_prompt="(${Green_font_prefix}默认${Font_color_suffix}: icloud.com):"
+	[[ -n "$host" ]] && p_prompt="(${Yellow_font_prefix}当前${Font_color_suffix}: ${host} | ${Green_font_prefix}默认${Font_color_suffix}: icloud.com):"
+	echo -e -n "${p_prompt}"
+	read -e input_host
+	[[ -z "${input_host}" ]] && input_host="icloud.com"
 	host=$input_host
 	echo && echo "=============================="
 	echo -e "域名 : ${Red_background_prefix} ${host} ${Font_color_suffix}"
@@ -645,8 +661,14 @@ Set_ver(){
 ==================================
 ${Green_font_prefix} 1.${Font_color_suffix} v1 ${Green_font_prefix} ${Green_font_prefix} 2.${Font_color_suffix} v2 ${Green_font_prefix} 3.${Font_color_suffix} v3 ${Green_font_prefix} 4.${Font_color_suffix} v4 ${Green_font_prefix} 5.${Font_color_suffix} v5 ${Green_font_prefix} 6.${Font_color_suffix} v6
 =================================="
-	read -e -p "(默认: 5.v5): " ver
-	[[ -z "${ver}" ]] && ver="5"
+	local current_ver_display=""
+	[[ -n "$ver" ]] && current_ver_display="${ver}.v${ver}"
+	local p_prompt="(${Green_font_prefix}默认${Font_color_suffix}：5.v5)："
+	[[ -n "$ver" ]] && p_prompt="(${Yellow_font_prefix}当前${Font_color_suffix}: ${current_ver_display} | ${Green_font_prefix}默认${Font_color_suffix}：5.v5)："
+	echo -e -n "${p_prompt}"
+	read -e input_ver
+	[[ -z "${input_ver}" ]] && input_ver="5"
+	ver=$input_ver
 	if [[ ${ver} == "1" ]]; then
 		ver=1
 	elif [[ ${ver} == "2" ]]; then
@@ -674,8 +696,12 @@ Set_tfo(){
 ==================================
 ${Green_font_prefix} 1.${Font_color_suffix} 开启  ${Green_font_prefix} 2.${Font_color_suffix} 关闭
 =================================="
-	read -e -p "(默认: 1.开启): " tfo
-	[[ -z "${tfo}" ]] && tfo="1"
+	local p_prompt="(${Green_font_prefix}默认${Font_color_suffix}：1.开启)："
+	[[ -n "$tfo" ]] && p_prompt="(${Yellow_font_prefix}当前${Font_color_suffix}: ${current_opt}.${tfo} | ${Green_font_prefix}默认${Font_color_suffix}：1.开启)："
+	echo -e -n "${p_prompt}"
+	read -e input_tfo
+	[[ -z "${input_tfo}" ]] && input_tfo="1"
+	tfo=$input_tfo
 	if [[ ${tfo} == "1" ]]; then
 		tfo=true
 		enable_systfo
@@ -693,11 +719,12 @@ ${Green_font_prefix} 1.${Font_color_suffix} 开启  ${Green_font_prefix} 2.${Fon
 
 # 设置 DNS
 Set_dns(){
-	echo -e "${Tip} 请输入正确格式的的 DNS, 多条记录以英文逗号隔开, 仅支持 ${Yellow_font_prefix}[v4.1.0b1]${Font_color_suffix} 及以上版本"
-	local p_prompt="(默认值：1.1.1.1, 8.8.8.8, 2001:4860:4860::8888)："
-	[[ -n "$dns" ]] && p_prompt="(当前: ${dns} | 默认值：1.1.1.1, 8.8.8.8, 2001:4860:4860::8888)："
-	read -e -p "${p_prompt}" input_dns
-	[[ -z "${input_dns}" ]] && input_dns=${dns:-"1.1.1.1, 8.8.8.8, 2001:4860:4860::8888"}
+	echo -e "${Tip} 请输入正确格式的的 DNS, 多条记录以英文逗号隔开, 仅支持 Snell ${Yellow_font_prefix}[v4.1.0b1]${Font_color_suffix} 及以上版本"
+	local p_prompt="(${Green_font_prefix}默认值${Font_color_suffix}：1.1.1.1, 8.8.8.8, 2001:4860:4860::8888)："
+	[[ -n "$dns" ]] && p_prompt="(${Yellow_font_prefix}当前${Font_color_suffix}: ${dns} | ${Green_font_prefix}默认值${Font_color_suffix}：1.1.1.1, 8.8.8.8, 2001:4860:4860::8888)："
+	echo -e -n "${p_prompt}"
+	read -e input_dns
+	[[ -z "${input_dns}" ]] && input_dns="1.1.1.1, 8.8.8.8, 2001:4860:4860::8888"
 	dns=$input_dns
 	echo && echo "=================================="
 	echo -e "当前 DNS 为: ${Red_background_prefix} ${dns} ${Font_color_suffix}"
@@ -712,10 +739,12 @@ ${Green_font_prefix} 1.${Font_color_suffix} default  ${Green_font_prefix} 2.${Fo
 =================================="
 	local current_opt="1"
 	if [[ "$dns_ip_pref" == "prefer-ipv4" ]]; then current_opt="2"; elif [[ "$dns_ip_pref" == "prefer-ipv6" ]]; then current_opt="3"; elif [[ "$dns_ip_pref" == "ipv4-only" ]]; then current_opt="4"; elif [[ "$dns_ip_pref" == "ipv6-only" ]]; then current_opt="5"; fi
-	local p_prompt="(默认：1.default)："
-	[[ -n "$dns_ip_pref" ]] && p_prompt="(当前: ${current_opt}.${dns_ip_pref} | 默认：1.default)："
-	read -e -p "${p_prompt}" input_pref
-	[[ -z "${input_pref}" ]] && input_pref=${current_opt:-"1"}
+	local p_prompt="(${Green_font_prefix}默认${Font_color_suffix}：1.default)："
+	[[ -n "$dns_ip_pref" ]] && p_prompt="(${Yellow_font_prefix}当前${Font_color_suffix}: ${current_opt}.${dns_ip_pref} | ${Green_font_prefix}默认${Font_color_suffix}：1.default)："
+	echo -e -n "${p_prompt}"
+	read -e input_pref
+	[[ -z "${input_pref}" && -n "$dns_ip_pref" ]] && input_pref=$current_opt
+	[[ -z "${input_pref}" && -z "$dns_ip_pref" ]] && input_pref="1"
 	dns_ip_pref_opt=$input_pref
 	if [[ ${dns_ip_pref_opt} == "2" ]]; then
 		dns_ip_pref="prefer-ipv4"
@@ -733,16 +762,47 @@ ${Green_font_prefix} 1.${Font_color_suffix} default  ${Green_font_prefix} 2.${Fo
 	echo "==================================" && echo
 }
 
+# 设置混淆模式 (Snell v6 专属)
+Set_mode(){
+	echo -e "配置 混淆模式
+==================================
+${Green_font_prefix} 1.${Font_color_suffix} default  ${Green_font_prefix} 2.${Font_color_suffix} unshaped ${Green_font_prefix} 3.${Font_color_suffix} unsafe-raw
+=================================="
+	local current_opt="1"
+	if [[ "$mode" == "unshaped" ]]; then current_opt="2"; elif [[ "$mode" == "unsafe-raw" ]]; then current_opt="3"; fi
+	local p_prompt="(${Green_font_prefix}默认${Font_color_suffix}：1.default)："
+	[[ -n "$mode" ]] && p_prompt="(${Yellow_font_prefix}当前${Font_color_suffix}: ${current_opt}.${mode} | ${Green_font_prefix}默认${Font_color_suffix}：1.default)："
+	echo -e -n "${p_prompt}"
+	read -e input_pref
+	[[ -z "${input_pref}" && -n "$mode" ]] && input_pref=$current_opt
+	[[ -z "${input_pref}" && -z "$mode" ]] && input_pref="1"
+	mode_opt=$input_pref
+	if [[ ${mode_opt} == "2" ]]; then
+		mode="unshaped"
+	elif [[ ${mode_opt} == "3" ]]; then
+		mode="unsafe-raw"
+	else
+		mode="default"
+	fi
+	echo && echo "=================================="
+	echo -e "混淆模式：${Red_background_prefix} ${mode} ${Font_color_suffix}"
+	echo "==================================" && echo
+}
+
 # 输出 snell 配置信息
 Output_Snell(){
      getipcity
      getipv4
      echo -e "—————————————————————————"
      echo -e "${Green_font_prefix}Please copy the following lines to the Surge [Proxy] section:${Font_color_suffix}" 
-     if [[ "${obfs}" == "off" ]]; then
-            echo "${ip_city} = snell, ${ipv4}, ${port}, psk=${psk}, version=${ver}, reuse=true, tfo=${tfo}"
+     if [[ "${ver}" == "6" ]]; then
+         echo "${ip_city} = snell, ${ipv4}, ${port}, psk=${psk}, version=${ver}, mode=${mode}, reuse=true"
      else
-            echo "${ip_city} = snell, ${ipv4}, ${port}, psk=${psk}, obfs=${obfs}, obfs-host=${host}, version=${ver}, reuse=true, tfo=${tfo}"
+        if [[ "${obfs}" == "off" ]]; then
+        echo "${ip_city} = snell, ${ipv4}, ${port}, psk=${psk}, version=${ver}, reuse=true, tfo=${tfo}"
+        else
+        echo "${ip_city} = snell, ${ipv4}, ${port}, psk=${psk}, obfs=${obfs}, obfs-host=${host}, version=${ver}, reuse=true, tfo=${tfo}"
+        fi
      fi
      echo -e "—————————————————————————"
 }
@@ -754,36 +814,42 @@ Set(){
 	echo -e "请输入要操作配置项的序号, 然后回车
 ==============================
  ${Green_font_prefix}1.${Font_color_suffix}  修改 端口
- ${Green_font_prefix}2.${Font_color_suffix}  修改 密钥
- ${Green_font_prefix}3.${Font_color_suffix}  配置 OBFS
- ${Green_font_prefix}4.${Font_color_suffix}  配置 OBFS 域名
- ${Green_font_prefix}5.${Font_color_suffix}  开关 IPv6 解析
- ${Green_font_prefix}6.${Font_color_suffix}  开关 TCP Fast Open"
+ ${Green_font_prefix}2.${Font_color_suffix}  修改 密钥"
 
   # 读取当前配置并获取 ver 变量
   Read_config
     
   if [[ "${ver}" == "1" || "${ver}" == "2" || "${ver}" == "3" ]]; then
+      echo -e " ${Green_font_prefix}3.${Font_color_suffix}  配置 OBFS"
+      echo -e " ${Green_font_prefix}4.${Font_color_suffix}  配置 OBFS 域名"
+      echo -e " ${Green_font_prefix}5.${Font_color_suffix}  开关 IPv6 解析"
+      echo -e " ${Green_font_prefix}6.${Font_color_suffix}  开关 TCP Fast Open"
       echo -e " ${Green_font_prefix}7.${Font_color_suffix}  配置 Snell Server 协议版本"
       echo -e "=============================="
       echo -e " ${Green_font_prefix}8.${Font_color_suffix}  修改 全部配置\n"
   elif [[ "${ver}" == "4" || "${ver}" == "5" ]]; then
+        echo -e " ${Green_font_prefix}3.${Font_color_suffix}  配置 OBFS"
+        echo -e " ${Green_font_prefix}4.${Font_color_suffix}  配置 OBFS 域名"
+        echo -e " ${Green_font_prefix}5.${Font_color_suffix}  开关 IPv6 解析"
+        echo -e " ${Green_font_prefix}6.${Font_color_suffix}  开关 TCP Fast Open"
         echo -e " ${Green_font_prefix}7.${Font_color_suffix}  配置 DNS"
         echo -e " ${Green_font_prefix}8.${Font_color_suffix}  配置 Snell Server 协议版本"
         echo -e "=============================="
         echo -e " ${Green_font_prefix}9.${Font_color_suffix}  修改 全部配置\n"
   elif [[ "${ver}" == "6" ]]; then
-        echo -e " ${Green_font_prefix}7.${Font_color_suffix}  配置 DNS"
-        echo -e " ${Green_font_prefix}8.${Font_color_suffix}  配置 DNS IP 偏好"
-        echo -e " ${Green_font_prefix}9.${Font_color_suffix}  配置 Snell Server 协议版本"
+        echo -e " ${Green_font_prefix}3.${Font_color_suffix}  开关 TCP Fast Open"
+        echo -e " ${Green_font_prefix}4.${Font_color_suffix}  配置 DNS"
+        echo -e " ${Green_font_prefix}5.${Font_color_suffix}  配置 DNS IP 偏好"
+		echo -e "${Green_font_prefix}6.${Font_color_suffix}  配置 混淆模式"
+        echo -e " ${Green_font_prefix}7.${Font_color_suffix}  配置 Snell Server 协议版本"
         echo -e "=============================="
-        echo -e " ${Green_font_prefix}10.${Font_color_suffix}  修改 全部配置\n"
+        echo -e " ${Green_font_prefix}8.${Font_color_suffix}  修改 全部配置\n"
  fi
 
 	read -e -p "(默认: 取消): " modify
     [[ -z "${modify}" ]] && echo "已取消..." && exit 1
 
-    # ================= 1-6 项是所有版本通用的基础配置 =================
+    # ================= 1-2 项是所有版本通用的基础配置 =================
     if [[ "${modify}" == "1" ]]; then
         Read_config
         Set_port
@@ -794,45 +860,47 @@ Set(){
         Set_psk
         Write_config
         Restart
-    elif [[ "${modify}" == "3" ]]; then
-        Read_config
-        Set_obfs
-        if [[ "${obfs}" != "off" ]]; then
-            Set_host
-        fi
-        Write_config
-        Restart
-    elif [[ "${modify}" == "4" ]]; then
-        Read_config
-        if [[ "${obfs}" == "off" ]]; then
-            echo -e "${Error} 当前 obfs 处于关闭状态, 请先开启后再设置 obfs-host" && exit 1
-        else
-            Set_host
-        fi
-        Write_config
-        Restart
-    elif [[ "${modify}" == "5" ]]; then
-        Read_config
-        Set_ipv6
-        Write_config
-        Restart
-    elif [[ "${modify}" == "6" ]]; then
-        Read_config
-        Set_tfo
-        Write_config
-        Restart
 
-    # ================= 7 及以上的选项，根据版本号(ver)进行区分 =================
+    # ================= 3 及以上的选项，根据版本号(ver)进行区分 =================
     else
         if [[ "${ver}" == "1" || "${ver}" == "2" || "${ver}" == "3" ]]; then
-            if [[ "${modify}" == "7" ]]; then
+            if [[ "${modify}" == "3" ]]; then
+                Read_config
+                Set_obfs
+                if [[ "${obfs}" != "off" ]]; then
+                Set_host
+                fi
+                Write_config
+                Restart
+            elif [[ "${modify}" == "4" ]]; then
+                Read_config
+                if [[ "${obfs}" == "off" ]]; then
+                echo -e "${Error} 当前 obfs 处于关闭状态, 请先开启后再设置 obfs-host" && exit 1
+                else
+                Set_host
+                fi
+                Write_config
+                Restart
+            elif [[ "${modify}" == "5" ]]; then
+                Read_config
+                Set_ipv6
+                Write_config
+                Restart
+            elif [[ "${modify}" == "6" ]]; then
+                Read_config
+                Set_tfo
+                Write_config
+                Restart
+            elif [[ "${modify}" == "7" ]]; then
                 Read_config
                 Set_ver
                 if [[ "${ver}" = "4" || "${ver}" = "5" ]]; then
-		                 Set_dns
+		           Set_dns
                 elif [[ "${ver}" = "6" ]]; then
+				      checkPskForV6
                       Set_dns
                       Set_dnsippref
+					  Set_mode
                 fi
                 Write_config
                 Restart
@@ -847,10 +915,11 @@ Set(){
                 Set_ipv6
                 Set_tfo
                 if [[ "${ver}" = "4" || "${ver}" = "5" ]]; then
-		                 Set_dns
+		          Set_dns
                 elif [[ "${ver}" = "6" ]]; then
                       Set_dns
                       Set_dnsippref
+					  Set_mode
                 fi
                 Write_config
                 Restart
@@ -859,7 +928,34 @@ Set(){
             fi
 
         elif [[ "${ver}" == "4" || "${ver}" == "5" ]]; then
-            if [[ "${modify}" == "7" ]]; then
+            if [[ "${modify}" == "3" ]]; then
+                Read_config
+                Set_obfs
+                if [[ "${obfs}" != "off" ]]; then
+                Set_host
+                fi
+                Write_config
+                Restart
+            elif [[ "${modify}" == "4" ]]; then
+                Read_config
+                if [[ "${obfs}" == "off" ]]; then
+                echo -e "${Error} 当前 obfs 处于关闭状态, 请先开启后再设置 obfs-host" && exit 1
+                else
+                Set_host
+                fi
+                Write_config
+                Restart
+            elif [[ "${modify}" == "5" ]]; then
+                Read_config
+                Set_ipv6
+                Write_config
+                Restart
+            elif [[ "${modify}" == "6" ]]; then
+                Read_config
+                Set_tfo
+                Write_config
+                Restart
+            elif [[ "${modify}" == "7" ]]; then
                 Read_config
                 Set_dns
                 Write_config
@@ -867,11 +963,10 @@ Set(){
             elif [[ "${modify}" == "8" ]]; then
                 Read_config
                 Set_ver
-                if [[ "${ver}" = "4" || "${ver}" = "5" ]]; then
-		                 Set_dns
-                elif [[ "${ver}" = "6" ]]; then
-                      Set_dns
-                      Set_dnsippref
+                if [[ "${ver}" = "6" ]]; then
+				    checkPskForV6
+                    Set_dnsippref
+					Set_mode
                 fi
                 Write_config
                 Restart
@@ -887,10 +982,11 @@ Set(){
                 Set_ipv6
                 Set_tfo
                 if [[ "${ver}" = "4" || "${ver}" = "5" ]]; then
-		                 Set_dns
+		          Set_dns
                 elif [[ "${ver}" = "6" ]]; then
                       Set_dns
                       Set_dnsippref
+					  Set_mode
                 fi
                 Write_config
                 Restart
@@ -899,28 +995,32 @@ Set(){
             fi
 
         elif [[ "${ver}" == "6" ]]; then
-            if [[ "${modify}" == "7" ]]; then
+            if [[ "${modify}" == "3" ]]; then
+                Read_config
+                Set_tfo
+                Write_config
+                Restart
+            elif [[ "${modify}" == "4" ]]; then
                 Read_config
                 Set_dns
                 Write_config
                 Restart
-            elif [[ "${modify}" == "8" ]]; then
+            elif [[ "${modify}" == "5" ]]; then
                 Read_config
                 Set_dnsippref
                 Write_config
                 Restart
-            elif [[ "${modify}" == "9" ]]; then
+		    elif [[ "${modify}" == "6" ]]; then
                 Read_config
-                Set_ver
-                if [[ "${ver}" = "4" || "${ver}" = "5" ]]; then
-		                 Set_dns
-                elif [[ "${ver}" = "6" ]]; then
-                      Set_dns
-                      Set_dnsippref
-                fi
+                Set_mode
                 Write_config
                 Restart
-            elif [[ "${modify}" == "10" ]]; then
+            elif [[ "${modify}" == "7" ]]; then
+                Read_config
+                Set_ver
+                Write_config
+                Restart
+            elif [[ "${modify}" == "8" ]]; then
                 Read_config
                 Set_ver
                 Edit_port
@@ -932,15 +1032,16 @@ Set(){
                 Set_ipv6
                 Set_tfo
                 if [[ "${ver}" = "4" || "${ver}" = "5" ]]; then
-		                 Set_dns
+		            Set_dns
                 elif [[ "${ver}" = "6" ]]; then
                       Set_dns
                       Set_dnsippref
+					  Set_mode
                 fi
                 Write_config
                 Restart
             else
-                echo -e "${Error} 请输入正确的数字 ${Yellow_font_prefix}[1-10]${Font_color_suffix}" && exit 1
+                echo -e "${Error} 请输入正确的数字 ${Yellow_font_prefix}[1-8]${Font_color_suffix}" && exit 1
             fi
         fi
     fi
@@ -983,6 +1084,7 @@ Install_Snell(){
     
     echo -e "${Info} 所有步骤 安装完毕, 开始启动..."
     Start
+	View
     Output_Snell
 }
 
@@ -1083,6 +1185,10 @@ Uninstall(){
             echo -e "${Error} 删除配置文件失败,请手动检查"
         fi
 
+		if [[ -f "${sysctl_conf}" ]]; then
+			echo -e "${Tip} 由于网络优化配置可能被其他程序共用, 卸载过程未移除网络优化配置, 如需彻底移除可手动删除: ${sysctl_conf}"
+		fi
+
         echo -e "—————————————————————————"
 	echo -e "${Info} ${Yellow_font_prefix}Snell Server 卸载完成 !${Font_color_suffix}"
     else
@@ -1135,15 +1241,14 @@ View(){
 	echo -e "Snell Server 配置信息: "
 	echo -e "—————————————————————————"
 	[[ "${ipv4}" != "IPv4_Error" ]] && echo -e " IPV4\t: ${Green_font_prefix}${ipv4}${Font_color_suffix}"
-	[[ "${ipv6}" != "IPv6_Error" ]] && echo -e " IPV6\t: ${Green_font_prefix}${ipv6}${Font_color_suffix}"
 	echo -e " 端口\t: ${Green_font_prefix}${port}${Font_color_suffix}"
 	echo -e " 密钥\t: ${Green_font_prefix}${psk}${Font_color_suffix}"
 	if [[ "$ver" != "6" ]]; then
-        echo -e " OBFS\t\t: ${Green_font_prefix}${obfs}${Font_color_suffix}"
+        echo -e " OBFS\t: ${Green_font_prefix}${obfs}${Font_color_suffix}"
         if [[ "$obfs" != "off" && -n "$host" ]]; then
-            echo -e " 域名\t\t: ${Green_font_prefix}${host}${Font_color_suffix}"
+            echo -e " 域名\t: ${Green_font_prefix}${host}${Font_color_suffix}"
         fi
-        echo -e " IPv6\t\t: ${Green_font_prefix}${ipv6}${Font_color_suffix}"
+        [[ "${ipv6}" != "IPv6_Error" ]] && echo -e " IPV6\t: ${Green_font_prefix}${ipv6}${Font_color_suffix}"
     fi
 	echo -e " TFO\t: ${Green_font_prefix}${tfo}${Font_color_suffix}"
      if [[ -n "${dns}" && "${ver}" -ge 4 ]]; then
@@ -1152,8 +1257,15 @@ View(){
 	if [[ "$ver" == "6" && -n "$dns_ip_pref" ]]; then
         echo -e " DNS IP 偏好\t: ${Green_font_prefix}${dns_ip_pref}${Font_color_suffix}"
     fi
+	if [[ "$ver" == "6" && -n "$mode" ]]; then
+        echo -e " 混淆模式\t: ${Green_font_prefix}${mode}${Font_color_suffix}"
+    fi
 	echo -e " VER\t: ${Green_font_prefix}${ver}${Font_color_suffix}"
 	echo -e "—————————————————————————"
+	if [[ "$ver" == "6" ]]; then
+        echo -e "${Tip} 如有监听多 IP 多端口需求, 请手动编辑配置文件"
+        echo -e "——————————————————————————————————————————————————"
+    fi
 	echo
 	before_start_menu
 }
@@ -1161,10 +1273,10 @@ View(){
 # 查看 Snell 运行状态
 Status(){
 	echo -e "${Info} 获取 Snell Server 运行状态 ..."
-	echo -e "${Tip} ${Yellow_font_prefix}返回主菜单请按 q${Font_color_suffix} "
-	systemctl status snell-server
-     sleep 1s
-	before_start_menu
+	systemctl status snell-server --no-pager
+    echo
+    read -n 1 -s -r -p "按任意键返回主菜单..."
+	start_menu
 }
 
 # 查看 Snell 服务日志
@@ -1791,7 +1903,8 @@ echo -e "———————————————————————�
             ipv4_addr=$(curl -s --connect-timeout 5 ip.sb -4)
             ipv6_addr=$(curl -s --connect-timeout 5 ip.sb -6)
             ip_city=$(curl -s ipinfo.io/city) 
-            
+
+if [[ "${ver}" != "6" ]]; then
     if [[ "${SHADOW_TLS_IPVER}" == "::0" ]]; then
             if [[ "${obfs}" == "off" ]]; then
                  if [[ -n "$ipv6_addr" ]]; then
@@ -1816,12 +1929,29 @@ echo -e "———————————————————————�
             fi
     else
             if [[ "${obfs}" == "off" ]]; then
-            echo "$(curl -s ipinfo.io/city) = snell, ${ipv4_addr}, ${SHADOW_TLS_PORT}, psk=${psk}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=${SHADOW_TLS_PWD}, shadow-tls-sni=${SHADOW_TLS_SNI}, shadow-tls-version=${SHADOW_TLS_VER}"
+            echo "${ip_city} = snell, ${ipv4_addr}, ${SHADOW_TLS_PORT}, psk=${psk}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=${SHADOW_TLS_PWD}, shadow-tls-sni=${SHADOW_TLS_SNI}, shadow-tls-version=${SHADOW_TLS_VER}"
             else
-            echo "$(curl -s ipinfo.io/city) = snell, ${ipv4_addr}, ${SHADOW_TLS_PORT}, psk=${psk}, obfs=${obfs}, obfs-host=${host}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=${SHADOW_TLS_PWD}, shadow-tls-sni=${SHADOW_TLS_SNI}, shadow-tls-version=${SHADOW_TLS_VER}"
+            echo "${ip_city} = snell, ${ipv4_addr}, ${SHADOW_TLS_PORT}, psk=${psk}, obfs=${obfs}, obfs-host=${host}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=${SHADOW_TLS_PWD}, shadow-tls-sni=${SHADOW_TLS_SNI}, shadow-tls-version=${SHADOW_TLS_VER}"
             fi
     fi
-            echo -e "—————————————————————————" && exit 1
+else
+    if [[ "${SHADOW_TLS_IPVER}" == "::0" ]]; then
+                 if [[ -n "$ipv6_addr" ]]; then
+                 echo "${ip_city} = snell, ${ipv6_addr}, ${SHADOW_TLS_PORT}, psk=${psk}, version=${ver}, mode=${mode}, reuse=true, tfo=${tfo}, shadow-tls-password=${SHADOW_TLS_PWD}, shadow-tls-sni=${SHADOW_TLS_SNI}, shadow-tls-version=${SHADOW_TLS_VER}"
+                 echo -e "—————————————————————————"
+                 echo "${ip_city} = snell, ${ipv4_addr}, ${SHADOW_TLS_PORT}, psk=${psk}, version=${ver}, mode=${mode}, reuse=true, tfo=${tfo}, shadow-tls-password=${SHADOW_TLS_PWD}, shadow-tls-sni=${SHADOW_TLS_SNI}, shadow-tls-version=${SHADOW_TLS_VER}"
+                 else
+                 echo "IPv6 is not available."
+                 echo -e "—————————————————————————"
+                 echo "${ip_city} = snell, ${ipv4_addr}, ${SHADOW_TLS_PORT}, psk=${psk}, mode=${mode}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=${SHADOW_TLS_PWD}, shadow-tls-sni=${SHADOW_TLS_SNI}, shadow-tls-version=${SHADOW_TLS_VER}"
+                 fi                 
+            
+    else
+            echo "${ip_city} = snell, ${ipv4_addr}, ${SHADOW_TLS_PORT}, psk=${psk}, mode=${mode}, version=${ver}, reuse=true, tfo=${tfo}, shadow-tls-password=${SHADOW_TLS_PWD}, shadow-tls-sni=${SHADOW_TLS_SNI}, shadow-tls-version=${SHADOW_TLS_VER}"
+    fi
+
+fi
+    echo -e "—————————————————————————" && exit 1
 }
 
 check_Shadow_TLS_installed_status(){
@@ -2200,20 +2330,20 @@ echo
 	if [[ -e ${FILE} ]]; then
 	        check_status > /dev/null 2>&1
                 ver=$(grep 'version = ' "${Snell_conf}" |awk -F 'version = ' '{print $NF}')
-		if [[ "${ver}" = "4" || "${ver}" = "5" ]]; then
-		         getVer > /dev/null 2>&1
+		if [[ "${ver}" = "4" || "${ver}" = "5" || "${ver}" = "6" ]]; then
+		           getVer > /dev/null 2>&1
                    if [[ "$status" == "running" ]]; then
                        echo -e " 当前Snell状态: ${Green_font_prefix}已安装${Yellow_font_prefix}[v${new_ver}]${Font_color_suffix}并${Green_font_prefix}已启动${Font_color_suffix}"
                    else
                        echo -e " 当前Snell状态: ${Green_font_prefix}已安装${Yellow_font_prefix}[v${new_ver}]${Font_color_suffix}但${Red_font_prefix}未启动${Font_color_suffix}"
                    fi
-                else
+        else
                    if [[ "$status" == "running" ]]; then
                        echo -e " 当前Snell状态: ${Green_font_prefix}已安装${Yellow_font_prefix}[v${ver}]${Font_color_suffix}并${Green_font_prefix}已启动${Font_color_suffix}"
                    else
                        echo -e " 当前Snell状态: ${Green_font_prefix}已安装${Yellow_font_prefix}[v${ver}]${Font_color_suffix}但${Red_font_prefix}未启动${Font_color_suffix}"
+        fi
                    fi
-                fi
 	else
 		echo -e " 当前Snell状态: ${Red_font_prefix}未安装${Font_color_suffix}"
 	fi
