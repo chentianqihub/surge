@@ -9,7 +9,7 @@ export PATH
 #	Link: https://t.me/m/XIADdsxCNTRl
 #=================================================
 
-sh_ver="1.9.0"
+sh_ver="1.9.1"
 snell_v1_version="1"
 snell_v2_version="2.0.6"
 snell_v3_version="3.0.1"
@@ -2366,7 +2366,7 @@ echo
 		echo -e " 当前Shadow-TLS状态: ${Red_font_prefix}未安装${Font_color_suffix}"
 	fi
 	echo
-	read -e -p " 请输入数字[0-21]（默认值: 1）: " num
+	read -e -p " 请输入数字[0-21]（默认值: 1）: " num < /dev/tty
 	
      # 如果用户未输入值,则使用默认值1
      [[ -z "$num" ]] && num=1
