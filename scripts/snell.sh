@@ -9,7 +9,7 @@ export PATH
 #	Link: https://t.me/m/XIADdsxCNTRl
 #=================================================
 
-sh_ver="1.9.1"
+sh_ver="1.9.2"
 snell_v1_version="1"
 snell_v2_version="2.0.6"
 snell_v3_version="3.0.1"
@@ -34,7 +34,12 @@ Error="${Red_font_prefix}[错误]${Font_color_suffix}"
 Tip="${Yellow_font_prefix}[注意]${Font_color_suffix}"
 Warn="${Yellow_font_prefix}[Warn]${Font_color_suffix}"
 
-# 检查是否为 Root 用户
+# 重写系统的 read 命令, 强制读取当前终端键盘
+read() {
+    builtin read "$@" < /dev/tty
+}
+
+# 检查是否为 root 用户
 check_root(){
 	[[ $EUID != 0 ]] && echo -e "${Error} 当前非ROOT账号(或没有ROOT权限),无法继续操作! 请更换ROOT账号或使用 ${Green_background_prefix}sudo su${Font_color_suffix} 命令获取临时ROOT权限(执行后可能会提示输入当前账号的密码)." && exit 1
 }
@@ -313,7 +318,7 @@ Snell_Download(){
 	local version_type=$2
 	echo -e "${Info} 试图请求 Snell Server ${Yellow_font_prefix}${version_type}${Font_color_suffix} ..."
 	getSnellDownloadUrl "${version}"
-	wget --no-check-certificate -N "${snell_url}"
+	wget --no-check-certificate -q --show-progress -N "${snell_url}"
 	if [[ ! -e "snell-server-v${version}-linux-${arch}.zip" ]]; then
 		echo -e "${Error} Snell Server ${Yellow_font_prefix}${version_type}${Font_color_suffix} 下载失败 !"
 		exit 1
@@ -800,10 +805,16 @@ Output_Snell(){
      if [[ "${ver}" == "6" ]]; then
          echo "${ip_city} = snell, ${ipv4}, ${port}, psk=${psk}, version=${ver}, mode=${mode}, reuse=true"
      else
+        # 默认包含 reuse=true，当 ver 小于 4 时将其置空
+        reuse_str=", reuse=true"
+        if [[ "${ver}" -lt 4 ]]; then
+        reuse_str=""
+        fi
+
         if [[ "${obfs}" == "off" ]]; then
-        echo "${ip_city} = snell, ${ipv4}, ${port}, psk=${psk}, version=${ver}, reuse=true, tfo=${tfo}"
+            echo "${ip_city} = snell, ${ipv4}, ${port}, psk=${psk}, version=${ver}${reuse_str}, tfo=${tfo}"
         else
-        echo "${ip_city} = snell, ${ipv4}, ${port}, psk=${psk}, obfs=${obfs}, obfs-host=${host}, version=${ver}, reuse=true, tfo=${tfo}"
+            echo "${ip_city} = snell, ${ipv4}, ${port}, psk=${psk}, obfs=${obfs}, obfs-host=${host}, version=${ver}${reuse_str}, tfo=${tfo}"
         fi
      fi
      echo -e "—————————————————————————"
@@ -2366,7 +2377,7 @@ echo
 		echo -e " 当前Shadow-TLS状态: ${Red_font_prefix}未安装${Font_color_suffix}"
 	fi
 	echo
-	read -e -p " 请输入数字[0-21]（默认值: 1）: " num < /dev/tty
+	read -e -p " 请输入数字[0-21]（默认值: 1）: " num 
 	
      # 如果用户未输入值,则使用默认值1
      [[ -z "$num" ]] && num=1
