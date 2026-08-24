@@ -1,0 +1,14 @@
+#!name=吞吐量测试参数
+#!desc=Customizes the download and upload parameters used by the throughput test.
+#!arguments=DOWNLOAD-URL:URL,UPLOAD-URLICON:URL,DOWNLOAD-URL-PROXY:URL,UPLOAD-URL-PROXY:URL,DOWNLOAD-CONCURRENCY:4,UPLOAD-CONCURRENCY:4,DOWNLOAD-DURATION-LIMIT:10s,UPLOAD-SIZE-LIMIT:1GB,UPLOAD-DURATION-LIMIT:10s
+
+[Testing]
+download-url = {{{DOWNLOAD-URL}}}
+upload-url = {{{UPLOAD-URL}}}
+download-url-proxy = {{{DOWNLOAD-URL-PROXY}}}
+upload-url-proxy = {{{UPLOAD-URL-PROXY}}}
+download-concurrency = {{{DOWNLOAD-CONCURRENCY}}}
+upload-concurrency = {{{UPLOAD-CONCURRENCY}}}
+download-duration-limit = {{{DOWNLOAD-DURATION-LIMIT}}}
+upload-size-limit = {{{UPLOAD-SIZE-LIMIT}}}
+upload-duration-limit = {{{UPLOAD-DURATION-LIMIT}}}
