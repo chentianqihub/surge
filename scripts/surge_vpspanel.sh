@@ -78,6 +78,9 @@ class RequestHandler(http.server.BaseHTTPRequestHandler):
         response_json = json.dumps(response_dict).encode('utf-8')
         self.wfile.write(response_json)
 
+# 允许端口复用，防止重启服务时报 Address already in use
+socketserver.ThreadingTCPServer.allow_reuse_address = True
+
 with socketserver.ThreadingTCPServer(("", port), RequestHandler) as httpd:
     try:
         print(f"Serving at port {port}")
@@ -116,5 +119,6 @@ echo "监控服务已在虚拟环境中运行，并已设置为开机自启。"
 echo "请确保您的服务器防火墙 / 安全组已放行 7122 端口。"
 echo "=========================================================="
 echo " - 查看服务状态: sudo systemctl status servertraffic.service"
+echo " - 查看服务日志: journalctl -u servertraffic.service -n 50 --no-pager"
 echo " - 测试数据返回: curl http://127.0.0.1:7122"
 echo "=========================================================="
