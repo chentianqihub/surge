@@ -2,8 +2,8 @@
 #!desc= 监控VPS流量信息和处理器、内存占用情况
 #!author= @Sestea @clydetime @整点猫咪 @chentiuanqihub进行整理
 #!homepage= https://github.com/chentianqihub/surge
-#!arguments=URL:http://VPS_IP:7122/vpsinfo2026,NAME:VPS Server Info,ICON:server.rack,UPDATE-INTERVAL:1
-#!arguments-desc=URL: 根据自己 VPS 的 IP 地址/端口/路径修改\n\nNAME:面板标题\n\nICON: 面板图标\n\nUPDATE-INTERVAL: 面板刷新时间，您可以在这里指定一个小的时间（例如1），以使面板每次自动更新
+#!arguments= URL:http://VPS_IP:7122/vpsinfo2026,NAME:VPS Server Info,ICON:server.rack,UPDATE-INTERVAL:1
+#!arguments-desc= URL: 根据自己 VPS 的 IP 地址/端口/路径修改\n\nNAME:面板标题\n\nICON: 面板图标\n\nUPDATE-INTERVAL: 面板刷新时间，您可以在这里指定一个小的时间（例如1），以使面板每次自动更新
 
 [Script]
 Serverinfo = type=generic, script-path=https://raw.githubusercontent.com/chentianqihub/surge/main/scripts/surge_vpspanel.js, argument = url={{{URL}}}&name={{{NAME}}}&icon={{{ICON}}}
