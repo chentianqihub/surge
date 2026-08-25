@@ -1,7 +1,7 @@
-#!name=吞吐量测试参数
-#!desc=Customizes the download and upload parameters used by the throughput test.
-#!arguments=DOWNLOAD-URL:URL,UPLOAD-URLICON:URL,DOWNLOAD-URL-PROXY:URL,UPLOAD-URL-PROXY:URL,DOWNLOAD-CONCURRENCY:4,UPLOAD-CONCURRENCY:4,DOWNLOAD-DURATION-LIMIT:10s,UPLOAD-SIZE-LIMIT:1GB,UPLOAD-DURATION-LIMIT:10s
-#!arguments-desc=DOWNLOAD-URL:可选，用于下载吞吐量测试的URL\n\nUPLOAD-URL:可选，用于上传吞吐量测试的URL\n\nDOWNLOAD-URL-PROXY:可选，用于通过代理策略进行下载吞吐量测试的URL\n\nUPLOAD-URL-PROXY:可选，用于通过代理策略进行上传吞吐量测试的URL\n\nDOWNLOAD-CONCURRENCY:可选，并发下载连接数\n\nUPLOAD-CONCURRENCY:可选，并发上传连接数\n\nDOWNLOAD-DURATION-LIMIT:可选，下载测试的最长持续时间\n\nUPLOAD-SIZE-LIMIT:可选，上传测试期间上传的最大数据量\n\nUPLOAD-DURATION-LIMIT:可选，上传测试的最长持续时间
+#!name= 吞吐量测试参数
+#!desc= Customizes the download and upload parameters used by the throughput test.
+#!arguments= DOWNLOAD-URL:URL,UPLOAD-URLICON:URL,DOWNLOAD-URL-PROXY:URL,UPLOAD-URL-PROXY:URL,DOWNLOAD-CONCURRENCY:4,UPLOAD-CONCURRENCY:4,DOWNLOAD-DURATION-LIMIT:10s,UPLOAD-SIZE-LIMIT:1GB,UPLOAD-DURATION-LIMIT:10s
+#!arguments-desc= DOWNLOAD-URL:可选，用于下载吞吐量测试的URL\n\nUPLOAD-URL:可选，用于上传吞吐量测试的URL\n\nDOWNLOAD-URL-PROXY:可选，用于通过代理策略进行下载吞吐量测试的URL\n\nUPLOAD-URL-PROXY:可选，用于通过代理策略进行上传吞吐量测试的URL\n\nDOWNLOAD-CONCURRENCY:可选，并发下载连接数\n\nUPLOAD-CONCURRENCY:可选，并发上传连接数\n\nDOWNLOAD-DURATION-LIMIT:可选，下载测试的最长持续时间\n\nUPLOAD-SIZE-LIMIT:可选，上传测试期间上传的最大数据量\n\nUPLOAD-DURATION-LIMIT:可选，上传测试的最长持续时间
 
 [Testing]
 download-url = {{{DOWNLOAD-URL}}}
