@@ -1,8 +1,11 @@
 #!name= 开启 Surge TG MTProto
 #!desc= Surge as MTProto Server
+#!arguments= interface:127.0.0.1,port:2887,secret:dd26d1e7523936deb5c47ad16b31fb0719,ipv6:false,dc-config-url:https://raw.githubusercontent.com/surge-networks/MTProtoDCConfigGenerator/refs/heads/main/mtproto-dc-config.json
+#!arguments-desc= interface: 必填，Surge 监听的本地地址\n\nport: 必填，Surge 接受的 TCP 端口，1–65535\n\nsecret: 必填，32 个字符的十六进制密钥，默认值为：dd26d1e7523936deb5c47ad16b31fb0719\n\nipv6: 可选，连接到 Telegram 数据中心的地址族，默认值下仅选择 IPv4 端点，ipv6=true 时仅选择 IPv6 端点\n\ndc-config-url: 可选，覆盖用于更新生产环境数据中心映射 JSON 的 URL，默认值为：https://raw.githubusercontent.com/surge-networks/MTProtoDCConfigGenerator/refs/heads/main/mtproto-dc
 
 [MTProto]
-interface = 127.0.0.1
-port = 2887
-secret = dd26d1e7523936deb5c47ad16b31fb0719
-ipv6 = false
+interface = {{{interface}}}
+port = {{{port}}}
+secret = {{{secret}}}
+ipv6 = {{{ipv6}}}
+dc-config-url = {{{dc-config-url}}}
