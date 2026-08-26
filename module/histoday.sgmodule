@@ -1,0 +1,10 @@
+#!name= 历史上的今天
+#!desc= Histoday面板，https://lishishangdejintian.bmcx.com
+#!homepage = https://yfamilys.com/sgmodule/histoday.sgmodule
+#!arguments= count:8
+#!arguments-desc= count: 事件的显示条数
+
+[Panel]
+Histoday=script-name=Histoday
+[Script]
+Histoday= type=generic,script-path=https://raw.githubusercontent.com/deezertidal/Surge_Module/master/files/histoday.js,argument=icon=calendar&color=#bf2f24&count={{{count}}}
