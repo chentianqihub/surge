@@ -3,10 +3,10 @@
 #!category=
 
 [URL Rewrite]
-# 原有 CN 域名重定向
-^https?:\/\/www\.g(oogle)?\.cn https://www.google.com 307
-# 新增 HK 域名重定向（兼容带 www 和不带 www 的情况）
+# 匹配带和不带 www 的 .cn 域名
+^https?:\/\/(www\.)?g(oogle)?\.cn https://www.google.com 307
+# 匹配带和不带 www 的 .hk 域名
 ^https?:\/\/(www\.)?google\.com\.hk https://www.google.com 307
 
 [MITM]
-hostname = %APPEND% www.g.cn, www.google.cn, google.com.hk, www.google.com.hk
+hostname = %APPEND% www.g.cn, www.google.cn, g.cn, google.cn, google.com.hk, www.google.com.hk
