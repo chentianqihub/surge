@@ -1,5 +1,6 @@
 #!name= GitHub & GitLab No Cache
 #!desc= Get the raw file from GitHub and GitLab without waiting for cache updates.
+#!link= https://raw.githubusercontent.com/Krew1nd/Surge/master/Module/GitHub%26GitLab%20No%20Cache.sgmodule
 
 [Header Rewrite]
 http-request ^https?:\/\/(www\.|raw\.|gist\.)?(github|gitlab|githubusercontent)\.com header-del Cache-Control
