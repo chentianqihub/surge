@@ -1,0 +1,11 @@
+#!name= GitHub & GitLab No Cache
+#!desc= Get the raw file from GitHub and GitLab without waiting for cache updates.
+
+[Header Rewrite]
+http-request ^https?:\/\/(www\.|raw\.|gist\.)?(github|gitlab|githubusercontent)\.com header-del Cache-Control
+http-request ^https?:\/\/(www\.|raw\.|gist\.)?(github|gitlab|githubusercontent)\.com header-del Pragma
+http-request ^https?:\/\/(www\.|raw\.|gist\.)?(github|gitlab|githubusercontent)\.com header-add Cache-Control "no-cache"
+http-request ^https?:\/\/(www\.|raw\.|gist\.)?(github|gitlab|githubusercontent)\.com header-add Pragma "no-cache"
+
+[MITM]
+hostname = %APPEND%, github.com, raw.githubusercontent.com, gitlab.com, gist.githubusercontent.com
