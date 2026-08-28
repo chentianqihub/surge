@@ -51,12 +51,13 @@
   // Line 3: 网络流量 (⇣ 下载 | ⇡ 上传 | ∑ 总计)
   // Line 4: 运行时间 和 最后更新时间
   // ====== Panel Emoji 增强版 ======
-  panel.content = 
-    `🖥️ 资源:  ${cpuUsage} (C)  |  ${memUsage} (M)  |  ${diskUsage} (D)\n` +
-    `⚙️ 负载:  ${load1} / ${load5} / ${load15}\n` +
-    `🌐 流量:  ⇣ ${bytesToSize(inTraffic)} | ⇡ ${bytesToSize(outTraffic)} | ∑ ${bytesToSize(totalTraffic)}\n` +
-    `⏱️ 状态:  已运行 ${formatUptime(jsonData.uptime)}  
-     (↻ ${timeString})`;
+  panel.content = [
+    `🖥️ 资源: ${cpuUsage} (C) | ${memUsage} (M) | ${diskUsage} (D)`,
+    `⚙️ 负载: ${load1} / ${load5} / ${load15}`,
+    `🌐 流量: ⇣ ${bytesToSize(inTraffic)} | ⇡ ${bytesToSize(outTraffic)} | ∑ ${bytesToSize(totalTraffic)}`,
+    `⏱️ 状态: 已运行 ${formatUptime(jsonData.uptime)}`,
+    `(↻ ${timeString})`
+].join('\n');
 
   $done(panel);
   
