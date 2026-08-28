@@ -61,6 +61,7 @@ argument = url=http://127.0.0.1:7122&name=花里胡哨才是生产力&icon=bolt.
 function httpAPI(path = '') {
   let headers = {
     'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/93.0.4577.63 Mobile/15E148 Safari/604.1 EdgiOS/46.7.4.1'
+    'X-CatVPS-Auth': 'Password' // 在这里加上与 Python 对应的暗号
   };
   return new Promise((resolve, reject) => {
     $httpClient.get({
