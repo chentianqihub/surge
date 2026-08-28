@@ -1,6 +1,14 @@
 (async () => {
   let params = getParams($argument);
   let stats = await httpAPI(params.url);
+
+  // ================= 错误状态码拦截 =================
+  // 如果 Python 服务器返回的不是 200 OK，说明被安全机制拦截了
+  if (stats.status !== 200) {
+      // 抛出 Python 返回的具体错误文本 (stats.body)，交给下面的 catch 处理
+      throw new Error(stats.body || `HTTP 状态码异常: ${stats.status}`);
+  }
+  // ========================================================
   const jsonData = JSON.parse(stats.body);
   
   // 时间处理 (使用绝对时间，解决时区错乱)
@@ -50,13 +58,19 @@
     `⏱️ 状态:  已运行 ${formatUptime(jsonData.uptime)}  (↻ ${timeString})`;
 
   $done(panel);
+  
 })().catch((e) => {
-  console.log('error: ' + e);
+  console.log('CatVPS Error: ' + e.message);
+  
+  // 提取具体的错误信息（去掉默认的 "Error: " 前缀）
+  let errorMsg = e.message ? e.message.replace('Error: ', '') : e;
+
   $done({
-    title: 'Error',
-    content: `请求失败！IP未授权或网络异常。\n${e}`,
-    icon: 'error',
-    'icon-color': '#f44336'
+    title: '连接拒绝 / 验证失败',
+    // 将 Python 返回的具体错误原因展示在面板上
+    content: `🚨 拦截原因：${errorMsg}\n⚠️ 请检查 Surge 模块配置或 VPS 状态`,
+    icon: 'exclamationmark.shield.fill',
+    'icon-color': '#EF476F' // 红色警告图标
   });
 });
 
