@@ -92,17 +92,19 @@ function getParams(param) {
 }
 
 function formatUptime(seconds) {
-  var days = Math.floor(seconds / (3600 * 24));
-  var hours = Math.floor((seconds % (3600 * 24)) / 3600);
-  var minutes = Math.floor((seconds % 3600) / 60);
-  var secs = Math.floor(seconds % 60); // 新增：获取不足一分钟的剩余秒数
-  
-  var result = '';
-  if (days > 0) result += days + 'd ';
-  if (hours > 0) result += hours + 'h ';
-  // 如果秒数大于0，或者前面什么都没有（总共0秒），就显示秒数
-  if (secs > 0 || result === '') result += secs + 's';
-  return result.trim(); // 去掉末尾可能多余的空格
+  const d = Math.floor(seconds / 86400);
+  const h = Math.floor(seconds / 3600) % 24;
+  const m = Math.floor(seconds / 60) % 60;
+  const s = Math.floor(seconds % 60); // 获取不足一分钟的剩余秒数
+
+  let res = '';
+  // 巧妙利用 res 字符串的隐式类型转换：只要前面加过内容，res 就不是空字符串（true）
+  if (d) res += `${d}d `;
+  if (res || h) res += `${h}h `;
+  if (res || m) res += `${m}m `;
+  if (!res || s) res += `${s}s`; // 如果前面全为空，或者秒数大于0，则显示秒
+
+  return res.trim(); // 去掉末尾可能多余的空格
 }
 
 function bytesToSize(bytes) {
