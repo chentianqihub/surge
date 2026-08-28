@@ -6,7 +6,7 @@
   // 时间处理 (使用绝对时间，解决时区错乱)
   const updateTime = new Date(jsonData.utc_timestamp * 1000);
   // 只取时间部分 (如 16:30:00) 节约面板空间，如果你想保留日期，可改回 toLocaleString()
-  const timeString = updateTime.toLocaleTimeString('zh-CN', { hour12: false }); 
+  const timeString = updateTime.toLocaleString('zh-CN', { hour12: false }); 
 
   // 数据解析
   const cpuUsage = `${jsonData.cpu_usage.toFixed(1)}%`;
@@ -95,11 +95,14 @@ function formatUptime(seconds) {
   var days = Math.floor(seconds / (3600 * 24));
   var hours = Math.floor((seconds % (3600 * 24)) / 3600);
   var minutes = Math.floor((seconds % 3600) / 60);
+  var secs = Math.floor(seconds % 60); // 新增：获取不足一分钟的剩余秒数
+  
   var result = '';
   if (days > 0) result += days + 'd ';
   if (hours > 0) result += hours + 'h ';
-  if (minutes > 0 || result === '') result += minutes + 'm';
-  return result;
+  // 如果秒数大于0，或者前面什么都没有（总共0秒），就显示秒数
+  if (secs > 0 || result === '') result += secs + 's';
+  return result.trim(); // 去掉末尾可能多余的空格
 }
 
 function bytesToSize(bytes) {
