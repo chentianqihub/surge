@@ -42,11 +42,12 @@
   // Line 2: 负载均值 (1分钟, 5分钟, 15分钟)
   // Line 3: 网络流量 (⇣ 下载 | ⇡ 上传 | ∑ 总计)
   // Line 4: 运行时间 和 最后更新时间
+  // ====== 方案一：Emoji 增强版 ======
   panel.content = 
-    `CPU: ${cpuUsage}  |  MEM: ${memUsage}  |  DSK: ${diskUsage}\n` +
-    `Load: ${load1} , ${load5} , ${load15}\n` +
-    `Net: ⇣${bytesToSize(inTraffic)} | ⇡${bytesToSize(outTraffic)} | ∑${bytesToSize(totalTraffic)}\n` +
-    `Up: ${formatUptime(jsonData.uptime)} | ↻ ${timeString}`;
+    `🖥️ 资源:  ${cpuUsage} (C)  |  ${memUsage} (M)  |  ${diskUsage} (D)\n` +
+    `⚙️ 负载:  ${load1} / ${load5} / ${load15}\n` +
+    `🌐 流量:  ⇣ ${bytesToSize(inTraffic)} | ⇡ ${bytesToSize(outTraffic)} | ∑ ${bytesToSize(totalTraffic)}\n` +
+    `⏱️ 状态:  已运行 ${formatUptime(jsonData.uptime)}  (↻ ${timeString})`;
 
   $done(panel);
 })().catch((e) => {
