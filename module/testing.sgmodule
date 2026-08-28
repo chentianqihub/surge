@@ -1,7 +1,7 @@
 #!name= 吞吐量测试参数
 #!desc= Customizes the download and upload parameters used by the throughput test.
 #!arguments= download-url:URL,upload-url:URL,download-url-proxy:URL,upload-url-proxy:URL,download-concurrency:4,upload-concurrency:4,download-duration-limit:10s,upload-size-limit:1GB,upload-duration-limit:10s
-#!arguments-desc= download-url: 可选，用于下载吞吐量测试的URL\n\nupload-url: 可选，用于上传吞吐量测试的URL\n\ndownload-url-proxy: 可选，用于通过代理策略进行下载吞吐量测试的URL\n\nupload-url-proxy: 可选，用于通过代理策略进行上传吞吐量测试的URL\n\ndownload-concurrency: 可选，并发下载连接数\n\nUPLOAD-CONCURRENCY: 可选，并发上传连接数\n\ndownload-duration-limit: 可选，下载测试的最长持续时间\n\nupload-size-limit: 可选，上传测试期间上传的最大数据量\n\nupload-duration-limit: 可选，上传测试的最长持续时间
+#!arguments-desc= download-url: 可选，用于下载吞吐量测试的URL\n\nupload-url: 可选，用于上传吞吐量测试的URL\n\ndownload-url-proxy: 可选，用于通过代理策略进行下载吞吐量测试的URL\n\nupload-url-proxy: 可选，用于通过代理策略进行上传吞吐量测试的URL\n\ndownload-concurrency: 可选，并发下载连接数\n\nupload-concurrency: 可选，并发上传连接数\n\ndownload-duration-limit: 可选，下载测试的最长持续时间\n\nupload-size-limit: 可选，上传测试期间上传的最大数据量\n\nupload-duration-limit: 可选，上传测试的最长持续时间
 
 [Testing]
 download-url = {{{download-url}}}
