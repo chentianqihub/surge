@@ -62,7 +62,8 @@
 // --- 下方基础函数保持不变 ---
 function httpAPI(path = '') {
   let headers = {
-    'User-Agent': 'Surge/iOS'
+    'User-Agent': 'Surge/iOS',
+    'X-CatVPS-Auth': 'Password'
   };
   return new Promise((resolve, reject) => {
     $httpClient.get({
