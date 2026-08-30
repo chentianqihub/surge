@@ -59,7 +59,7 @@
     `🖥️ 资源: ${cpuUsage} (C) | ${memUsage} (M) | ${diskUsage} (D)`,
     `⚙️ 负载: ${load1} ∷ ${load5} ∷ ${load15}`,
     `🌐 流量: ⇣ ${bytesToSize(inTraffic)} | ⇡ ${bytesToSize(outTraffic)} | ∑ ${bytesToSize(totalTraffic)}`,
-    `🚀 速率: ⇣ ${bytesToSize(speedRecv)}/s   |   ⇡ ${bytesToSize(speedSent)}/s`,
+    `🚀 速率: ⇣ ${bytesToSize(speedRecv)}/s  |  ⇡ ${bytesToSize(speedSent)}/s`,
     `⏱️ 状态: 已运行 ${formatUptime(jsonData.uptime)}`,
     `🔄 更新: ${timeString}`
 ].join('\n');
