@@ -31,6 +31,10 @@
   const outTraffic = jsonData.bytes_sent; // 上传 (VPS发送)
   const totalTraffic = jsonData.bytes_total;
 
+  // === 新增：解析实时流速 ===
+  const speedRecv = jsonData.speed_recv || 0;
+  const speedSent = jsonData.speed_sent || 0;
+
   let panel = {};
   let shifts = {
     '1': '#06D6A0', // 绿 (健康)
@@ -53,8 +57,9 @@
   // ====== Panel Emoji 增强版 ======
   panel.content = [
     `🖥️ 资源: ${cpuUsage} (C) | ${memUsage} (M) | ${diskUsage} (D)`,
-    `⚙️ 负载: ${load1} / ${load5} / ${load15}`,
+    `⚙️ 负载: ${load1} ∷ ${load5} ∷ ${load15}`,
     `🌐 流量: ⇣ ${bytesToSize(inTraffic)} | ⇡ ${bytesToSize(outTraffic)} | ∑ ${bytesToSize(totalTraffic)}`,
+    `🚀 速率: ⇣ ${bytesToSize(speedRecv)}/s   |   ⇡ ${bytesToSize(speedSent)}/s`,
     `⏱️ 状态: 已运行 ${formatUptime(jsonData.uptime)}`,
     `🔄 更新: ${timeString}`
 ].join('\n');
