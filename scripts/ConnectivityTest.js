@@ -3,8 +3,7 @@ const sites = {
   Bilibili: 'https://www.bilibili.com',
   Github: 'https://www.github.com',
   Google: 'https://www.google.com/generate_204',
-  Youtube: 'https://www.youtube.com/generate_204', // 替换为更轻量的无内容返回地址
-  // 👇 在这里按照格式添加你想要的网站，注意每行结尾要有英文逗号 ,
+  Youtube: 'https://www.youtube.com/generate_204',
   Microsoft: 'https://www.microsoft.com',
   ChatGPT: 'https://chatgpt.com',
   Twitter: 'https://x.com',
@@ -25,6 +24,23 @@ const sites = {
   });
 })();
 
+// 🪄 黑科技：计算文字的“视觉宽度”并智能补齐空格
+function formatName(name, targetWidth) {
+  let visualLength = 0;
+  for (let char of name) {
+    if (/[ilI1jtr]/.test(char)) {
+      visualLength += 0.5; // 遇到窄字母，宽度只算一半
+    } else if (/[mWmwM]/.test(char)) {
+      visualLength += 1.5; // 遇到宽字母，宽度算一点五倍
+    } else {
+      visualLength += 1;   // 普通字母算正常宽度
+    }
+  }
+  // 计算需要补充多少个空格，向上取整
+  const spacesToAdd = Math.ceil(targetWidth - visualLength);
+  return name + ' '.repeat(Math.max(0, spacesToAdd));
+}
+
 function ping(name, url) {
   return new Promise((resolve) => {
     const start = Date.now();
@@ -33,7 +49,9 @@ function ping(name, url) {
     // 优化2：增加 timeout 参数（3秒超时），防止面板无限卡加载
     $httpClient.get({ url: url, timeout: 3 }, (err, resp, data) => {
       const time = Date.now() - start;
-      const displayName = name.padEnd(10, ' '); // 名字补全空格，让后面的延迟数值尽量对齐
+
+      // 这里的目标视觉宽度设为 10
+      const displayName = formatName(name, 10);
       
       // 优化3：增加错误处理机制
       if (err || !resp || resp.status !== 204 && resp.status !== 200) {
