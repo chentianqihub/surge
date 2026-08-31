@@ -64,7 +64,7 @@ function ping(name, url) {
       const time = Date.now() - start;
 
       // 这里的目标视觉宽度设为 10
-      const displayName = formatName(name, 10);
+      const displayName = formatName(name);
       
       // 优化3：增加错误处理机制
       if (err || !resp || resp.status !== 204 && resp.status !== 200) {
