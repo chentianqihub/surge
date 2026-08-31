@@ -1,0 +1,12 @@
+#!name= WPS签到
+#!desc= 网络连通性测试
+#!url= https://github.com/MaYIHEI/paperclip/tree/main/app/wps
+#!arguments= 
+#!arguments-desc=
+
+[MITM]
+hostname = %APPEND% personal-act.wps.cn
+
+[Script]
+WPS Cookie = type=http-request,pattern=^https:\/\/personal-act\.wps\.cn\/activity-rubik\/activity\/page_info,requires-body=false,max-size=0,script-path=https://raw.githubusercontent.com/MaYIHEI/paperclip/refs/heads/main/app/wps/wps.cookie.js
+WPS签到 = type=cron,cronexp=0 10 * * *,timeout=120,script-path=https://raw.githubusercontent.com/MaYIHEI/paperclip/refs/heads/main/app/wps/wps.js
