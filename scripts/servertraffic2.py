@@ -1,0 +1,226 @@
+#!/usr/bin/env python3
+# Sestea
+
+import http.server
+import socketserver
+import json
+import time
+import psutil
+import os  
+import platform
+import urllib.request
+
+# ================= 新增：在启动时获取一次公网 IP =================
+try:
+    PUBLIC_IP = urllib.request.urlopen('https://api.ipify.org', timeout=5).read().decode('utf-8')
+except Exception:
+    PUBLIC_IP = "Unknown"
+# =================================================================
+
+# 监听端口
+port = 7133
+
+# ================= 新增安全配置 =================
+# 1. 允许访问的 IP 白名单 (支持多个 IP，用逗号分隔)
+# 请替换为运行 Surge 的设备或你代理服务器的公网 IP
+ALLOWED_IPS = {'127.0.0.1', '172.81.111.116', '104.251.236.208', '23.249.16.200'}
+
+# 2. 访问路径密钥 (必须以 / 开头)
+ACCESS_TOKEN = '/vpsinfo2026'
+# ================================================
+
+class RequestHandler(http.server.BaseHTTPRequestHandler):
+    def do_GET(self):
+        client_ip = self.client_address[0]
+        
+        # 验证层 1：IP 白名单拦截
+        if client_ip not in ALLOWED_IPS:
+            self.send_response(403)
+            self.send_header('Content-type', 'text/plain')
+            self.end_headers()
+            #self.wfile.write(b"403 Forbidden: IP not allowed.")
+            #self.wfile.write(f"403 Forbidden: {client_ip} not allowed.".encode('utf-8'))
+            self.wfile.write(f"IP Blocked: {client_ip} not allowed.".encode('utf-8'))
+            print(f"[*] Blocked IP {client_ip}")
+            return
+
+        # 验证层 2：路径密钥拦截
+        if self.path != ACCESS_TOKEN:
+            self.send_response(403)
+            self.send_header('Content-type', 'text/plain')
+            self.end_headers()
+            #self.wfile.write(b"403 Forbidden: Invalid Token.")
+            self.wfile.write(f"Path Blocked: Invalid Access Token for path '{self.path}'.".encode('utf-8'))
+            print(f"[*] IP {client_ip} tried invalid path: {self.path}")
+            return
+
+        # 验证层 3：自定义密码 Header 验证
+        # 要求客户端必须携带一个名为 'X-CatVPS-Auth' 的请求头，且值必须正确
+        if self.headers.get('X-CatVPS-Auth') != 'Password':
+            self.send_response(403)
+            self.send_header('Content-type', 'text/plain')
+            self.end_headers()
+            #self.wfile.write(b"403 Forbidden: Invalid Header Auth.")
+            # 获取访客实际发来的密码（如果没有发，值会是 None）
+            provided_auth = self.headers.get('X-CatVPS-Auth')
+            # 把访客发来的错误密码用单引号括起来，返回给他
+            self.wfile.write(f"Header Blocked: Invalid Header Password '{provided_auth}'.".encode('utf-8'))
+            print(f"[*] Blocked invalid header auth ({provided_auth}) from {client_ip}")
+            return    
+
+        # 4. 验证层 4：User-Agent 验证
+        # 要求客户端必须是 Surge/iOS 才能访问
+        if self.headers.get('User-Agent') != 'Surge/iOS':
+            self.send_response(403)
+            self.send_header('Content-type', 'text/plain')
+            self.end_headers()
+            #self.wfile.write(b"403 Forbidden: Invalid User-Agent.")
+            # 先拿变量 ua_string，再放进去
+            ua_string = self.headers.get('User-Agent')
+            self.wfile.write(f"UA Blocked: Verification failed for '{ua_string}'.".encode('utf-8'))
+            print(f"[*] Blocked invalid User-Agent ({ua_string}) from {client_ip}")
+            return
+
+        # --------- 验证通过，收集并返回数据 ---------
+        self.send_response(200)
+        self.send_header('Content-type', 'application/json')
+        self.end_headers()
+
+        # 1. 记录 1 秒前的网络和磁盘 IO 总数据
+        net_before = psutil.net_io_counters()
+        disk_before = psutil.disk_io_counters()
+
+        # 2. 暂停 1 秒 (既用来防刷限流，也作为测速的时间差)
+        # Limit the HTTP server to one request per second
+        time.sleep(1)
+
+        # 2. 记录 1 秒后的各项系统数据
+        net_after = psutil.net_io_counters()
+        disk_after = psutil.disk_io_counters()
+        
+        # Obtain CPU/MEM usage and network traffic info
+        cpu_usage = psutil.cpu_percent()
+        mem_usage = psutil.virtual_memory().percent
+        # 计算当前总流量与实时流速 (每秒字节数)
+        bytes_sent = net_after.bytes_sent
+        bytes_recv = net_after.bytes_recv
+        bytes_total = bytes_sent + bytes_recv
+        speed_sent = bytes_sent - net_before.bytes_sent
+        speed_recv = bytes_recv - net_before.bytes_recv
+
+        # 计算磁盘读写流速 (防报错兼容)
+        disk_read_speed = (disk_after.read_bytes - disk_before.read_bytes) if disk_after and disk_before else 0
+        disk_write_speed = (disk_after.write_bytes - disk_before.write_bytes) if disk_after and disk_before else 0
+
+        # 获取 CPU 进阶信息
+        cpu_usage = psutil.cpu_percent()
+        cpu_per_core = psutil.cpu_percent(percpu=True)
+        cpu_freq_info = psutil.cpu_freq()
+        cpu_freq = int(cpu_freq_info.current) if cpu_freq_info else 0 # 某些虚拟机获取不到频率时设为0
+        cpu_cores = psutil.cpu_count(logical=True)
+
+        # 获取内存与 Swap 具体数据
+        mem = psutil.virtual_memory()
+        swap = psutil.swap_memory()
+        # 磁盘数据 (获取根目录 / 的使用情况)
+        disk_info = psutil.disk_usage('/')
+
+        # 获取磁盘 Inode 使用率
+        try:
+            st = os.statvfs('/')
+            inode_total = st.f_files
+            inode_used = inode_total - st.f_ffree
+            inode_percent = (inode_used / inode_total) * 100 if inode_total > 0 else 0.0
+        except Exception:
+            inode_percent = 0.0
+
+        # 进程数与网络连接数 (捕获权限不足时的异常)
+        process_count = len(psutil.pids())
+        try:
+            net_connections = len(psutil.net_connections(kind='inet'))
+            tcp_connections = len(psutil.net_connections(kind='tcp')) # TCP连接
+            udp_connections = len(psutil.net_connections(kind='udp')) # UDP连接
+        except Exception:
+            net_connections = 0
+            tcp_connections = 0
+            udp_connections = 0
+        
+        # Get UTC timestamp and uptime
+        utc_timestamp = int(time.time())
+        uptime = int(time.time() - psutil.boot_time())
+        # Get the last statistics time (保留供参考，Surge 建议使用 utc_timestamp)
+        #last_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+        os_name = platform.system()       # 例如 'Linux', 'Windows'
+        os_version = platform.release()   # 例如 '5.15.0-60-generic'
+
+        # 系统负载 Load Average (1, 5, 15 分钟)
+        try:
+            load1, load5, load15 = os.getloadavg()
+            # 保留两位小数
+            load1, load5, load15 = round(load1, 2), round(load5, 2), round(load15, 2)
+        except AttributeError:
+            # 兼容非 Unix 系统
+            load1, load5, load15 = 0.0, 0.0, 0.0
+
+            # 仅限 Linux/Unix 系统
+        try:
+            st = os.statvfs('/')
+            inodes_total = st.f_files
+            inodes_free = st.f_ffree
+            inodes_used = inodes_total - inodes_free
+            inode_percent = round((inodes_used / inodes_total) * 100, 2) if inodes_total > 0 else 0
+        except Exception:
+            inode_percent = 0
+
+
+
+        # Construct JSON dictionary
+        response_dict = {
+            "utc_timestamp": utc_timestamp,
+            "uptime": uptime,
+            "os_info": f"{os_name} {os_version}",                  # 系统信息
+            "public_ip": PUBLIC_IP,            
+            "cpu_usage": cpu_usage,
+            "cpu_cores": cpu_cores,                                # 核心数
+            "cpu_per_core": cpu_per_core,                          # 各核心使用率(列表)
+            "cpu_freq": cpu_freq,                                  # CPU频率
+            "mem_usage": mem_usage,
+            "mem_used": mem.used,                                  # 已用内存
+            "mem_total": mem.total,                                # 总内存
+            "swap_percent": swap.percent,
+            "swap_used": swap.used,                                # 已用Swap
+            "swap_total": swap.total,                              # 总Swap
+            "bytes_sent": str(bytes_sent),
+            "bytes_recv": str(bytes_recv),
+            "bytes_total": str(bytes_total),
+            "speed_sent": speed_sent, # 新增：上传流速
+            "speed_recv": speed_recv,  # 新增：下载流速
+            #"last_time": last_time
+            # 加入新增的字段
+            "disk_percent": disk_info.percent,
+            "disk_used": disk_info.used,                           # 磁盘已用
+            "disk_total": disk_info.total,                         # 磁盘总容量
+            "disk_inode_percent": inode_percent,                   # 新增：Inode 使用率
+            "disk_read_speed": disk_read_speed,                    # 磁盘读速率
+            "disk_write_speed": disk_write_speed,                  # 磁盘写速率
+            "process_count": process_count,                        # 进程总数
+            "net_connections": net_connections,                    # 网络连接数
+            "tcp_connections": tcp_connections,                    # 新增：TCP
+            "udp_connections": udp_connections,                    # 新增：UDP
+            "load1": load1,
+            "load5": load5,
+            "load15": load15
+        }
+
+        # Convert JSON dictionary to JSON string
+        response_json = json.dumps(response_dict).encode('utf-8')
+        self.wfile.write(response_json)
+
+# 允许端口复用，防止重启服务时报 Address already in use
+socketserver.ThreadingTCPServer.allow_reuse_address = True
+with socketserver.ThreadingTCPServer(("", port), RequestHandler) as httpd:
+    try:
+        print(f"Serving at port {port}")
+        httpd.serve_forever()
+    except KeyboardInterrupt:
+        print("KeyboardInterrupt is captured, program exited")
