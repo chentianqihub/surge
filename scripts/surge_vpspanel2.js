@@ -27,10 +27,10 @@
   if (!showFullIp && serverIp !== "Unknown") {
       if (serverIp.includes('.')) {
           let p = serverIp.split('.');
-          if (p.length === 4) serverIp = `${p[0]}.${p[1]}.*.*`;
+          if (p.length === 4) serverIp = `${p[0]}.${p[1]}.**.**`;
       } else if (serverIp.includes(':')) {
           let p = serverIp.split(':');
-          if (p.length >= 3) serverIp = `${p[0]}:${p[1]}:*:*`;
+          if (p.length >= 3) serverIp = `${p[0]}:${p[1]}:**:**`;
       }
   }
   // =====================================================
@@ -104,7 +104,7 @@
   // Line 4: 运行时间 和 最后更新时间
   // ====== Panel Emoji 增强版 ======
   panel.content = [
-    `💻 ${sysOS} (${serverIp}) | 进程: ${procCount} | 连接: ${netConns} (TCP: ${tcpConns}  UDP: ${udpConns})`,
+    `💻 ${sysOS} (${serverIp}) | 进程: ${procCount} | 连接: ${netConns} (T/U: ${tcpConns}/${udpConns})`,
     `⚡ CPU (${cpuCores}C / ${cpuFreq}MHz) : ${cpuUsage} ${perCoreStr}`,
     `🧠 RAM: ${memUsed} / ${memTotal} (${memUsage})`,
     `🔄 Swp: ${swapUsed} / ${swapTotal} (${swapUsage})`,
