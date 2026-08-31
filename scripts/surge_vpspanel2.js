@@ -10,31 +10,58 @@
   }
   // ========================================================
   const jsonData = JSON.parse(stats.body);
+
+  // === 数据统一解析与格式化 ===
+  // 系统与进程
+  const sysOS = jsonData.os_info;
+  const procCount = jsonData.process_count;
+  const netConns = jsonData.net_connections;
+
+  // CPU 详情
+  const cpuCores = jsonData.cpu_cores;
+  const cpuFreq = jsonData.cpu_freq;
+  const cpuUsage = `${jsonData.cpu_usage.toFixed(1)}%`;
+  // 处理 CPU 多核数据 (大于 8 核时隐藏分核详情防面板错位)
+  const perCoreStr = jsonData.cpu_per_core.length <= 8 
+    ? `[${jsonData.cpu_per_core.map(c => Math.round(c)).join(',')}]` 
+    : '';
+
+  // 内存与 Swap
+  const memUsage = `${jsonData.mem_usage.toFixed(1)}%`;
+  const memUsed = bytesToSize(jsonData.mem_used);
+  const memTotal = bytesToSize(jsonData.mem_total);
+  
+  const swapUsage = `${jsonData.swap_percent.toFixed(1)}%`;
+  const swapUsed = bytesToSize(jsonData.swap_used);
+  const swapTotal = bytesToSize(jsonData.swap_total);
+
+  // 磁盘 IO
+  const diskUsage = `${jsonData.disk_percent.toFixed(1)}%`;
+  const diskRead = `${bytesToSize(jsonData.disk_read_speed)}/s`;
+  const diskWrite = `${bytesToSize(jsonData.disk_write_speed)}/s`;
+
+  // 系统负载
+  const load1 = jsonData.load1;
+  const load5 = jsonData.load5;
+  const load15 = jsonData.load15;
+
+  // 网络总计与实时流速
+  const netRecv = bytesToSize(jsonData.bytes_recv);
+  const netSent = bytesToSize(jsonData.bytes_sent);
+  const netTotal = bytesToSize(jsonData.bytes_total);
+  const speedRecv = `${bytesToSize(jsonData.speed_recv)}/s`;
+  const speedSent = `${bytesToSize(jsonData.speed_sent)}/s`;
+
+  // 运行时间
+  const uptimeStr = formatUptime(jsonData.uptime);  
   
   // 时间处理 (使用绝对时间，解决时区错乱)
   const updateTime = new Date(jsonData.utc_timestamp * 1000);
   // 只取时间部分 (如 16:30:00) 节约面板空间，如果你想保留日期，可改回 toLocaleString()
   const timeString = updateTime.toLocaleString('zh-CN', { hour12: false }); 
 
-  // 数据解析
-  const cpuUsage = `${jsonData.cpu_usage.toFixed(1)}%`;
-  const memUsage = `${jsonData.mem_usage.toFixed(1)}%`;
-  // 新增：磁盘解析
-  const diskUsage = `${jsonData.disk_percent.toFixed(1)}%`;
-  
-  // 新增：负载解析
-  const load1 = jsonData.load1;
-  const load5 = jsonData.load5;
-  const load15 = jsonData.load15;
 
-  const inTraffic = jsonData.bytes_recv; // 下载 (VPS接收)
-  const outTraffic = jsonData.bytes_sent; // 上传 (VPS发送)
-  const totalTraffic = jsonData.bytes_total;
-
-  // === 新增：解析实时流速 ===
-  const speedRecv = jsonData.speed_recv || 0;
-  const speedSent = jsonData.speed_sent || 0;
-
+  // === 面板状态颜色配置 ===
   let panel = {};
   let shifts = {
     '1': '#06D6A0', // 绿 (健康)
@@ -56,15 +83,19 @@
   // Line 4: 运行时间 和 最后更新时间
   // ====== Panel Emoji 增强版 ======
   panel.content = [
-    `🖥️ 资源: ${cpuUsage} (C) | ${memUsage} (M) | ${diskUsage} (D)`,
-    `⚙️ 负载: ${load1} ∷ ${load5} ∷ ${load15}`,
-    `🌐 流量: ⇣ ${bytesToSize(inTraffic)} | ⇡ ${bytesToSize(outTraffic)} | ∑ ${bytesToSize(totalTraffic)}`,
-    `🚀 速率: ⇣ ${bytesToSize(speedRecv)}/s  |  ⇡ ${bytesToSize(speedSent)}/s`,
-    `⏱️ 状态: 已运行 ${formatUptime(jsonData.uptime)}`,
-    `🔄 更新: ${timeString}`
+    `💻 ${sysOS}  |  进程: ${procCount}  |  连接: ${netConns}`,
+    `⚡ CPU (${cpuCores}C / ${cpuFreq}MHz) : ${cpuUsage} ${perCoreStr}`,
+    `🧠 RAM: ${memUsed} / ${memTotal} (${memUsage})`,
+    `🔄 Swp: ${swapUsed} / ${swapTotal} (${swapUsage})`,
+    `💾 DSK: ${diskUsage}   R: ${diskRead}   W: ${diskWrite}`,
+    `📈 L/A: ${load1} ∷ ${load5} ∷ ${load15}`,
+    `🌐 总计: ⇣ ${netRecv}  |  ⇡ ${netSent}  |  ∑ ${netTotal}`,
+    `🚀 速率: ⇣ ${speedRecv}  |  ⇡ ${speedSent}`,
+    `⏳ 状态: 已运行 ${uptimeStr}`,
+    `⏰ 更新: ${timeString}`
 ].join('\n');
 
-  $done(panel);
+$done(panel);
   
 })().catch((e) => {
   console.log('CatVPS Error: ' + e.message);
