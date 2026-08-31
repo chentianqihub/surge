@@ -7,7 +7,6 @@ const sites = {
   Microsoft: 'https://www.microsoft.com',
   ChatGPT: 'https://chatgpt.com',
   Twitter: 'https://x.com',
-  V2ex: 'https://www.v2ex.com',
   Apple: 'https://www.apple.com'
 };
 
