@@ -24,25 +24,34 @@ const sites = {
   });
 })();
 
-// 🪄 黑科技 2.0：更精准的视觉宽度计算
+// 🪄 黑科技 3.0：引入“空格物理宽度”换算
 function formatName(name) {
   let visualLength = 0;
   for (let char of name) {
     if (/[ilI1jtrf]/.test(char)) {
-      visualLength += 0.5;  // 窄字母
+      visualLength += 0.4;  // 极窄字母
     } else if (/[mWmwM]/.test(char)) {
       visualLength += 1.5;  // 超宽字母
     } else if (/[A-Z]/.test(char)) {
-      visualLength += 1.25; // 修复点1：所有其他大写字母都按 1.25 算
+      visualLength += 1.2;  // 其他大写字母偏宽
     } else {
-      visualLength += 1;    // 普通小写字母
+      visualLength += 1;    // 普通小写字母和数字
     }
   }
   
-  // 修复点2：将目标宽度下调至 8，留出“Tab安全缓冲区”，防止长单词跳到下一个制表位
-  const targetWidth = 8; 
-  const spacesToAdd = Math.ceil(targetWidth - visualLength);
-  return name + ' '.repeat(Math.max(0, spacesToAdd));
+  // 对齐基准线，7.5 刚好能包容 Microsoft 和 ChatGPT 这种长单词
+  const targetWidth = 7.5; 
+  
+  // 核心修复：苹果字体中，一个空格的物理宽度大约只有 0.33
+  const spaceWidth = 0.33; 
+  
+  // 计算缺少了多少宽度
+  const gap = Math.max(0, targetWidth - visualLength);
+  
+  // 除以空格实际宽度，算出真正需要补充多少个空格（向上取整）
+  const spacesToAdd = Math.ceil(gap / spaceWidth);
+  
+  return name + ' '.repeat(spacesToAdd);
 }
 
 function ping(name, url) {
