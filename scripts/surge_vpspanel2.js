@@ -19,6 +19,22 @@
   const tcpConns = jsonData.tcp_connections || 0; 
   const udpConns = jsonData.udp_connections || 0;
 
+  // ================= 新增：IP 处理逻辑 =================
+  // 判断 argument 中是否带有 full_ip=true (注意 Surge 参数全为字符串)
+  const showFullIp = params.full_ip === 'true';
+  let serverIp = jsonData.public_ip || "Unknown";  
+  // 如果为 false 且获取到了正常 IP，则进行打码 (兼容 IPv4 和 IPv6)
+  if (!showFullIp && serverIp !== "Unknown") {
+      if (serverIp.includes('.')) {
+          let p = serverIp.split('.');
+          if (p.length === 4) serverIp = `${p[0]}.${p[1]}.*.*`;
+      } else if (serverIp.includes(':')) {
+          let p = serverIp.split(':');
+          if (p.length >= 3) serverIp = `${p[0]}:${p[1]}:*:*`;
+      }
+  }
+  // =====================================================
+
   // CPU 详情
   const cpuCores = jsonData.cpu_cores;
   const cpuFreq = jsonData.cpu_freq;
@@ -88,11 +104,11 @@
   // Line 4: 运行时间 和 最后更新时间
   // ====== Panel Emoji 增强版 ======
   panel.content = [
-    `💻 ${sysOS}  |  进程: ${procCount}  |  连接: ${netConns} (TCP: ${tcpConns}  UDP: ${udpConns})`,
+    `💻 ${sysOS} (${serverIp}) | 进程: ${procCount} | 连接: ${netConns} (TCP: ${tcpConns}  UDP: ${udpConns})`,
     `⚡ CPU (${cpuCores}C / ${cpuFreq}MHz) : ${cpuUsage} ${perCoreStr}`,
     `🧠 RAM: ${memUsed} / ${memTotal} (${memUsage})`,
     `🔄 Swp: ${swapUsed} / ${swapTotal} (${swapUsage})`,
-    `💾 DSK: ${diskUsed} / ${diskTotal} (${diskUsage} | Inode ${inodeUsage}))`,        
+    `💾 DSK: ${diskUsed} / ${diskTotal} (${diskUsage} | Inode ${inodeUsage})`,        
     `💿 I/O: R ${diskRead}  |  W ${diskWrite}`,             
     `📈 L/A: ${load1} ∷ ${load5} ∷ ${load15}`,
     `🌐 流量: ⇣ ${netRecv}  |  ⇡ ${netSent}  |  ∑ ${netTotal}`,
