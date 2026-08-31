@@ -81,6 +81,13 @@
   // 只取时间部分 (如 16:30:00) 节约面板空间，如果你想保留日期，可改回 toLocaleString()
   const timeString = updateTime.toLocaleString('zh-CN', { hour12: false }); 
 
+  // ================= 应用状态与延迟 =================
+  const dockerCnt = jsonData.docker_count || 0;
+  const f2bCnt = jsonData.fail2ban_count || 0;
+  const realmStatus = jsonData.realm_alive ? '🟢运行' : '🔴宕机';
+  const pingMs = jsonData.ping_latency || "超时";
+  // ========================================================
+
 
   // === 面板状态颜色配置 ===
   let panel = {};
@@ -105,12 +112,13 @@
   // ====== Panel Emoji 增强版 ======
   panel.content = [
     `💻 ${sysOS} (${serverIp}) | 进程: ${procCount} | 连接: ${netConns} (T/U: ${tcpConns}/${udpConns})`,
+    `🛡️ 守护: Dkr ${dockerCnt}  |  拦截 ${f2bCnt}  |  Realm ${realmStatus}`,
     `⚡ CPU (${cpuCores}C / ${cpuFreq}MHz) : ${cpuUsage} ${perCoreStr}`,
     `🧠 RAM: ${memUsed} / ${memTotal} (${memUsage})`,
     `🔄 Swp: ${swapUsed} / ${swapTotal} (${swapUsage})`,
     `💾 DSK: ${diskUsed} / ${diskTotal} (${diskUsage} | Inode ${inodeUsage})`,        
     `💿 I/O: R ${diskRead}  |  W ${diskWrite}`,             
-    `📈 L/A: ${load1} ∷ ${load5} ∷ ${load15}`,
+    `📈 L/A: ${load1} ∷ ${load5} ∷ ${load15} |  🏓 Ping: ${pingMs}`,
     `🌐 流量: ⇣ ${netRecv}  |  ⇡ ${netSent}  |  ∑ ${netTotal}`,
     `🚀 速率: ⇣ ${speedRecv}  |  ⇡ ${speedSent}`,
     `⏳ 状态: 已运行 ${uptimeStr}`,
