@@ -3,7 +3,13 @@ const sites = {
   Bilibili: 'https://www.bilibili.com',
   Github: 'https://www.github.com',
   Google: 'https://www.google.com/generate_204',
-  Youtube: 'https://www.youtube.com/generate_204' // 替换为更轻量的无内容返回地址
+  Youtube: 'https://www.youtube.com/generate_204', // 替换为更轻量的无内容返回地址
+  // 👇 在这里按照格式添加你想要的网站，注意每行结尾要有英文逗号 ,
+  Microsoft: 'https://www.microsoft.com',
+  ChatGPT: 'https://chat.openai.com',
+  Twitter: 'https://x.com',
+  V2ex: 'https://www.v2ex.com',
+  Apple: 'https://www.apple.com'
 };
 
 !(async () => {
@@ -12,7 +18,7 @@ const sites = {
   const results = await Promise.all(promises);
 
   $done({
-    title: '🌐 Network Connectivity',
+    title: 'Network Connectivity',
     content: results.join('\n'),
     icon: 'network',            // 换成了更符合网络测试的图标
     'icon-color': '#0B84FF',
@@ -27,7 +33,7 @@ function ping(name, url) {
     // 优化2：增加 timeout 参数（3秒超时），防止面板无限卡加载
     $httpClient.get({ url: url, timeout: 3 }, (err, resp, data) => {
       const time = Date.now() - start;
-      const displayName = name.padEnd(8, ' '); // 名字补全空格，让后面的延迟数值尽量对齐
+      const displayName = name.padEnd(10, ' '); // 名字补全空格，让后面的延迟数值尽量对齐
       
       // 优化3：增加错误处理机制
       if (err || !resp || resp.status !== 204 && resp.status !== 200) {
