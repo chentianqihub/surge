@@ -6,7 +6,7 @@ const sites = {
   Youtube: 'https://www.youtube.com/generate_204', // 替换为更轻量的无内容返回地址
   // 👇 在这里按照格式添加你想要的网站，注意每行结尾要有英文逗号 ,
   Microsoft: 'https://www.microsoft.com',
-  ChatGPT: 'https://chat.openai.com',
+  ChatGPT: 'https://chatgpt.com',
   Twitter: 'https://x.com',
   V2ex: 'https://www.v2ex.com',
   Apple: 'https://www.apple.com'
