@@ -1,8 +1,10 @@
 #!name= Connectivity_Test
 #!desc= 网络连通性测试
+#!arguments= UPDATE-INTERVAL:-1
+#!arguments-desc= UPDATE-INTERVAL:面板刷新时间，默认手动刷新
 
 [Script]
 Connectivity_Test = type=generic,timeout=3,script-path= https://raw.githubusercontent.com/chentianqihub/surge/main/scripts/ConnectivityTest.js,argument=title=Connectivity Test&icon=icloud.and.arrow.down&color=#FF9F0A&server=false
 
 [Panel]
-Connectivity_Test = script-name=Connectivity_Test,update-interval=1
+Connectivity_Test = script-name=Connectivity_Test,update-interval={{{UPDATE-INTERVAL}}}
