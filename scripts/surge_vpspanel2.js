@@ -37,6 +37,8 @@
 
   // 磁盘 IO
   const diskUsage = `${jsonData.disk_percent.toFixed(1)}%`;
+  const diskUsed = bytesToSize(jsonData.disk_used);     
+  const diskTotal = bytesToSize(jsonData.disk_total);   
   const diskRead = `${bytesToSize(jsonData.disk_read_speed)}/s`;
   const diskWrite = `${bytesToSize(jsonData.disk_write_speed)}/s`;
 
@@ -87,9 +89,10 @@
     `⚡ CPU (${cpuCores}C / ${cpuFreq}MHz) : ${cpuUsage} ${perCoreStr}`,
     `🧠 RAM: ${memUsed} / ${memTotal} (${memUsage})`,
     `🔄 Swp: ${swapUsed} / ${swapTotal} (${swapUsage})`,
-    `💾 DSK: ${diskUsage}   R: ${diskRead}   W: ${diskWrite}`,
+    `💾 DSK: ${diskUsed} / ${diskTotal} (${diskUsage})`        
+    `💿 I/O: R ${diskRead}  |  W ${diskWrite}`             
     `📈 L/A: ${load1} ∷ ${load5} ∷ ${load15}`,
-    `🌐 总计: ⇣ ${netRecv}  |  ⇡ ${netSent}  |  ∑ ${netTotal}`,
+    `🌐 流量: ⇣ ${netRecv}  |  ⇡ ${netSent}  |  ∑ ${netTotal}`,
     `🚀 速率: ⇣ ${speedRecv}  |  ⇡ ${speedSent}`,
     `⏳ 状态: 已运行 ${uptimeStr}`,
     `⏰ 更新: ${timeString}`
