@@ -89,8 +89,8 @@
     `⚡ CPU (${cpuCores}C / ${cpuFreq}MHz) : ${cpuUsage} ${perCoreStr}`,
     `🧠 RAM: ${memUsed} / ${memTotal} (${memUsage})`,
     `🔄 Swp: ${swapUsed} / ${swapTotal} (${swapUsage})`,
-    `💾 DSK: ${diskUsed} / ${diskTotal} (${diskUsage})`        
-    `💿 I/O: R ${diskRead}  |  W ${diskWrite}`             
+    `💾 DSK: ${diskUsed} / ${diskTotal} (${diskUsage})`,        
+    `💿 I/O: R ${diskRead}  |  W ${diskWrite}`,             
     `📈 L/A: ${load1} ∷ ${load5} ∷ ${load15}`,
     `🌐 流量: ⇣ ${netRecv}  |  ⇡ ${netSent}  |  ∑ ${netTotal}`,
     `🚀 速率: ⇣ ${speedRecv}  |  ⇡ ${speedSent}`,
