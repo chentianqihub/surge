@@ -24,19 +24,23 @@ const sites = {
   });
 })();
 
-// 🪄 黑科技：计算文字的“视觉宽度”并智能补齐空格
-function formatName(name, targetWidth) {
+// 🪄 黑科技 2.0：更精准的视觉宽度计算
+function formatName(name) {
   let visualLength = 0;
   for (let char of name) {
-    if (/[ilI1jtr]/.test(char)) {
-      visualLength += 0.5; // 遇到窄字母，宽度只算一半
+    if (/[ilI1jtrf]/.test(char)) {
+      visualLength += 0.5;  // 窄字母
     } else if (/[mWmwM]/.test(char)) {
-      visualLength += 1.5; // 遇到宽字母，宽度算一点五倍
+      visualLength += 1.5;  // 超宽字母
+    } else if (/[A-Z]/.test(char)) {
+      visualLength += 1.25; // 修复点1：所有其他大写字母都按 1.25 算
     } else {
-      visualLength += 1;   // 普通字母算正常宽度
+      visualLength += 1;    // 普通小写字母
     }
   }
-  // 计算需要补充多少个空格，向上取整
+  
+  // 修复点2：将目标宽度下调至 8，留出“Tab安全缓冲区”，防止长单词跳到下一个制表位
+  const targetWidth = 8; 
   const spacesToAdd = Math.ceil(targetWidth - visualLength);
   return name + ' '.repeat(Math.max(0, spacesToAdd));
 }
