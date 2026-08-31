@@ -16,6 +16,8 @@
   const sysOS = jsonData.os_info;
   const procCount = jsonData.process_count;
   const netConns = jsonData.net_connections;
+  const tcpConns = jsonData.tcp_connections || 0; 
+  const udpConns = jsonData.udp_connections || 0;
 
   // CPU 详情
   const cpuCores = jsonData.cpu_cores;
@@ -38,7 +40,8 @@
   // 磁盘 IO
   const diskUsage = `${jsonData.disk_percent.toFixed(1)}%`;
   const diskUsed = bytesToSize(jsonData.disk_used);     
-  const diskTotal = bytesToSize(jsonData.disk_total);   
+  const diskTotal = bytesToSize(jsonData.disk_total);
+  const inodeUsage = `${(jsonData.disk_inode_percent || 0).toFixed(1)}%`;
   const diskRead = `${bytesToSize(jsonData.disk_read_speed)}/s`;
   const diskWrite = `${bytesToSize(jsonData.disk_write_speed)}/s`;
 
@@ -85,11 +88,11 @@
   // Line 4: 运行时间 和 最后更新时间
   // ====== Panel Emoji 增强版 ======
   panel.content = [
-    `💻 ${sysOS}  |  进程: ${procCount}  |  连接: ${netConns}`,
+    `💻 ${sysOS}  |  进程: ${procCount}  |  连接: ${netConns} (TCP: ${tcpConns}  UDP: ${udpConns})`,
     `⚡ CPU (${cpuCores}C / ${cpuFreq}MHz) : ${cpuUsage} ${perCoreStr}`,
     `🧠 RAM: ${memUsed} / ${memTotal} (${memUsage})`,
     `🔄 Swp: ${swapUsed} / ${swapTotal} (${swapUsage})`,
-    `💾 DSK: ${diskUsed} / ${diskTotal} (${diskUsage})`,        
+    `💾 DSK: ${diskUsed} / ${diskTotal} (${diskUsage} | Inode ${inodeUsage}))`,        
     `💿 I/O: R ${diskRead}  |  W ${diskWrite}`,             
     `📈 L/A: ${load1} ∷ ${load5} ∷ ${load15}`,
     `🌐 流量: ⇣ ${netRecv}  |  ⇡ ${netSent}  |  ∑ ${netTotal}`,
