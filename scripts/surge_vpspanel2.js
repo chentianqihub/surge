@@ -98,7 +98,8 @@
   const iowait = `${(jsonData.cpu_iowait || 0).toFixed(1)}%`;
   const retransTotal = `${(jsonData.tcp_retrans_total_pct || 0).toFixed(2)}%`;
   const retransReal = `${(jsonData.tcp_retrans_realtime_pct || 0).toFixed(2)}%`;
-  const pkgUpdates = jsonData.pkg_updates || 0;
+  // 兼容异步架构：如果 Python 返回 -1，说明后台线程还在算，面板优雅提示 "计算中"
+  const pkgUpdates = jsonData.pkg_updates === -1 ? '计算中' : jsonData.pkg_updates;
   const rebootReq = jsonData.reboot_required ? '⚠️需重启' : '✅正常';
   
   let vnstatMonth = "未配置";
