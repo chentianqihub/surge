@@ -8,7 +8,7 @@ fi
 
 echo "1. 正在更新软件包列表并安装依赖 (Python3, pip, venv, curl, jq)..."
 apt update
-apt install -y python3 python3-pip python3-venv curl jq
+apt install -y python3 python3-pip python3-venv curl jq vnstat
 
 # 定义工作目录和路径
 WORKDIR="/root"
