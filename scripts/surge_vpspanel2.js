@@ -84,8 +84,14 @@
   // ================= 应用状态与延迟 =================
   const dockerCnt = jsonData.docker_count || 0;
   const f2bCnt = jsonData.fail2ban_count || 0;
-  const realmStatus = jsonData.realm_alive ? '🟢运行' : '🔴宕机';
-  const pingMs = jsonData.ping_latency || "超时";
+  // 安全提取进程状态 (如果 JSON 没有该字段则默认 false)
+  const procs = jsonData.process_status || {};
+  const realmStatus = procs['realm'] ? '🟢' : '🔴';
+  const snellStatus = procs['snell'] ? '🟢' : '🔴';
+  // 安全提取 Ping 延迟
+  const pings = jsonData.ping_results || {};
+  const pingCF = pings['1.1.1.1'] || "超时";
+  const pingAli = pings['223.5.5.5'] || "超时";
   // ========================================================
 
 
@@ -112,13 +118,14 @@
   // ====== Panel Emoji 增强版 ======
   panel.content = [
     `💻 ${sysOS} (${serverIp}) | 进程: ${procCount} | 连接: ${netConns} (T/U: ${tcpConns}/${udpConns})`,
-    `🛡️ 守护: Dkr ${dockerCnt}  |  拦截 ${f2bCnt}  |  Realm ${realmStatus}`,
+    `🛡️ 进程: Dkr ${dockerCnt}  |  拦截 ${f2bCnt}  |  Rlm ${realmStatus} Snl ${snellStatus}`,
     `⚡ CPU (${cpuCores}C / ${cpuFreq}MHz) : ${cpuUsage} ${perCoreStr}`,
     `🧠 RAM: ${memUsed} / ${memTotal} (${memUsage})`,
     `🔄 Swp: ${swapUsed} / ${swapTotal} (${swapUsage})`,
     `💾 DSK: ${diskUsed} / ${diskTotal} (${diskUsage} | Inode ${inodeUsage})`,        
     `💿 I/O: R ${diskRead}  |  W ${diskWrite}`,             
     `📈 L/A: ${load1} ∷ ${load5} ∷ ${load15} |  🏓 Ping: ${pingMs}`,
+    `🏓 PING: 1.1: ${pingCF} ∷ Ali: ${pingAli}`,
     `🌐 流量: ⇣ ${netRecv}  |  ⇡ ${netSent}  |  ∑ ${netTotal}`,
     `🚀 速率: ⇣ ${speedRecv}  |  ⇡ ${speedSent}`,
     `⏳ 状态: 已运行 ${uptimeStr}`,
