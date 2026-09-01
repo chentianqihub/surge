@@ -15,6 +15,7 @@
   // 系统与进程
   const sysOS = jsonData.os_info;
   const procCount = jsonData.process_count;
+  const fdUsage = `${(jsonData.fd_percent || 0).toFixed(1)}%`;  
   const netConns = jsonData.net_connections;
   const tcpConns = jsonData.tcp_connections || 0; 
   const udpConns = jsonData.udp_connections || 0;
@@ -129,7 +130,7 @@
   panel.content = [
     // 【系统与状态】
     `🖥️ 概览: ${sysOS} (${serverIp})`,
-    `📦 系统: 待更新 ${pkgUpdates} 个 | ${rebootReq} | 进程 ${procCount}`,
+    `📦 系统: ${pkgUpdates} 个 pkg 待更新 | ${rebootReq} | 进程 ${procCount} | FD ${fdUsage}`,
     // 【计算与负载】
     `⚡ CPU (${cpuCores}C / ${cpuFreq}MHz) : ${cpuUsage} ${perCoreStr}`,
     `📈 L/A: 1m ${load1} ∷ 5m ${load5} ∷ 15m ${load15} (IOw: ${iowait})`,
