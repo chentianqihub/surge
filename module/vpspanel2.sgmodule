@@ -6,7 +6,7 @@
 #!arguments-desc= VPS_IP/PORT/PATH: 根据自己 VPS 的 IP 地址/端口/路径修改\n\nNAME: 面板标题\n\nICON: 面板图标\n\nFULL_IP: 面板是否显示完整的服务器 IP，为 false 时隐藏完整显示\n\nUPDATE-INTERVAL: 面板刷新时间，您可以在这里指定一个小的时间（例如1），以使面板每次自动更新
 
 [Script]
-Serverinfo = type=generic, script-path=https://raw.githubusercontent.com/chentianqihub/surge/main/scripts/surge_vpspanel2.js, argument = url=http://{{{VPS_IP}}}:{{{PORT}}}/{{{PATH}}}&&full_ip={{{FULL_IP}}}&name={{{NAME}}}&icon={{{ICON}}}
+Serverinfo = type=generic, script-path=https://raw.githubusercontent.com/chentianqihub/surge/main/scripts/surge_vpspanel2.js, timeout=10, argument = url=http://{{{VPS_IP}}}:{{{PORT}}}/{{{PATH}}}&&full_ip={{{FULL_IP}}}&name={{{NAME}}}&icon={{{ICON}}}
 
 [Panel]
 Serverinfo = script-name=Serverinfo, update-interval={{{UPDATE-INTERVAL}}}
