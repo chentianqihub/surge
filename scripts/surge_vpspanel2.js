@@ -124,7 +124,7 @@
     `🔄 Swp: ${swapUsed} / ${swapTotal} (${swapUsage})`,
     `💾 DSK: ${diskUsed} / ${diskTotal} (${diskUsage} | Inode ${inodeUsage})`,        
     `💿 I/O: R ${diskRead}  |  W ${diskWrite}`,             
-    `📈 L/A: ${load1} ∷ ${load5} ∷ ${load15} |  🏓 Ping: ${pingMs}`,
+    `📈 L/A: ${load1} ∷ ${load5} ∷ ${load15}`,
     `🏓 PING: 1.1: ${pingCF} ∷ Ali: ${pingAli}`,
     `🌐 流量: ⇣ ${netRecv}  |  ⇡ ${netSent}  |  ∑ ${netTotal}`,
     `🚀 速率: ⇣ ${speedRecv}  |  ⇡ ${speedSent}`,
