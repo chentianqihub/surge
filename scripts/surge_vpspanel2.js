@@ -94,6 +94,19 @@
   const pingAli = pings['223.5.5.5'] || "超时";
   // ========================================================
 
+  // ================= 进阶运维指标 =================
+  const iowait = `${(jsonData.cpu_iowait || 0).toFixed(1)}%`;
+  const retransTotal = `${(jsonData.tcp_retrans_total_pct || 0).toFixed(2)}%`;
+  const retransReal = `${(jsonData.tcp_retrans_realtime_pct || 0).toFixed(2)}%`;
+  const pkgUpdates = jsonData.pkg_updates || 0;
+  const rebootReq = jsonData.reboot_required ? '⚠️需重启' : '✅正常';
+  
+  let vnstatMonth = "未配置";
+  if (jsonData.vnstat_month_total >= 0) {
+      vnstatMonth = bytesToSize(jsonData.vnstat_month_total);
+  }
+  // =====================================================
+
 
   // === 面板状态颜色配置 ===
   let panel = {};
@@ -111,23 +124,27 @@
   panel["icon-color"] = shifts[col];
   
   // ====== 重新排版面板内容 ======
-  // Line 1: 核心资源占用 (CPU | 内存 | 磁盘)
-  // Line 2: 负载均值 (1分钟, 5分钟, 15分钟)
-  // Line 3: 网络流量 (⇣ 下载 | ⇡ 上传 | ∑ 总计)
-  // Line 4: 运行时间 和 最后更新时间
   // ====== Panel Emoji 增强版 ======
   panel.content = [
-    `💻 ${sysOS} (${serverIp}) | 进程: ${procCount} | 连接: ${netConns} (T/U: ${tcpConns}/${udpConns})`,
-    `🛡️ 进程: Dkr ${dockerCnt}  |  拦截 ${f2bCnt}  |  Rlm ${realmStatus} Snl ${snellStatus}`,
+    // 【系统与状态】
+    `🖥️ 概览: ${sysOS} (${serverIp})`,
+    `📦 系统: 待更新 ${pkgUpdates} 个 | ${rebootReq} | 进程 ${procCount}`,
+    // 【计算与负载】
     `⚡ CPU (${cpuCores}C / ${cpuFreq}MHz) : ${cpuUsage} ${perCoreStr}`,
+    `📈 L/A: 1m ${load1} ∷ 5m ${load5} ∷ 15m ${load15} (IOw: ${iowait})`,
+    // 【内存与存储】
     `🧠 RAM: ${memUsed} / ${memTotal} (${memUsage})`,
     `🔄 Swp: ${swapUsed} / ${swapTotal} (${swapUsage})`,
-    `💾 DSK: ${diskUsed} / ${diskTotal} (${diskUsage} | Inode ${inodeUsage})`,        
-    `💿 I/O: R ${diskRead}  |  W ${diskWrite}`,             
-    `📈 L/A: ${load1} ∷ ${load5} ∷ ${load15}`,
-    `🏓 PING: 1.1: ${pingCF} ∷ Ali: ${pingAli}`,
-    `🌐 流量: ⇣ ${netRecv}  |  ⇡ ${netSent}  |  ∑ ${netTotal}`,
+    `💾 DSK: ${diskUsed} / ${diskTotal} (${diskUsage} | 🗂️ Inode: ${inodeUsage})`,        
+    `💿 I/O: R ${diskRead}  |  W ${diskWrite}`,   
+    // 【网络与流量】
+    `📊 流量: 本月 ${vnstatMonth} | 总计 ⇣ ${netRecv} | ⇡ ${netSent} | ∑ ${netTotal}`,
     `🚀 速率: ⇣ ${speedRecv}  |  ⇡ ${speedSent}`,
+    `🕸️ 连接: ${netConns} (T/U: ${tcpConns}/${udpConns}) | 重传: 实时 ${retransReal} / 累计 ${retransTotal}`,
+    `🏓 延迟: CF ${pingCF} | Ali ${pingAli}`,
+    // 【应用与安全】
+    `🛡️ 进程: Dkr ${dockerCnt} | ⛔ 拦截 ${f2bCnt} | Rlm ${realmStatus} Snl ${snellStatus}`,
+    // 【时间底栏】
     `⏳ 状态: 已运行 ${uptimeStr}`,
     `⏰ 更新: ${timeString}`
 ].join('\n');
