@@ -137,7 +137,7 @@
     // 【内存与存储】
     `🧠 RAM: ${memUsed} / ${memTotal} (${memUsage})`,
     `🔄 Swp: ${swapUsed} / ${swapTotal} (${swapUsage})`,
-    `💾 DSK: ${diskUsed} / ${diskTotal} (${diskUsage} | 🗂️ Inode: ${inodeUsage})`,        
+    `💾 DSK: ${diskUsed} / ${diskTotal} (${diskUsage}) | 🗂️ Inode: ${inodeUsage}`,        
     `💿 I/O: R ${diskRead}  |  W ${diskWrite}`,   
     // 【网络与流量】
     `📊 流量: 本月 ${vnstatMonth} | 总计 ⇣ ${netRecv} | ⇡ ${netSent} | ∑ ${netTotal}`,
