@@ -1,0 +1,17 @@
+#!name= kelee
+#!desc= 修改UA并强制浏览器预览文件
+
+[URL Rewrite]
+# 当访问 http://loon/import?plugin=... 时，提取后面的真实链接并 302 重定向
+^http://loon/import\?plugin=(.+)$ $1 302
+
+[Header Rewrite]
+# 请求头：直接替换 User-Agent
+http-request ^https?:\/\/kelee\.one header-replace User-Agent "Loon/988 CFNetwork/3860.500.112 Darwin/25.4.0"
+
+# 响应头：替换 Content-Type 为纯文本，并将 Content-Disposition 改为内联显示
+http-response ^https?:\/\/kelee\.one header-replace Content-Type "text/plain; charset=utf-8"
+http-response ^https?:\/\/kelee\.one header-replace Content-Disposition "inline"
+
+[MITM]
+hostname = %APPEND% kelee.one
