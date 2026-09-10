@@ -271,16 +271,13 @@ $httpClient.get(
             // --- 第一组：基础运行状态 ---
             "内存占用：  " + formatBytes(memory ? memory.value : NaN),
             "运行时间：  " + formatUptime(uptime ? uptime.value : NaN),
-            "",
             // --- 第二组：全局流量统计 ---
             "↓ 下载流量： " + formatBytes(download),
             "↑ 上传流量： " + formatBytes(upload),
-            "",
             // --- 第三组：连接与安全状态 ---
             "活跃请求：  " + activeRequests,
             "DNS 缓存：  " + dnsCache,
             "拦截封禁：  " + activeBans,
-            "",
             // --- 第四组：系统与面板信息 ---
             "Surge " + version + " · Build " + build + " · " + system,
             "最后更新：  " + formatCurrentTime()
