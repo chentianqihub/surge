@@ -1,8 +1,7 @@
-#!name= Surge Monitor
-#!desc= 监控Surge
-#!author= 
-#!arguments= 
-#!arguments-desc=
+#!name= Surge Prometheus Metrics
+#!desc= 展示 Surge 运行时的 Prometheus 文本格式公开统计信息
+#!arguments= key:123
+#!arguments-desc= key:Surge HTTP API 密钥
 
 [Panel]
 SurgeMonitor = title="Surge Monitor",content="正在获取数据...",style=info,script-name=surge-monitor,update-interval=10
