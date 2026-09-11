@@ -5,6 +5,9 @@
  *   surge_build_info{version,build,system}
  *   surge_uptime_seconds
  *   surge_memory_bytes
+ *   surge_active_requests
+ *   surge_dns_cache_entries	
+ *   surge_active_bans
  *   surge_interface_in_bytes_total{interface}
  *   surge_interface_out_bytes_total{interface}
  *
@@ -13,12 +16,7 @@
 
 // ========================================
 
-// 1. 设置默认安全回退值 (Fallback)
-const DEFAULT_API_KEY = "key";
-const DEFAULT_PORT = "6171";
-
-// 2. 优雅、安全地解析 $argument 字符串
-// 支持如 "key=123,port=8888" 或 "key=123&port=8888" 格式，且防止 value 中包含 "=" 被错误截断
+// 1. 优雅、安全地解析 $argument 字符串
 const args = (() => {
     if (typeof $argument !== "string" || !$argument.trim()) {
         return {};
@@ -27,16 +25,30 @@ const args = (() => {
     return $argument.split(/[,&]/).reduce((acc, curr) => {
         const [k, ...v] = curr.split("=");
         if (k) {
-            // 将 v 重新拼接，防止密码本身含有 "=" 导致解析缺失
             acc[k.trim()] = v.join("=").trim();
         }
         return acc;
     }, {});
 })();
 
-// 3. 动态应用参数 (优先使用传入参数，缺失则使用默认值)
-const API_KEY = args.key || DEFAULT_API_KEY;
-const METRICS_PORT = args.port || DEFAULT_PORT;
+// 2. 严格从传入参数读取，不再使用默认回退
+const API_KEY = args.key;
+const METRICS_PORT = args.port;
+
+// 3. 安全前置校验 (Fail-Fast)
+// 既然取消了回退，当缺失必填参数时，主动在面板展示报错并阻断运行
+if (!API_KEY || !METRICS_PORT) {
+    $done({
+        title: "Surge Monitor",
+        content: "配置参数缺失\n请检查 argument=key=xxx&port=xxx",
+        style: "error",
+        icon: "xmark.octagon.fill",
+        "icon-color": "#FF3B30"
+    });
+    // 抛出异常以终止后续所有请求，避免发起无效的 HTTP 请求
+    throw new Error("Surge Monitor 运行中止：缺失必须的 key 或 port 参数");
+}
+
 const METRICS_URL = `http://127.0.0.1:${METRICS_PORT}/v1/metrics`;
 
 // ========================================
